@@ -1,1 +1,1 @@
-# MPSOptimization
+# GeoclassificationMPS
