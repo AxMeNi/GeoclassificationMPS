@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 __projet__ = "GeoclassificationMPS"
-__nom_fichier__ = "test_functions_ter"
+__nom_fichier__ = "simulation_functions_ter"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
@@ -64,34 +64,35 @@ nneighboringNode = 12
 distanceThreshold = 0.1
 maxScanFraction = 0.25
 
-# Create directories if they do not exist
-if not os.path.exists(path2ti):
-    os.makedirs(path2ti)
-if not os.path.exists(path2cd):
-    os.makedirs(path2cd)
-if not os.path.exists(path2real):
-    os.makedirs(path2real)
-if not os.path.exists(path2log):
-    os.makedirs(path2log)
-if not os.path.exists(path2ind):
-    os.makedirs(path2ind)
-    
-
 
 # Load pre-processed data from pickle file
-pickledestination = path2data + picklefn
-with open(pickledestination, 'rb') as f:
-    [_, grid_geo, grid_lmp, grid_mag,
-     grid_grv, grid_ext, vec_x, vec_y
-     ] = pickle.load(f)
-
-
+# pickledestination = path2data + picklefn
+# with open(pickledestination, 'rb') as f:
+    # [_, grid_geo, grid_lmp, grid_mag,
+     # grid_grv, grid_ext, vec_x, vec_y
+     # ] = pickle.load(f)
 
 
 # Define small epsilon value
 eps = np.finfo(float).eps
 
-def get_data_info (simulated_var, auxiliary_var, var_names, var_types)
+def create_directories():
+    """
+    Create directories if they do not exist
+    
+    """
+    if not os.path.exists(path2ti):
+        os.makedirs(path2ti)
+    if not os.path.exists(path2cd):
+        os.makedirs(path2cd)
+    if not os.path.exists(path2real):
+        os.makedirs(path2real)
+    if not os.path.exists(path2log):
+        os.makedirs(path2log)
+    if not os.path.exists(path2ind):
+        os.makedirs(path2ind)
+
+def get_data_info (simulated_var, auxiliary_var, var_names, var_types):
     """
     
     """
@@ -100,117 +101,6 @@ def get_data_info (simulated_var, auxiliary_var, var_names, var_types)
     return nx, ny, nsimvar, nauxvar
 
 # %% DEESSE FUNCTIONS
-
-def gen_ti_mask(nx, ny, ti_pct_area, ti_ndisks, seed):
-    """
-    Generate a binary mask representing multiple disks within a grid.
-
-    Parameters:
-    ----------
-    nx : int
-        Number of columns in the grid.
-    ny : int
-        Number of rows in the grid.
-    ti_pct_area : float
-        Percentage of the grid area to cover with disks.
-    ti_ndisks : int
-        Number of disks to generate.
-    seed : int
-        Seed for the random number generator.
-
-    Returns:
-    -------
-    mask : ndarray
-        Binary mask with 1s indicating disk positions within the grid.
-    """
-    rng = np.random.default_rng(seed=seed)
-    rndy = rng.integers(low=0, high=ny, size=ti_ndisks)
-    rndx = rng.integers(low=0, high=nx, size=ti_ndisks)
-    radius = np.floor(np.sqrt((nx * ny * ti_pct_area / 100 / ti_ndisks) / np.pi))
-    mask = np.zeros((ny, nx))
-    for i in range(ti_ndisks):
-        rr, cc = disk((rndy[i], rndx[i]), radius, shape=(ny, nx))
-        mask[rr, cc] = 1
-    check_pct = np.sum(mask.flatten()) / (nx * ny) * 100
-    while check_pct < ti_pct_area:
-        mask = binary_dilation(mask)
-        check_pct = np.sum(mask.flatten()) / (nx * ny) * 100
-    return mask
-
-
-def build_ti(grid_msk, ti_ndisks, ti_pct_area, ti_realid, geolcd=True):
-    """
-    Build training images (TI) based on grid masks and other parameters.
-
-    Parameters:
-    ----------
-    grid_msk : ndarray
-        Mask defining areas of interest in the grid.
-    ti_ndisks : int
-        Number of disks to generate for the training images.
-    ti_pct_area : float
-        Percentage of the grid area to cover with disks.
-    ti_realid : int
-        Realization ID.
-    geolcd : bool, optional
-        Flag indicating whether to include geological codes.
-    xycv : bool, optional
-        Flag indicating whether to include x and y coordinates.
-
-    Returns:
-    -------
-    geocodes : ndarray
-        Unique geological codes.
-    ngeocodes : int
-        Number of unique geological codes.
-    tiMissingGeol : geone.img.Img
-        Geostatistical image object representing the training images.
-    cond_data : geone.img.Img or None
-        Conditional data object if `geolcd` is False, otherwise None.
-    """
-    geocodes = np.unique(grid_geo)
-    ngeocodes = len(geocodes)
-    novalue = -9999999
-    nz = 1
-    sx = vec_x[1] - vec_x[0]
-    sy = vec_y[1] - vec_y[0]
-    sz = sx
-    ox = vec_x[0]
-    oy = vec_y[0]
-    oz = 0.0
-
-    nv = 4
-    varname = ['geo', 'grv', 'mag', 'lmp']
-
-    else:
-        nv = 6
-        varname = ['geo', 'grv', 'mag', 'lmp', 'x', 'y']
-        xx, yy = np.meshgrid(vec_x, vec_y, indexing='xy')
-    name = path2ti + 'ti' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(ti_pct_area) + '-r-' + str(
-        ti_realid) + '-geolcd' + str(geolcd) + '-xycv' + str(xycv) + '.gslib'
-    val = np.ones((nv, nz, ny, nx)) * np.nan
-    grid_geo_masked = grid_geo + 0
-    grid_geo_masked[grid_msk < 1] = novalue
-    val[0, 0, :, :] = grid_geo_masked
-    val[1, 0, :, :] = grid_grv
-    val[2, 0, :, :] = grid_mag
-    val[3, 0, :, :] = grid_lmp
-
-
-    # Create the Img class object
-    tiMissingGeol = gn.img.Img(nx, ny, nz, sx, sy, sz, ox, oy, oz, nv, val, varname, name)
-
-    if geolcd == False:
-        val2 = val + 0 # Val2 is a copy of val but not at the same memory location
-        val2[0, 0, :, :] = novalue
-        cdname = path2cd + 'ti' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(ti_pct_area) + '-r-' + str(
-            ti_realid) + '-geolcd' + str(geolcd) + '-xycv' + str(xycv) + '.gslib'
-        cond_data = gn.img.Img(nx, ny, nz, sx, sy, sz, ox, oy, oz, nv, val2, varname, cdname)
-
-    else:
-        cond_data = None
-    gn.img.writeImageGslib(im=tiMissingGeol, filename=name, missing_value=None, fmt="%.10g")
-    return geocodes, ngeocodes, tiMissingGeol, cond_data
 
 
 def run_deesse(tiMissingGeol, mps_nreal, nneighboringNode=12, distanceThreshold=0.1, maxScanFraction=0.25, seed=444,

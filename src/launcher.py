@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 __projet__ = "GeoclassificationMPS"
-__nom_fichier__ = "main"
-__author__ = "MENGELLE Axel"
+__nom_fichier__ = "launcher"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
@@ -14,11 +13,10 @@ and visualization. It also loads pre-processed data from a pickle file.
 Author: Guillaume Pirot
 Date: Fri Jul 28 11:12:36 2023
 """
-
-# import modules
-from some_functions_ter import *
+from simulation_functions_ter import *
+from ti_generation import *
 import matplotlib.pyplot as plt
-# Set a seed for reproducibility
+
 
 #### COLORS PARAMETERS
 cm = plt.get_cmap('tab20')
@@ -31,7 +29,7 @@ defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0]
 
 
 
-def main(simulated_var, 
+def launcher(simulated_var, 
         auxiliary_var, 
         var_names, 
         var_types, 
@@ -69,12 +67,14 @@ def main(simulated_var,
     """
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
     time.sleep(timesleep)
-
+    
+    create_directories()
+    
     nx,ny,nsimvar,nauxvar = get_data_info(simulated_var, auxiliary_var, var_names, var_types)
     
     # GENERATE TI MASK
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - GENERATE MASK")
-    grid_msk = gen_ti_mask(nx, ny, ti_pct_area, ti_ndisks, seed + ti_realid)
+    grid_msk = gen_ti_mask_circles(nx, ny, ti_pct_area, ti_ndisks, seed + ti_realid)
 
     # PLOT TI MASK
     if verb:

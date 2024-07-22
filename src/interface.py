@@ -255,7 +255,7 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
 
     # Additional analysis and output can be added here
 
-if __name__ = "__main__":
+def launch_simulation():
     simulated_var_modified, auxiliary_var_modified = check_variables(simulated_var, auxiliary_var, names_var, types_var)
     for config in configs:
         ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd, xycv = config
