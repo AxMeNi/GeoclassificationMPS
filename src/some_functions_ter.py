@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
-__projet__ = "missing-data"
-__nom_fichier__ = "test_functions_bis"
+__projet__ = "GeoclassificationMPS"
+__nom_fichier__ = "test_functions_ter"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 

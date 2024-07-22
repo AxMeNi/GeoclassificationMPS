@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
-__projet__ = "some_functions.py"
+__projet__ = "GeoclassificationMPS"
 __nom_fichier__ = "interface"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
-from main import *
+from launcher import *
 
 
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -263,7 +263,7 @@ if __name__ = "__main__":
         if shorten :
             execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd)
         else :
-            main(simulated_var = simulated_var_modified, 
+            launcher(simulated_var = simulated_var_modified, 
                 auxiliary_var = auxiliary_var_modified, 
                 var_names = var_names, 
                 var_types = var_types, 
