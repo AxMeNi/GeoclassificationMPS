@@ -65,40 +65,12 @@ distanceThreshold = 0.1
 maxScanFraction = 0.25
 
 
-# Load pre-processed data from pickle file
-# pickledestination = path2data + picklefn
-# with open(pickledestination, 'rb') as f:
-    # [_, grid_geo, grid_lmp, grid_mag,
-     # grid_grv, grid_ext, vec_x, vec_y
-     # ] = pickle.load(f)
-
 
 # Define small epsilon value
 eps = np.finfo(float).eps
 
-def create_directories():
-    """
-    Create directories if they do not exist
-    
-    """
-    if not os.path.exists(path2ti):
-        os.makedirs(path2ti)
-    if not os.path.exists(path2cd):
-        os.makedirs(path2cd)
-    if not os.path.exists(path2real):
-        os.makedirs(path2real)
-    if not os.path.exists(path2log):
-        os.makedirs(path2log)
-    if not os.path.exists(path2ind):
-        os.makedirs(path2ind)
 
-def get_data_info (simulated_var, auxiliary_var, var_names, var_types):
-    """
-    
-    """
-    ny, nx, nsimvar = simulated_var.shape()
-    nauxvar = auxiliary_var.shape()[2]
-    return nx, ny, nsimvar, nauxvar
+
 
 # %% DEESSE FUNCTIONS
 

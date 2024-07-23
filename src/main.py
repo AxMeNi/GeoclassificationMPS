@@ -10,11 +10,15 @@ def run_tests():
     """
     to run the tests
     """
+    t_GetSimulationInfo = False
+    t_CheckVariables = False
     t_GenTiMaskCircles = True
     t_GenTiMaskSquares = True
     t_GenTiMaskSeparatedSquares = True
     t_GenTiMaskSingleSquare = True
     
+    if t_GetSimulationInfo : test_get_simulation_info()
+    if t_CheckVariables : test_check_variables()
     if t_GenTiMaskCircles : test_gen_ti_mask_circles()
     if t_GenTiMaskSquares : test_gen_ti_mask_squares()
     if t_GenTiMaskSeparatedSquares : test_gen_ti_mask_separated_squares(showCoord=False)

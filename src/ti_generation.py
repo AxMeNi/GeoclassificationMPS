@@ -32,7 +32,6 @@ def gen_ti_mask_circles(nx, ny, ti_pct_area, ti_ndisks, seed):
     mask : ndarray
         Binary mask with 1s indicating disk positions within the grid.
     """
-    t1 = time()
     rng = np.random.default_rng(seed=seed)
     rndy = rng.integers(low=0, high=ny, size=ti_ndisks)
     rndx = rng.integers(low=0, high=nx, size=ti_ndisks)
@@ -45,8 +44,6 @@ def gen_ti_mask_circles(nx, ny, ti_pct_area, ti_ndisks, seed):
     while check_pct < ti_pct_area:
         mask = binary_dilation(mask)
         check_pct = np.sum(mask.flatten()) / (nx * ny) * 100
-    t2 = time()
-    print(t2-t1)
     return mask
     
 def gen_ti_mask_squares(nx, ny, ti_pct_area, ti_nsquares, seed):
@@ -71,7 +68,6 @@ def gen_ti_mask_squares(nx, ny, ti_pct_area, ti_nsquares, seed):
     mask : ndarray
         Binary mask with 1s indicating square positions within the grid.
     """
-    t1 = time()
     rng = np.random.default_rng(seed=seed)
     rndy = rng.integers(low=0, high=ny, size=ti_nsquares)
     rndx = rng.integers(low=0, high=nx, size=ti_nsquares)
@@ -90,8 +86,6 @@ def gen_ti_mask_squares(nx, ny, ti_pct_area, ti_nsquares, seed):
         mask = binary_dilation(mask)
         mask = mask[1:-1, 1:-1]
         check_pct = np.sum(mask.flatten()) / (nx * ny) * 100
-    t2 = time()
-    print(t2-t1)
     return mask
     
 def gen_ti_mask_separatedSquares(nx, ny, ti_pct_area, ti_nsquares, seed):
@@ -116,7 +110,6 @@ def gen_ti_mask_separatedSquares(nx, ny, ti_pct_area, ti_nsquares, seed):
     squares : list of ndarrays
         List of arrays with 1s indicating square positions within the grid.
     """
-    t1 = time()
     rng = np.random.default_rng(seed=seed)
     rndy = rng.integers(low=0, high=ny, size=ti_nsquares)
     rndx = rng.integers(low=0, high=nx, size=ti_nsquares)
@@ -155,8 +148,6 @@ def gen_ti_mask_separatedSquares(nx, ny, ti_pct_area, ti_nsquares, seed):
 
         current_pct = np.sum(mask) / (nx * ny) * 100
     
-    t2 = time()
-    print(t2-t1)
     return squares
     
 
@@ -192,7 +183,6 @@ def gen_ti_mask_single_square(nx, ny, simgrid_pct, ti_pct_area, seed, nseedGener
         Binary mask of the second square.
     
     """
-    t1 = time()
     for i in range(nseedGenerations):
         rng = np.random.default_rng(seed=seed)
 
@@ -246,8 +236,6 @@ def gen_ti_mask_single_square(nx, ny, simgrid_pct, ti_pct_area, seed, nseedGener
                 overlap_percentage = (shared_pixels / total_area_square1) * 100
 
                 if (abs(overlap_percentage - ti_pct_area) <= tolerance ):
-                    t2 = time()
-                    print(t2-t1)
                     return square1, square2, overlap_percentage
                     
             elif overlap_area <= 0 or external_area <= 0:

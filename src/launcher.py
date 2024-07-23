@@ -23,8 +23,8 @@ cm = plt.get_cmap('tab20')
 defaultclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
 n_bin = 11
 cmap_name = 'my_tab20'
-defaultcmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
-defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
+defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
+defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], defaultclrs)), N=n_bin + 1)
 
 
 
@@ -46,7 +46,7 @@ def launcher(simulated_var,
         myclrs = defaultclrs,
         mycmap = defaultcmap,
         ticmap = defaultticmap
-        )
+        ):
     """
     Main function for generating and analyzing training images (TI) in geostatistics.
 
