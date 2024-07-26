@@ -5,7 +5,7 @@ __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
 import numpy as np
-from pickle import *
+import pandas as pd
 
 def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=-9999999):
     """
@@ -37,11 +37,15 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
     TypeError:
         - If the type of any variable in simulated_var or auxiliary_var does not match the expected type in types_var.
     """
+    # Check for no value in the auxiliary variable
+    for key in auxiliary_var:
+        if np.isnan(auxiliary_var[key]).any():
+            raise ValueError(f"auxiliary_var contains NaN values in '{key}', but it must be fully informed.")
+            
     # Replace None with novalue
     for key in simulated_var:
         simulated_var[key] = np.where(np.isnan(simulated_var[key]), novalue, simulated_var[key])
-    for key in auxiliary_var:
-        auxiliary_var[key] = np.where(np.isnan(auxiliary_var[key]), novalue, auxiliary_var[key])
+
     
     # Check for variable names
     num_vars_sim = len(simulated_var)
@@ -60,11 +64,7 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
             if simulated_var[key].shape != auxiliary_var[key2].shape:
                 raise ValueError(f"simulated_var and auxiliary_var do not have the same dimensions XY for '{key}' and '{key2}'.")
     
-    # Check for NaN values in auxiliary_var
-    for key in auxiliary_var:
-        if np.isnan(auxiliary_var[key]).any():
-            raise ValueError(f"auxiliary_var contains NaN values in '{key}', but it must be fully informed.")
-    
+   
     # Check for novalue values in simulated_var and auxiliary_var
     for key in simulated_var:
         if np.any(simulated_var[key] == novalue):
@@ -119,17 +119,47 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
                 raise ValueError(f"Invalid type '{expected_type}' specified. Expected 'continuous' or 'categorical'.")
     
     return simulated_var, auxiliary_var
-    
-def create_sim_and_aux(names_var, sim_var, aux_var):
-    simulated_var = {}
-    auxiliary_var = {}
 
-    for i in range(len(names_var[0])):
-        simulated_var[names_var[0][i]] = sim_var[i]
-    for i in range(len(names_var[1])):
-        auxiliary_var[names_var[1][i]] = aux_var[i]
+def create_auxiliary_and_simulated_var(csv_file_path):
+    # Read the CSV file using pandas
+    data_df = pd.read_csv(csv_file_path, sep=';')
+
+    # Initialize dictionaries for auxiliary and simulated variables
+    auxiliary_var = {}
+    simulated_var = {}
+
+    # Initialize lists for names and types
+    names_var = [[], []]
+    types_var = [[], []]
+
+    # Iterate through each row of the DataFrame
+    for _, row in data_df.iterrows():
+        var_name = row['var_name']
+        categ_conti = row['categ_conti']
+        sim_aux = row['sim_aux']
+        path = row['path']
+        
+        # Load the numpy array from the file path
+        array_data = np.load(path)
+        
+        # Store the array in the appropriate dictionary
+        if sim_aux == 'aux':
+            auxiliary_var [var_name] = array_data
+            names_var[1].append(var_name)
+            types_var[1].append(categ_conti)
+        elif sim_aux == 'sim':
+            simulated_var[var_name] = array_data
+            names_var[0].append(var_name)
+            types_var[0].append(categ_conti)
+            
+    return simulated_var, auxiliary_var, names_var, types_var
     
-    return simulated_var, auxiliary_var
+def get_sim_grid_dimensions(simulated_var, SGDimIsDataDim = True):
+    if SGDimIsDataDim :
+        ar  = simulated_var[next(iter(simulated_var))]
+        nr, nc = ar.shape[0], ar.shape[1]
+        return nr, nc
+    for 
     
 def create_directories(path2ti,path2cd,path2real, path2log, path2ind):
     """

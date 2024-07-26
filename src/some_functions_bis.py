@@ -191,6 +191,8 @@ def build_ti(grid_msk, ti_ndisks, ti_pct_area, ti_realid, geolcd=True, xycv=Fals
         xx, yy = np.meshgrid(vec_x, vec_y, indexing='xy')
     name = path2ti + 'ti' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(ti_pct_area) + '-r-' + str(
         ti_realid) + '-geolcd' + str(geolcd) + '-xycv' + str(xycv) + '.gslib'
+        
+        
     val = np.ones((nv, nz, ny, nx)) * np.nan
     grid_geo_masked = grid_geo + 0
     grid_geo_masked[grid_msk < 1] = novalue

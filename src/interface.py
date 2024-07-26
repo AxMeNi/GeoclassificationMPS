@@ -8,6 +8,7 @@ from launcher import *
 from data_treatment import *
 
 import numpy as np
+import pandas as pd
 
 
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -16,78 +17,30 @@ import numpy as np
 
 def get_simulation_info():
 
-    ##################### DATA DEFINITION FOR THE SIMULATION #####################
-    varAval11, varBval11 = 2, 3.142
-    varAval12, varBval12 = 2, 1.987
-    varAval13, varBval13 = 3, 8.654
 
-    varAval21, varBval21 = 3, 2.345
-    varAval22, varBval22 = 5, 4.321
-    varAval23, varBval23 = 5, 9.876
     
-    # Auxiliary variable values (example values)
-    var1val11, var2val11 = 0.123, 1.456
-    var1val12, var2val12 = 2.345, 3.678
-    var1val13, var2val13 = 4.567, 5.890
-
-    var1val21, var2val21 = 6.789, 7.012
-    var1val22, var2val22 = 8.234, 9.345
-    var1val23, var2val23 = 0.456, 1.234
+    ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    names_var = [
-        ["varA", "varB"],
-        ["aux1", "aux2"]
-    ]
-
-    # Type must be set as "continuous" or "categorical".
-    types_var = [
-        ["categorical", "continuous"],
-        ["continuous", "continuous"]
-    ]
+    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\data_csv.csv"
     
-    #Simulated variables can be partially informed
-    sim_var = list((np.array([[varAval11, varAval12, varAval13],
-                              [varAval21, varAval22, varAval23]],dtype=int),
-                    
-                    np.array([[varBval11, varBval12, varBval13],
-                              [varBval21, varBval22, varBval23]],dtype=float)
-                  ))
-    #Auxiliary variables must be fully informed
-    aux_var = list((np.array([[var1val11, var1val12, var1val13], 
-                              [var1val21, var1val22, var1val23]],dtype=float),
-                              
-                    np.array([[var2val11, var2val12, var2val13], 
-                              [var2val21, var2val22, var2val23]],dtype=float)
-                  ))
-
-
-    ##################### LOCATIONS OF THE LOADING AND SAVING FILES #####################
-
-    # Name of the pre-processed data file
-    suffix = "-simple"  # "", "-simple", "-very-simple"
-    data_filename = "mt-isa-data" + suffix + ".pickle"
-
-    # Paths to the saving FOLDERS
-    path2ti = "./ti/"  # Training images path
-    path2cd = "./cd/"  # Conditioning data path
-    path2real = "./mpsReal/"  # Realizations path
-    path2log = "./log/"  # Logging info path
-    path2ind = "./ind/"  # Index data path
-
-    path2data = "C:/Users/Axel (Travail)/Documents/ENSG/CET/GeoclassificationMPS/Missing-Data/data/"
-    suffix = "-simple"
-    picklefn = "mt-isa-data" + suffix + ".pickle"
-    pickledestination = path2data + picklefn
-    
-    # Load pre-processed data from pickle file
-    with open(pickledestination, 'rb') as f:
-        [_, grid_geo, grid_lmp, grid_mag,
-         grid_grv, grid_ext, vec_x, vec_y
-         ] = pickle.load(f)
+    # Expected CSV File Format (Columns are separataed by ";"):
+    #
+    # The CSV file should contain information about variables to be loaded as numpy arrays.
+    # Each line in the CSV file should be formatted as follows:
+    #
+    # Column 1: var_name      - The name of the variable.
+    # Column 2: categ_conti   - The type of variable, either "categorical" or "continuous".
+    # Column 3: sim_aux       - Indicates whether the variable is an auxiliary ("aux") or simulated ("sim") variable.
+    # Column 4: path          - The full file path to the .npy file containing the numpy array data. (format .npy and the array must be in 2 dimensions)
+    #
+    # Example (first line contains headers):
+    #
+    # var_name;categ_conti;sim_aux;path
+    # grid_geo;categorical;aux;C:\path\to\grid_geo.npy
+    # grid_grv;continuous;sim;C:\path\to\grid_grv.npy
+    # grid_lmp;continuous;sim;C:\path\to\grid_lmp.npy
+    # grid_mag;continuous;sim;C:\path\to\grid_mag.npy
          
-    # create_directories(path2ti,path2cd,path2real,path2log,path2ind)
-
-
     ##################### RANDOM PARAMETERS #####################
 
     seed = 12345
@@ -102,17 +55,12 @@ def get_simulation_info():
     ti_ndisks = 1  # 
     ti_realid = 1  # 
     xycv = False  # Flag for cross-validation
-
-    ##################### CONDITIONING DATA PARAMETERS #####################
-
+    
 
     
-    ##################### PICKING SIM AND AUX VAR #####################
-    
-    simulated_var, auxiliary_var = create_sim_and_aux(names_var, sim_var, aux_var)
-    check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue)
 
     ##################### DEESSE SIMULATION PARAMETERS #####################
+    
 
     nn = 12  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
@@ -142,6 +90,19 @@ def get_simulation_info():
 
     shorten = False
     
+    ##################### PICKING SIM AND AUX VAR #####################
+    
+    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    simulated_var, auxiliary_var = check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue)
+    
+    ##################### GRID DIMENSIONS #####################
+    
+    SGDimIsDataDim = True #True if the simulation grid is the size of the data files
+    
+    ##################### PICKING SIM AND AUX VAR #####################
+    
+    nr, nc = get_sim_grid_dimensions(simulated_var)
+
     return simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
             
 

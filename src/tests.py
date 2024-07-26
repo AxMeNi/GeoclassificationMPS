@@ -11,6 +11,7 @@ from interface import get_simulation_info
 
 import matplotlib.pyplot as plt
 import pickle  # For loading pickled data
+import os
 
 ##################################### TEST INTERFACE.PY
 
@@ -122,14 +123,57 @@ def test_check_variables():
         
     # Call check_variables with the second dataset
     check_variables(simulated_var, auxiliary_var, names_var, types_var)
-     
+
+def test_create_auxiliary_and_simulated_var():
+    # Create a temporary directory to store the test numpy arrays
+    temp_dir = "temp_test_dir"
+    os.makedirs(temp_dir, exist_ok=True)
+    
+    # Sample data for the test
+    test_data = [
+        {'var_name': 'var1', 'categ_conti': 'categ', 'sim_aux': 'aux', 'path': f'{temp_dir}/array1.npy'},
+        {'var_name': 'var2', 'categ_conti': 'conti', 'sim_aux': 'sim', 'path': f'{temp_dir}/array2.npy'},
+    ]
+    
+    # Create numpy arrays and save them to the specified paths
+    np.save(f'{temp_dir}/array1.npy', np.array([1, 2, 3]))
+    np.save(f'{temp_dir}/array2.npy', np.array([4, 5, 6]))
+    
+    # Create a DataFrame from the sample data and save it to a CSV file
+    df = pd.DataFrame(test_data)
+    csv_file_path = f'{temp_dir}/test_data.csv'
+    df.to_csv(csv_file_path, sep=';', index=False)
+    
+    # Call the function to test
+    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    
+    # Check if the function outputs the expected results
+    assert len(auxiliary_var) == 1, "Expected 1 auxiliary variable."
+    assert len(simulated_var) == 1, "Expected 1 simulated variable."
+    assert np.array_equal(auxiliary_var['var1'], np.array([1, 2, 3])), "Unexpected data in auxiliary variable 'var1'."
+    assert np.array_equal(simulated_var['var2'], np.array([4, 5, 6])), "Unexpected data in simulated variable 'var2'."
+    assert names_var == [['var2'], ['var1']], f"Unexpected names_var: {names_var}"
+    assert types_var == [['conti'], ['categ']], f"Unexpected types_var: {types_var}"
+    
+    # Clean up temporary files
+    os.remove(f'{temp_dir}/array1.npy')
+    os.remove(f'{temp_dir}/array2.npy')
+    os.remove(csv_file_path)
+    os.rmdir(temp_dir)
+
+    print("Successfully passed test_create_auxiliary_and_simulated_var !")
+
+def test_get_sim_grid_dimensions():
+    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\data_csv.csv"
+    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    nx, ny = get_sim_grid_dimensions(simulated_var)
+    print(nx,ny)
+    return True
      
 
 ##################################### TEST TI_GENERATION.PY
 
-def test_gen_ti_mask_circles():
-    """
-    """
+def test_gen_ti_frame_circles():
     nx = 100  # nombre de colonnes
     ny = 100  # nombre de lignes
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
@@ -145,7 +189,7 @@ def test_gen_ti_mask_circles():
     plt.ylabel('Y')
     plt.show()
 
-def test_gen_ti_mask_squares():
+def test_gen_ti_frame_squares():
     nx = 100  # nombre de colonnes
     ny = 100  # nombre de lignes
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
@@ -157,7 +201,7 @@ def test_gen_ti_mask_squares():
     plt.imshow(mask, cmap='gray')
     plt.show()
     
-def test_gen_ti_mask_separated_squares(showCoord=True):
+def test_gen_ti_frame_separated_squares(showCoord=True):
     nx = 1000  # nombre de colonnes
     ny = 1000  # nombre de lignes
     ti_pct_area = 10  # pourcentage de l'aire de la grille à couvrir
@@ -194,25 +238,22 @@ def test_gen_ti_mask_separated_squares(showCoord=True):
     plt.tight_layout()
     plt.show()
 
-def test_gen_ti_mask_single_square():
-    nx, ny = 100, 100
-    simgrid_pct = 40
-    ti_pct_area = 60
-    seed = 15
-    
-    square1, square2, overlap_percentage = gen_ti_mask_single_square(nx, ny, simgrid_pct, ti_pct_area, seed, nseedGenerations=100, ntryPerSeed=1000, tolerance = 5)
-    
-    print(f"Effective overlap percentage of the TI : {overlap_percentage}")
+def test_gen_ti_frame_single_rectangle():
+    nx, ny = 624, 350
+   
+    ti_frame, simgrid_mask = gen_ti_frame_single_rectangle(nx, ny)
     
     plt.figure(figsize=(8, 8))
-    plt.imshow(square1, cmap='Blues', origin='lower', alpha=0.5)
-    plt.imshow(square2, cmap='Reds', origin='lower', alpha=0.5)
+    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5)
+    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
     plt.title("Two Overlapping Squares")
     plt.colorbar(label="Presence")
-    plt.axis('off')
+    plt.axis('on')
     plt.show()
     
 
+def test_build_ti():
+    return True
     
 
 

@@ -12,17 +12,25 @@ def run_tests():
     """
     t_GetSimulationInfo = False
     t_CheckVariables = False
-    t_GenTiMaskCircles = True
-    t_GenTiMaskSquares = True
-    t_GenTiMaskSeparatedSquares = True
-    t_GenTiMaskSingleSquare = True
+    t_CreateAuxiliaryAndSimultedVariable = False
+    t_GetSimGridDimensions = True #TODO
+    t_GenTiFrameCircles = False
+    t_GenTiFrameSquares = False
+    t_GenTiFrameSeparatedSquares = False
+    t_GenTiFrameSingleRectangle = False
+    t_BuildTi = False #TODO
+    
+    #----------------------------------------------------------------------------------------#
     
     if t_GetSimulationInfo : test_get_simulation_info()
     if t_CheckVariables : test_check_variables()
-    if t_GenTiMaskCircles : test_gen_ti_mask_circles()
-    if t_GenTiMaskSquares : test_gen_ti_mask_squares()
-    if t_GenTiMaskSeparatedSquares : test_gen_ti_mask_separated_squares(showCoord=False)
-    if t_GenTiMaskSingleSquare : test_gen_ti_mask_single_square()
+    if t_CreateAuxiliaryAndSimultedVariable : test_create_auxiliary_and_simulated_var() 
+    if t_GetSimGridDimensions : test_get_sim_grid_dimensions()
+    if t_GenTiFrameCircles : test_gen_ti_frame_circles()
+    if t_GenTiFrameSquares : test_gen_ti_frame_squares()
+    if t_GenTiFrameSeparatedSquares : test_gen_ti_frame_separated_squares(showCoord=False)
+    if t_GenTiFrameSingleRectangle : test_gen_ti_frame_single_rectangle()
+    if t_BuildTi : test_build_ti()
 
 
 def run_simulations():

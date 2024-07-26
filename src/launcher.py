@@ -70,7 +70,6 @@ def launcher(simulated_var,
     
     create_directories()
     
-    nx,ny,nsimvar,nauxvar = get_data_info(simulated_var, auxiliary_var, var_names, var_types)
     
     # GENERATE TI MASK
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - GENERATE MASK")
