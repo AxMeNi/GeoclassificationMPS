@@ -13,12 +13,24 @@ def run_tests():
     t_GetSimulationInfo = False
     t_CheckVariables = False
     t_CreateAuxiliaryAndSimultedVariable = False
-    t_GetSimGridDimensions = True #TODO
+    t_GetSimGridDimensions = False #TODO
+    
+    # t_generate_random_dimensions #TODO
+    # t_chose_random_dimensions #TODO
+    # generate_random_sg_origin #TODO
+    # chose_random_sg_origin #TODO
+    # chose_random_overlap_area #TODO
+    # compute_row #TODO
+    # chose_random_overlap_origin #TODO
+    # get_ti_orign #TODO
+    # check_ti_pos #TODO
+    # get_ti_sg #TODO
+    
     t_GenTiFrameCircles = False
     t_GenTiFrameSquares = False
     t_GenTiFrameSeparatedSquares = False
     t_GenTiFrameSingleRectangle = False
-    t_BuildTi = False #TODO
+    t_BuildTi = True #TODO faire le cas où il y a des conditioning data et tout le reste...
     
     #----------------------------------------------------------------------------------------#
     
@@ -26,6 +38,7 @@ def run_tests():
     if t_CheckVariables : test_check_variables()
     if t_CreateAuxiliaryAndSimultedVariable : test_create_auxiliary_and_simulated_var() 
     if t_GetSimGridDimensions : test_get_sim_grid_dimensions()
+    
     if t_GenTiFrameCircles : test_gen_ti_frame_circles()
     if t_GenTiFrameSquares : test_gen_ti_frame_squares()
     if t_GenTiFrameSeparatedSquares : test_gen_ti_frame_separated_squares(showCoord=False)

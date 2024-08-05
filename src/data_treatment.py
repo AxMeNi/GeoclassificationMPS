@@ -121,14 +121,11 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
     return simulated_var, auxiliary_var
 
 def create_auxiliary_and_simulated_var(csv_file_path):
-    # Read the CSV file using pandas
     data_df = pd.read_csv(csv_file_path, sep=';')
 
-    # Initialize dictionaries for auxiliary and simulated variables
     auxiliary_var = {}
     simulated_var = {}
 
-    # Initialize lists for names and types
     names_var = [[], []]
     types_var = [[], []]
 
@@ -139,7 +136,6 @@ def create_auxiliary_and_simulated_var(csv_file_path):
         sim_aux = row['sim_aux']
         path = row['path']
         
-        # Load the numpy array from the file path
         array_data = np.load(path)
         
         # Store the array in the appropriate dictionary
@@ -151,15 +147,14 @@ def create_auxiliary_and_simulated_var(csv_file_path):
             simulated_var[var_name] = array_data
             names_var[0].append(var_name)
             types_var[0].append(categ_conti)
-            
+
     return simulated_var, auxiliary_var, names_var, types_var
     
-def get_sim_grid_dimensions(simulated_var, SGDimIsDataDim = True):
-    if SGDimIsDataDim :
-        ar  = simulated_var[next(iter(simulated_var))]
-        nr, nc = ar.shape[0], ar.shape[1]
-        return nr, nc
-    for 
+def get_sim_grid_dimensions(simulated_var, simgrid_mask=None):
+    ar  = simulated_var[next(iter(simulated_var))]
+    nc, nr = ar.shape[0], ar.shape[1]
+    return nc, nr
+    
     
 def create_directories(path2ti,path2cd,path2real, path2log, path2ind):
     """

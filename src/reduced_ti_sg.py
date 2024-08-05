@@ -436,14 +436,16 @@ def get_ti_sg(cc_dg, rr_dg,
     :param seed: Graine pour le générateur aléatoire
     :return: Les positions et dimensions de SG et TI
     """
-       
+    
     if (cc_sg is None and rr_sg is not None) or (cc_sg is not None and rr_sg is None) or (cc_ti is None and rr_ti is not None) or (cc_ti is not None and rr_ti is None):
         print(ValueError(f"TI size and SG size must be precised : please consider chosing a size (columns AND rows) or a percentage of the Simulation Grid."))
         exit()
         
     if seed is None:
-        seed = int(rd.random()*10**10)
+        seed = int(rd.randint(1,2**32-1))
         print(f"Seed used to generate the TI and the simulation grid : {seed}")
+
+    np.random.seed(seed)
     
     if (cc_sg is None) and (rr_sg is None):
         area_sg = int(pct_sg/100 * (cc_dg * rr_dg))
@@ -514,7 +516,6 @@ if __name__ == "__main__":
 
     ##### For the TI:
 
-    pct_ti = 30
     cc_ti = 75
     rr_ti = 90
 

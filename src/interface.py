@@ -21,7 +21,7 @@ def get_simulation_info():
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\data_csv.csv"
+    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
     
     # Expected CSV File Format (Columns are separataed by ";"):
     #
@@ -53,14 +53,10 @@ def get_simulation_info():
 
     ti_pct_area = 33  
     ti_ndisks = 1  # 
-    ti_realid = 1  # 
-    xycv = False  # Flag for cross-validation
-    
-
-    
+    ti_realid = 1  #    
 
     ##################### DEESSE SIMULATION PARAMETERS #####################
-    
+
 
     nn = 12  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
@@ -99,10 +95,14 @@ def get_simulation_info():
     
     SGDimIsDataDim = True #True if the simulation grid is the size of the data files
     
-    ##################### PICKING SIM AND AUX VAR #####################
-    
-    nr, nc = get_sim_grid_dimensions(simulated_var)
-
+    ##################### PICKING GRIDS DIMENSIONS #####################
+    if SGDimIsDataDim:
+        nr, nc = get_sim_grid_dimensions(simulated_var)
+    else:
+        nr_data, nc_data = get_sim_grid_dimensions(simulated_var)
+        ti_frame, simgrid_mask = gen_ti_frame_single_rectangle(nr_data, nc_data)
+        nr, nc = get_sim_grid_dimensions(simulated_var, simgrid_mask)
+        
     return simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
             
 

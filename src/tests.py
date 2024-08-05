@@ -164,52 +164,52 @@ def test_create_auxiliary_and_simulated_var():
     print("Successfully passed test_create_auxiliary_and_simulated_var !")
 
 def test_get_sim_grid_dimensions():
-    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\data_csv.csv"
+    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
     simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
-    nx, ny = get_sim_grid_dimensions(simulated_var)
-    print(nx,ny)
+    nr, nc = get_sim_grid_dimensions(simulated_var)
+    print(nr,nc)
+    
     return True
-     
 
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
-    nx = 100  # nombre de colonnes
-    ny = 100  # nombre de lignes
+    nc = 100  # nombre de colonnes
+    nr = 100  # nombre de lignes
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
     ti_ndisks = 10  # nombre de disques
     seed = 15  # graine pour le générateur de nombres aléatoires
 
-    mask = gen_ti_mask_circles(nx, ny, ti_pct_area, ti_ndisks, seed)
+    mask, need_to_cut = gen_ti_frame_circles(nc, nr, ti_pct_area, ti_ndisks, seed)[0]
 
     plt.figure(figsize=(8, 8))
     plt.imshow(mask, cmap='gray', origin='lower')
     plt.title(f'Binary Mask Generated with {ti_ndisks} Disks')
-    plt.xlabel('X')
-    plt.ylabel('Y')
+    plt.xlabel('columns')
+    plt.ylabel('rows')
     plt.show()
 
 def test_gen_ti_frame_squares():
-    nx = 100  # nombre de colonnes
-    ny = 100  # nombre de lignes
+    nc = 100  # nombre de colonnes
+    nr = 100  # nombre de lignes
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
     ti_nsquares = 10  # nombre de carrés
     seed = 15  # graine pour le générateur de nombres aléatoires
     
-    mask = gen_ti_mask_squares(nx, ny, ti_pct_area, ti_nsquares, seed)
+    mask, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)[0]
     
     plt.imshow(mask, cmap='gray')
     plt.show()
     
 def test_gen_ti_frame_separated_squares(showCoord=True):
-    nx = 1000  # nombre de colonnes
-    ny = 1000  # nombre de lignes
+    nc = 1000  # nombre de colonnes
+    nr = 1000  # nombre de lignes
     ti_pct_area = 10  # pourcentage de l'aire de la grille à couvrir
     ti_nsquares = 50  # nombre de carrés
     seed = 15  
-    plot_size = nx
+    plot_size = nc
     
-    squares = gen_ti_mask_separatedSquares(nx, ny, ti_pct_area, ti_nsquares, seed)
+    squares, need_to_cut = gen_ti_frame_separatedSquares(nc, nr, ti_pct_area, ti_nsquares, seed)
     
     num_plots = len(squares)
     cols = 5  # Number of columns
@@ -239,21 +239,103 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     plt.show()
 
 def test_gen_ti_frame_single_rectangle():
-    nx, ny = 624, 350
+    nc, nr = 624, 350
+    seed = 4
    
-    ti_frame, simgrid_mask = gen_ti_frame_single_rectangle(nx, ny)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
+    ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5)
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("Two Overlapping Squares")
+    plt.title("ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50")
+    plt.colorbar(label="Presence")
+    plt.axis('on')
+    plt.show()
+    
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5, seed=seed)
+    ti_frame = ti_frame_list[0]
+    
+    plt.figure(figsize=(8, 8))
+    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
+    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
+    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5")
+    plt.colorbar(label="Presence")
+    plt.axis('on')
+    plt.show()
+    
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
+    ti_frame = ti_frame_list[0]
+    
+    plt.figure(figsize=(8, 8))
+    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
+    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
+    plt.title("ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25")
+    plt.colorbar(label="Presence")
+    plt.axis('on')
+    plt.show()
+    
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 3, cc_ti = 100, rr_ti = 50, seed = seed)
+    ti_frame = ti_frame_list[0]
+    
+    plt.figure(figsize=(8, 8))
+    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
+    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
+    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 2, cc_ti = 100, rr_ti = 50")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
     
 
 def test_build_ti():
-    return True
+    import geone.imgplot as imgplt
+    
+    novalue = -9999999
+    seed = 100
+    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
+    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    nr, nc = get_sim_grid_dimensions(simulated_var)
+    print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
+    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, types_var, names_var, novalue, simgrid_mask)
+     
+    # Validate the output
+    # Check TI list length
+    assert len(ti_list) == len(ti_frame), "TI list length mismatch."
+
+    # Validate a few properties of CDs
+    for cd in cd_list:
+        assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+        
+    # Print number of TI and number of cd:
+    print(f"Number of TI : {len(ti_list)}, number of CD : {len(cd_list)}")
+    
+    for idx, ti in enumerate(ti_list):
+        print(f"TI {idx + 1} shape: {ti.val.shape}")
+    
+    # Visualize the Training Images (TIs)
+
+    for idx, ti in enumerate(ti_list):
+        assert isinstance(ti, gn.img.Img), "TI is not of type Img."
+        print(f"Training Image {idx + 1}")
+        imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}")
+        plt.show()
+        
+
+    # Visualize the Conditioning Data (CDs)
+    for idx, cd in enumerate(cd_list):
+        print(f"Conditioning Data {idx + 1}")
+        imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1}")
+        plt.show()
+    
+    print("Test completed successfully.")
+
     
 
 
