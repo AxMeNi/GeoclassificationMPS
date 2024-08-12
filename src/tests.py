@@ -93,8 +93,7 @@ def test_check_variables():
     
     # Load variables from a pickle file
     with open(pickledestination, 'rb') as f:
-        [
-            _, grid_geo, grid_lmp, grid_mag,
+        [_, grid_geo, grid_lmp, grid_mag,
             grid_grv, grid_ext, vec_x, vec_y
         ] = pickle.load(f)
      
@@ -190,26 +189,31 @@ def test_gen_ti_frame_circles():
     plt.show()
 
 def test_gen_ti_frame_squares():
-    nc = 100  # nombre de colonnes
-    nr = 100  # nombre de lignes
-    ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 10  # nombre de carrés
-    seed = 15  # graine pour le générateur de nombres aléatoires
+    nc = 337  # nombre de colonnes
+    nr = 529  # nombre de lignes
+    ti_pct_area = 87  # pourcentage de l'aire de la grille à couvrir
+    ti_nsquares = 15  # nombre de carrés
+    seed = 852  # graine pour le générateur de nombres aléatoires
     
-    mask, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)[0]
-    
+    mask_list, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)
+    mask = mask_list[0]
     plt.imshow(mask, cmap='gray')
     plt.show()
     
 def test_gen_ti_frame_separated_squares(showCoord=True):
+    print("\n##################################################################")
+    print("\t\tTESTING GEN TI FRAME SEPARATED SQUARES")
+    print("##################################################################\n")
+
     nc = 1000  # nombre de colonnes
     nr = 1000  # nombre de lignes
     ti_pct_area = 10  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 50  # nombre de carrés
+    ti_nsquares = 25  # nombre de carrés
     seed = 15  
     plot_size = nc
     
     squares, need_to_cut = gen_ti_frame_separatedSquares(nc, nr, ti_pct_area, ti_nsquares, seed)
+    
     
     num_plots = len(squares)
     cols = 5  # Number of columns
@@ -218,8 +222,7 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     
     if showCoord:
         for i, square in enumerate(squares):
-            print(f"Square {i}:")
-            print(square, "\t")
+            print(f"Square {i}: {square} \t")
 
     
     for i in range(rows * cols):
@@ -239,6 +242,10 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     plt.show()
 
 def test_gen_ti_frame_single_rectangle():
+    print("\n##################################################################")
+    print("\t\tTESTING GEN TI FRAME SINGLE RECTANGLE")
+    print("##################################################################\n")
+    
     nc, nr = 624, 350
     seed = 4
    
@@ -288,54 +295,152 @@ def test_gen_ti_frame_single_rectangle():
     
 
 def test_build_ti():
+    print("\n##################################################################")
+    print("\t\t\tTESTING BUILD TI")
+    print("##################################################################\n")
+    
     import geone.imgplot as imgplt
     
     novalue = -9999999
-    seed = 100
+    seed = 852
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
-    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    simulated_var_dirty, auxiliary_var_dirty, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    simulated_var, auxiliary_var = check_variables(simulated_var_dirty, auxiliary_var_dirty, names_var, types_var, novalue=novalue)
     nr, nc = get_sim_grid_dimensions(simulated_var)
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
-    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
-    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, types_var, names_var, novalue, simgrid_mask)
      
-    # Validate the output
+    print("**************************")
+    
+    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, names_var, simgrid_mask)
+
     # Check TI list length
     assert len(ti_list) == len(ti_frame), "TI list length mismatch."
-
-    # Validate a few properties of CDs
-    for cd in cd_list:
-        assert isinstance(cd, gn.img.Img), "CD is not of type Img."
-        
-    # Print number of TI and number of cd:
+          
     print(f"Number of TI : {len(ti_list)}, number of CD : {len(cd_list)}")
     
     for idx, ti in enumerate(ti_list):
         print(f"TI {idx + 1} shape: {ti.val.shape}")
+        
+    for idx, cd in enumerate(cd_list):
+        print(f"CD {idx + 1} shape: {cd.val.shape}")
     
     # Visualize the Training Images (TIs)
-
-    for idx, ti in enumerate(ti_list):
-        assert isinstance(ti, gn.img.Img), "TI is not of type Img."
-        print(f"Training Image {idx + 1}")
-        imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}")
-        plt.show()
-        
+    # for idx, ti in enumerate(ti_list):
+        # assert isinstance(ti, gn.img.Img), "TI is not of type Img."
+        # print(f"Training Image {idx + 1}")
+        # imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}", vmin=0)
+        # plt.show()
 
     # Visualize the Conditioning Data (CDs)
-    for idx, cd in enumerate(cd_list):
-        print(f"Conditioning Data {idx + 1}")
-        imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1}")
+    # for idx, cd in enumerate(cd_list):
+        # assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+        # print(f"Conditioning Data {idx + 1}")
+        # imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1},{ti.varname[0]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=3, title=f"CD {idx + 1},{ti.varname[3]}")
+        # plt.show()
+    
+    print(">>>>> Test completed successfully with single TI frame.\n**************************")
+    
+    #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
+    ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 50, 2, seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 15, seed)
+    ti_list2, cd_list2 = build_ti(ti_frame2, need_to_cut2, simulated_var, nc, nr, auxiliary_var, names_var)
+
+    # Check TI list length
+    assert len(ti_list2) == len(ti_frame2), "TI list length mismatch."
+
+    print(f"Number of TI : {len(ti_list2)}, number of CD : {len(cd_list2)}")
+    
+    for idx, ti in enumerate(ti_list2):
+        print(f"TI {idx + 1} shape: {ti.val.shape}")
+        print(ti)
+        if np.any(ti.val == np.nan):
+            print(f"NaN value in TI")
+    
+    for idx, cd in enumerate(cd_list2):
+        print(f"CD {idx + 1} shape: {cd.val.shape}")
+        
+    # Visualize the Training Images (TIs)
+    for idx, ti in enumerate(ti_list2):
+        assert isinstance(ti, gn.img.Img), "TI is not of type Img."
+        imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}, {ti.varname[0]}")
         plt.show()
+        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
+        plt.show()
+
+    # Visualize the Conditioning Data (CDs)
+    # for idx, cd in enumerate(cd_list2):
+        # assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+        # print(f"Conditioning Data {idx + 1}")
+        # imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1},{ti.varname[0]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=3, title=f"CD {idx + 1},{ti.varname[3]}")
+        # plt.show()
     
-    print("Test completed successfully.")
-
     
+    print(">>>>> Test completed successfully with separated TI frames.\n**************************")
+    
+    # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
+    # xx = im.xx()[0]
+    # yy = im.yy()[0]
+    # nTI = 2
+    # pB = (np.minimum(np.maximum(xx, 190), 290) - 190) / 100
+    # pA = 1.0 - pB
+    # pdf_ti = np.zeros((2, 1, nr, nc))
+    # pdf_ti[0,0,:,:] = pA
+    # pdf_ti[1,0,:,:] = pB
+    # im.append_var(pdf_ti, varname=['pA', 'pB'])
+    # plt.subplots(1,2, figsize=(17,5), sharey=True) # 1 x 2 sub-plots
+    # plt.subplot(1,2,1)
+    # gn.imgplot.drawImage2D(im, iv=0, title='Probability to select TI A')
+    # plt.subplot(1,2,2)
+    # gn.imgplot.drawImage2D(im, iv=1, title='Probability to select TI B')
+    # plt.show()
+    
+    
+    
+    deesse_input = gn.deesseinterface.DeesseInput(
+        nx=nc, ny=nr, nz=1,
+        sx=1, sy=1, sz=1,
+        ox=0, oy=0, oz=0,
+        nv=4, varname=["grid_geo","grid_grv","gris_lmp","grid_mag"],
+        TI=ti_list2,
+        #pdfTI = pdf_ti,
+        dataImage=cd_list2,
+        distanceType=['categorical',"continuous","continuous","continuous"],
+        nneighboringNode=4*[12*4],
+        distanceThreshold=4*[0.4],
+        maxScanFraction=2*[1],
+        npostProcessingPathMax=1,
+        seed=seed,
+        nrealization=1
+    )  
 
+    deesse_output = gn.deesseinterface.deesseRun(deesse_input)
 
+    sim = deesse_output['sim']
+    
+    plt.subplots(1, 4, figsize=(17,10), sharex=True, sharey=True)
+    
+    gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
+    
+    plt.show()
+    
+    gn.imgplot.drawImage2D(sim[0], iv=1, categ=True, title=f'Real #{0} - {deesse_input.varname[1]}')
+    
+    plt.show()
+    

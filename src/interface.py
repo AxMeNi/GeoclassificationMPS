@@ -16,8 +16,6 @@ import pandas as pd
 # ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
 def get_simulation_info():
-
-
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
@@ -91,17 +89,16 @@ def get_simulation_info():
     simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
     simulated_var, auxiliary_var = check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue)
     
+    
     ##################### GRID DIMENSIONS #####################
+    nr, nc = get_sim_grid_dimensions(simulated_var)
+
+
     
-    SGDimIsDataDim = True #True if the simulation grid is the size of the data files
-    
-    ##################### PICKING GRIDS DIMENSIONS #####################
-    if SGDimIsDataDim:
-        nr, nc = get_sim_grid_dimensions(simulated_var)
-    else:
-        nr_data, nc_data = get_sim_grid_dimensions(simulated_var)
-        ti_frame, simgrid_mask = gen_ti_frame_single_rectangle(nr_data, nc_data)
-        nr, nc = get_sim_grid_dimensions(simulated_var, simgrid_mask)
+    print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
+    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, novalue, names_var, simgrid_mask)
+        
         
     return simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
             

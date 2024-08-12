@@ -37,26 +37,22 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
     TypeError:
         - If the type of any variable in simulated_var or auxiliary_var does not match the expected type in types_var.
     """
+
     # Check for no value in the auxiliary variable
     for key in auxiliary_var:
-        if np.isnan(auxiliary_var[key]).any():
-            raise ValueError(f"auxiliary_var contains NaN values in '{key}', but it must be fully informed.")
+        if np.isnan(auxiliary_var[key]).any() or np.any(auxiliary_var[key] == novalue):
+            raise ValueError(f"auxiliary_var contains NaN values or {novalue} in '{key}', but it must be fully informed.")
             
-    # Replace None with novalue
+            
+    # Replace novalue by "nan"
     for key in simulated_var:
-        simulated_var[key] = np.where(np.isnan(simulated_var[key]), novalue, simulated_var[key])
+        if np.any(simulated_var[key] == novalue):
+            if np.issubdtype(simulated_var[key].dtype, np.floating):
+                simulated_var[key] = np.where(simulated_var[key] == novalue, np.nan, simulated_var[key])
+            if np.issubdtype(simulated_var[key].dtype, np.integer):
+                raise ValueError(f"simulated_var {key} cannot contain novalue {novalue} since it is of type {np.integer}.")
 
-    
-    # Check for variable names
-    num_vars_sim = len(simulated_var)
-    num_vars_aux = len(auxiliary_var)
-    if num_vars_sim != len(names_var[0]) or num_vars_aux != len(names_var[1]):
-        message = "The number of variable names does not match the number of variables."
-        if num_vars_sim != len(names_var[0]):
-            message += f" In simulated_var, expected {num_vars_sim}, got {len(names_var[0])}."
-        if num_vars_aux != len(names_var[1]):
-            message += f" In auxiliary_var, expected {num_vars_aux}, got {len(names_var[1])}."
-        raise ValueError(message)
+
     
     # Check dimensions XY
     for key in simulated_var:
@@ -67,11 +63,11 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
    
     # Check for novalue values in simulated_var and auxiliary_var
     for key in simulated_var:
-        if np.any(simulated_var[key] == novalue):
-            print(f"simulated_var contains novalue values in '{key}'.")
+        if np.any(simulated_var[key] == np.nan):
+            print(f"simulated_var contains {novalue} values in '{key}'. Those were replaced by {np.nan}")
     for key in auxiliary_var:
-        if np.any(auxiliary_var[key] == novalue):
-            print(f"auxiliary_var contains novalue values in '{key}'.")
+        if np.any(auxiliary_var[key] == np.nan):
+            print(f"auxiliary_var contains {novalue} values in '{key}'. Those were replaced by {np.nan}")
     
     # Check types
     for var_i in range(len(names_var[0])):
@@ -79,7 +75,7 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
         
         if var_name_sim in simulated_var:
             sim_array = simulated_var[var_name_sim]
-            
+
             expected_type = types_var[0][var_i]
 
             # Check type "continuous"
@@ -101,7 +97,7 @@ def check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue=
         
         if var_name_sim in simulated_var:
             aux_array = auxiliary_var[var_name_aux]
-            
+
             expected_type = types_var[1][aux_j]
             
             # Check type "continuous"
@@ -131,23 +127,29 @@ def create_auxiliary_and_simulated_var(csv_file_path):
 
     # Iterate through each row of the DataFrame
     for _, row in data_df.iterrows():
-        var_name = row['var_name']
+        var_name = str(row['var_name'])
         categ_conti = row['categ_conti']
         sim_aux = row['sim_aux']
         path = row['path']
-        
         array_data = np.load(path)
         
         # Store the array in the appropriate dictionary
         if sim_aux == 'aux':
-            auxiliary_var [var_name] = array_data
-            names_var[1].append(var_name)
+            if var_name != 'nan' :
+                names_var[1].append(var_name)
+                auxiliary_var [var_name] = array_data
+            else:
+                raise NameError(f"One auxiliary variable has no name, please consider naming all of your variables with different names")
             types_var[1].append(categ_conti)
         elif sim_aux == 'sim':
-            simulated_var[var_name] = array_data
-            names_var[0].append(var_name)
+            if var_name != 'nan' :
+                names_var[0].append(var_name)
+                simulated_var[var_name] = array_data
+            else:
+                raise NameError(f"One simulated variable has no name, please consider naming all of your variables with different names")
+               
             types_var[0].append(categ_conti)
-
+    
     return simulated_var, auxiliary_var, names_var, types_var
     
 def get_sim_grid_dimensions(simulated_var, simgrid_mask=None):

@@ -55,7 +55,7 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed):
     
     need_to_cut = [False]
     
-    return ti_frame
+    return ti_frame, need_to_cut
     
 def gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed):
     """
@@ -99,6 +99,7 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed):
         frame = binary_dilation(frame)
         frame = frame[1:-1, 1:-1]
         check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
+
     ti_frame = []
     ti_frame.append(frame)
     
@@ -135,7 +136,7 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
     rndc = rng.integers(low=0, high=nc, size=ti_nsquares)
     side_length = int(np.sqrt((nc * nr * ti_pct_area / 100) / ti_nsquares))
     ti_frames_list = []
-    frame = np.zeros((nr, nc))
+    square_frame = np.zeros((nr, nc))
 
     for i in range(ti_nsquares):
         rr_start = max(0, rndr[i] - side_length // 2)
@@ -153,7 +154,7 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
         cc_end = min(nc, cc_start + side_length)
         
         #Rows and columns
-        rr, cc = rectangle(start=(rr_start, cc_start), end=(rr_end, cc_end))
+        rr, cc = rectangle(start=(rr_start, cc_start), end=(rr_end, cc_end), shape=(nr, nc))
         
         # Ensure rr and cc are within bounds
         rr = np.clip(rr, 0, nr-1)
@@ -162,11 +163,9 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
         square_frame = np.zeros((nr, nc))
         square_frame[rr, cc] = 1
         
-        square_indexes = np.argwhere(square_frame == 1)
-        ti_frames_list.append(square_indexes)
+        ti_frames_list.append(square_frame)
         
-
-        current_pct = np.sum(frame) / (nc * nr) * 100
+        current_pct = np.sum(square_frame) / (nc * nr) * 100
         
     need_to_cut = [True for _ in range(len(ti_frames_list))]
     
@@ -247,9 +246,8 @@ def build_ti(ti_frames_list,
             need_to_cut, 
             simulated_var, 
             nc_simgrid, nr_simgrid, 
-            auxiliary_var, 
-            types_var, names_var, 
-            novalue, 
+            auxiliary_var,  
+            names_var,
             simgrid_mask = None):
     """
     """
@@ -265,12 +263,12 @@ def build_ti(ti_frames_list,
         if ntc:
         
             name = "TI{}_{}".format(i,time())
-            ti = gn.img.Img(nv=0)
+            ti = gn.img.Img(nv=0,name=name)
             
             #Reshape of the simulated var and integration to the TI
             for var_name, var_value in simulated_var.items():
             
-                var_value_masked = np.where(ti_frame == 1, var_value, novalue)
+                var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
 
                 rows = np.any(ti_frame, axis=1)
                 cols = np.any(ti_frame, axis=0)
@@ -281,11 +279,12 @@ def build_ti(ti_frames_list,
                 ti.set_grid(nx=col_end-col_start+1, ny=row_end-row_start+1, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
                 
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
+                
                 ti.append_var(val=var_value_cut, varname=var_name)
                 
             #Reshape of the auxiliary var and integration to the TI
             for var_name, var_value in auxiliary_var.items():
-                var_value_masked = np.where(ti_frame == 1, var_value, novalue)
+                var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
 
                 rows = np.any(ti_frame, axis=1)
                 cols = np.any(ti_frame, axis=0)
@@ -298,32 +297,30 @@ def build_ti(ti_frames_list,
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 
                 ti.append_var(val=var_value_cut, varname=var_name)
-                
-            
+                           
+            gn.img.writeImageTxt(f"TI{i}.txt", ti)      
+            ti = gn.img.readImageTxt(f"TI{i}.txt")    
             ti_list.append(ti)
             
         #Case for which no cut is needed
         else:
         
             name = "TI{}_{}".format(i,time())
-            ti = gn.img.Img(nv=0)
-            
-            n_row, n_col = auiliary_var[names_var[1][0]].shape()
-            
-            ti.set_grid(nx=n_col, ny=n_row, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
+            ti = gn.img.Img(nv=0,name=name)
+                       
+            ti.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             
             #Integration of the simulated_var in the TI
             for var_name, var_value in simulated_var.items() :
-                var_value_masked = np.where(ti_frame == 1, var_value, novalue)
-
-                simulated_var_updated[var_name] = var_value_masked
-                
-                ti.append_var(val=var_value_cut, varname=var_name)
+                var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
+   
+                ti.append_var(val=var_value_masked, varname=var_name)
+                       
             
             #No application of the mask to the auxiliary var which have to be fully informed and integration to the TI
-            for var_name, var_value in simulated_var.items() :
+            for var_name, var_value in auxiliary_var.items() :
 
-                ti.append_var(val=var_value_cut, varname=var_name)
+                ti.append_var(val=var_value, varname=var_name)
             
             ti_list.append(ti)
           
@@ -331,39 +328,46 @@ def build_ti(ti_frames_list,
     
     # Building conditioning AUXILIARY data
     cd_list = []
+
+    name = "CondData{}_{}".format(i,time())
+    cd = gn.img.Img(nv=0, name=name)
     
+    # Integration of the auxiliary_var in the simulation grid to control the non stationarity
+    # The values of the aux var here is to control the non stationarity of the data
     if simgrid_mask is not None:
-    
-        name = "CondData{}_{}".format(i,time())
-        cd = gn.img.Img(nv=0)
+        for var_name, var_value in auxiliary_var.items():
+
+            var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
+
+            rows = np.any(simgrid_mask, axis=1)
+            cols = np.any(simgrid_mask, axis=0)
+
+            row_start, row_end = np.where(rows)[0][[0, -1]]
+            col_start, col_end = np.where(cols)[0][[0, -1]]
+            
+            cd.set_grid(nx=col_end-col_start+1, ny=row_end-row_start+1, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
+
+            var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
+                       
+            cd.append_var(val=var_value_cut, varname=var_name)
+            
+        gn.img.writeImageTxt(f"CD.txt", cd)      
+        cd = gn.img.readImageTxt(f"CD.txt")     
         
-        # Integration of the auxiliary_var in the simulation grid to control the non stationarity
-        # The values of the aux var here is to control the non stationarity of the data
-        if simgrid_mask is not None:
-            for var_name, var_value in auxiliary_var.items():
-                print(var_name)
-                var_value_masked = np.where(simgrid_mask == 1, var_value, novalue)
+        cd_list.append(cd)
+    
+    #Case for which no cut is needed
+    else:
+        cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
+        
+        for var_name, var_value in auxiliary_var.items():
 
-                rows = np.any(simgrid_mask, axis=1)
-                cols = np.any(simgrid_mask, axis=0)
-
-                row_start, row_end = np.where(rows)[0][[0, -1]]
-                col_start, col_end = np.where(cols)[0][[0, -1]]
-                
-                cd.set_grid(nx=col_end-col_start+1, ny=row_end-row_start+1, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
-
-                var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
-                cd.append_var(val=var_value_cut, varname=var_name)
-
-            cd_list.append(cd)
-            
-        else:
-            cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
-            
-            for var_name, var_value in auxiliary_var.items():
-                cd.append_var(val=var_value_cut, varname=var_name)
-            
-            cd_list.append(cd)
+            cd.append_var(val=var_value, varname=var_name)
+        
+        gn.img.writeImageTxt(f"CD.txt", cd)      
+        cd = gn.img.readImageTxt(f"CD.txt") 
+        
+        cd_list.append(cd)
          
             
     #Building conditioning SIMULATED data 

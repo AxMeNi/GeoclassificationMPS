@@ -1,5 +1,5 @@
 ﻿var_name;categ_conti;sim_aux;path
-grid_geo;categorical;aux;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy
+grid_geo;categorical;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy
 grid_grv;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy
-grid_lmp;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_lmp.npy
+grid_lmp;continuous;aux;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_lmp.npy
 grid_mag;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_mag.npy

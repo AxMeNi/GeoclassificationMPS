@@ -421,22 +421,60 @@ def get_ti_sg(cc_dg, rr_dg,
               cc_ti=None, rr_ti=None, pct_ti=30, 
               ti_sg_overlap_percentage=0, seed=None):
     """
-    Cette fonction génère les positions et dimensions pour la simulation grid (SG) 
-    et la training image (TI) en utilisant soit des pourcentages soit des tailles fixes.
+    Generate the position and dimensions of a training image (TI) and a simulation grid (SG) based on the dimensions of the data grid (DG) and specified overlap area.
 
-    :param cc_dg: Nombre de colonnes de la data grid
-    :param rr_dg: Nombre de lignes de la data grid
-    :param cc_sg: Largeur de la SG (si connu)
-    :param rr_sg: Hauteur de la SG (si connu)
-    :param pct_sg: Pourcentage de la SG (si connu)
-    :param cc_ti: Largeur de la TI (si connu)
-    :param rr_ti: Hauteur de la TI (si connu)
-    :param pct_ti: Pourcentage de la TI (si connu)
-    :param ti_sg_overlap_percentage: Pourcentage de superposition entre TI et SG
-    :param seed: Graine pour le générateur aléatoire
-    :return: Les positions et dimensions de SG et TI
+    Parameters:
+    ----------
+    cc_dg : int
+        Number of columns in the data grid (DG).
+    rr_dg : int
+        Number of rows in the data grid (DG).
+    cc_sg : int, optional
+        Number of columns in the simulation grid (SG). If not provided, it will be calculated based on `pct_sg`.
+    rr_sg : int, optional
+        Number of rows in the simulation grid (SG). If not provided, it will be calculated based on `pct_sg`.
+    pct_sg : int, optional
+        Percentage of the data grid area to be used for the simulation grid (SG) if `cc_sg` and `rr_sg` are not provided. Default is 10%.
+    cc_ti : int, optional
+        Number of columns in the training image (TI). If not provided, it will be calculated based on `pct_ti`.
+    rr_ti : int, optional
+        Number of rows in the training image (TI). If not provided, it will be calculated based on `pct_ti`.
+    pct_ti : int, optional
+        Percentage of the data grid area to be used for the training image (TI) if `cc_ti` and `rr_ti` are not provided. Default is 30%.
+    ti_sg_overlap_percentage : int, optional
+        Percentage of the simulation grid (SG) area to be overlapped with the training image (TI). Default is 0%.
+    seed : int, optional
+        Seed for random number generation to ensure reproducibility. If not provided, a random seed will be generated.
+
+    Returns:
+    -------
+    tuple
+        A tuple containing the following elements:
+        - c_sg : int : Column position of the simulation grid origin.
+        - cc_sg : int : Number of columns in the simulation grid.
+        - r_sg : int : Row position of the simulation grid origin.
+        - rr_sg : int : Number of rows in the simulation grid.
+        - c_overlap : int : Column position of the overlap area origin.
+        - cc_overlap : int : Number of columns in the overlap area.
+        - r_overlap : int : Row position of the overlap area origin.
+        - rr_overlap : int : Number of rows in the overlap area.
+        - c_ti : int : Column position of the training image origin.
+        - cc_ti : int : Number of columns in the training image.
+        - r_ti : int : Row position of the training image origin.
+        - rr_ti : int : Number of rows in the training image.
+
+    Raises:
+    ------
+    ValueError
+        If only one of the dimensions (`cc_sg`, `rr_sg` or `cc_ti`, `rr_ti`) is provided instead of both.
+
+    Notes:
+    -----
+    - This function uses random sampling to generate positions and dimensions for the simulation grid and training image based on the data grid constraints.
+    - Boundary checks are performed to ensure that the generated positions and dimensions are valid.
+    - The overlap area between the training image and simulation grid is optional and controlled by `ti_sg_overlap_percentage`.
+    - If no valid position is found, the function will exit with an error message.
     """
-    
     if (cc_sg is None and rr_sg is not None) or (cc_sg is not None and rr_sg is None) or (cc_ti is None and rr_ti is not None) or (cc_ti is not None and rr_ti is None):
         print(ValueError(f"TI size and SG size must be precised : please consider chosing a size (columns AND rows) or a percentage of the Simulation Grid."))
         exit()
@@ -495,7 +533,7 @@ def get_ti_sg(cc_dg, rr_dg,
                         if valid_ti_pos :
                             return c_sg, cc_sg, r_sg ,rr_sg, c_overlap, cc_overlap, r_overlap, rr_overlap, c_ti, cc_ti, r_ti, rr_ti
     
-    print("No position matched.")
+    print("No position matched with the paramaters given to create the simulation grid and the TI, please change the parameters.")
     exit()
     
     

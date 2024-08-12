@@ -41,7 +41,7 @@ def run_tests():
     
     if t_GenTiFrameCircles : test_gen_ti_frame_circles()
     if t_GenTiFrameSquares : test_gen_ti_frame_squares()
-    if t_GenTiFrameSeparatedSquares : test_gen_ti_frame_separated_squares(showCoord=False)
+    if t_GenTiFrameSeparatedSquares : test_gen_ti_frame_separated_squares(showCoord=True)
     if t_GenTiFrameSingleRectangle : test_gen_ti_frame_single_rectangle()
     if t_BuildTi : test_build_ti()
 
