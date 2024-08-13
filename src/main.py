@@ -10,10 +10,11 @@ def run_tests():
     """
     to run the tests
     """
-    t_GetSimulationInfo = False
+    t_GetSimulationInfo = False #TODO
+    
     t_CheckVariables = False
     t_CreateAuxiliaryAndSimultedVariable = False
-    t_GetSimGridDimensions = False #TODO
+    t_GetSimGridDimensions = False
     
     # t_generate_random_dimensions #TODO
     # t_chose_random_dimensions #TODO
@@ -26,18 +27,23 @@ def run_tests():
     # check_ti_pos #TODO
     # get_ti_sg #TODO
     
+    t_CreateSGMask = True
+    
     t_GenTiFrameCircles = False
     t_GenTiFrameSquares = False
     t_GenTiFrameSeparatedSquares = False
     t_GenTiFrameSingleRectangle = False
-    t_BuildTi = True #TODO faire le cas où il y a des conditioning data et tout le reste...
+    t_BuildTi = False #TODO faire le cas où il y a des conditioning data et tout le reste...
     
     #----------------------------------------------------------------------------------------#
     
     if t_GetSimulationInfo : test_get_simulation_info()
+    
     if t_CheckVariables : test_check_variables()
-    if t_CreateAuxiliaryAndSimultedVariable : test_create_auxiliary_and_simulated_var() 
+    if t_CreateAuxiliaryAndSimultedVariable : test_create_variables() 
     if t_GetSimGridDimensions : test_get_sim_grid_dimensions()
+    
+    if t_CreateSGMask : test_create_sg_mask()
     
     if t_GenTiFrameCircles : test_gen_ti_frame_circles()
     if t_GenTiFrameSquares : test_gen_ti_frame_squares()

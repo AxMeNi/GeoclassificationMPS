@@ -164,7 +164,7 @@ def check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, type
     
     return sim_var, auxdesc_var, auxcond_var, cond_var
 
-def create_auxiliary_and_simulated_var(csv_file_path):
+def create_variables(csv_file_path):
     """
     Load variables from a CSV file and categorize them into different categories: simulated, auxiliary descriptive, auxiliary conditioning, and conditioning variables.
 
@@ -296,7 +296,7 @@ def create_auxiliary_and_simulated_var(csv_file_path):
             
     return sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var
     
-def get_sim_grid_dimensions(simulated_var, simgrid_mask=None):
+def get_sim_grid_dimensions(simulated_var):
     ar  = simulated_var[next(iter(simulated_var))]
     nc, nr = ar.shape[0], ar.shape[1]
     return nc, nr

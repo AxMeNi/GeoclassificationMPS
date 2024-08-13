@@ -8,6 +8,7 @@ __date__ = "juillet 2024"
 from ti_generation import *
 from data_treatment import *
 from interface import get_simulation_info
+from sg_mask_generation import *
 
 import matplotlib.pyplot as plt
 import pickle  # For loading pickled data
@@ -16,7 +17,9 @@ import os
 ##################################### TEST INTERFACE.PY
 
 def test_get_simulation_info():
-     simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, config = get_simulation_info()
+     sim_var, auxdesc_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs = get_simulation_info()
+
+##################################### TEST DATA_TREATMENT.PY
 
 def test_check_variables():
     # Test 1: Valid input (should pass)
@@ -89,9 +92,9 @@ def test_check_variables():
     except Exception as e:
         print(f"Test 6 failed: {e}")
 
-def test_create_auxiliary_and_simulated_var():
+def test_create_variables():
     """
-    Test function for create_auxiliary_and_simulated_var to ensure it properly categorizes variables
+    Test function for create_variables to ensure it properly categorizes variables
     and handles errors appropriately.
     """
     # Create a temporary directory to store the test numpy arrays
@@ -118,7 +121,7 @@ def test_create_auxiliary_and_simulated_var():
     df.to_csv(csv_file_path, sep=';', index=False)
     
     # Call the function to test
-    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_variables(csv_file_path)
     
     # Check if the function outputs the expected results
     assert len(sim_var) == 1, "Expected 1 simulated variable."
@@ -145,13 +148,40 @@ def test_create_auxiliary_and_simulated_var():
     os.remove(csv_file_path)
     os.rmdir(temp_dir)
 
-    print("Successfully passed test_create_auxiliary_and_simulated_var.")
+    print("Successfully passed test_create_variables.")
 
 def test_get_sim_grid_dimensions():
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
-    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
-    nr, nc = get_sim_grid_dimensions(simulated_var)
+    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_variables(csv_file_path)
+    nr, nc = get_sim_grid_dimensions(sim_var)
     print(nr,nc)
+    
+    return True
+    
+##################################### TEST SG_MASK_GENERATION.PY
+
+def test_create_sg_mask():
+    """
+    Test the create_sg_mask function to ensure it correctly generates a mask based on missing values.
+    """
+    nr, nc = 4, 5  
+    sim_var = {
+        'var1': np.array([[1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, np.nan], [np.nan, 2, 3, np.nan, 5], [1, 2, 3, 4, 5]]),
+    }
+    auxdesc_var = {
+        'var2': np.array([[np.nan, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, np.nan], [np.nan, 2, 3, 4, 5]]),
+    }
+    auxcond_var = {
+        'var3': np.array([[1, 2, 3, 4, 5], [np.nan, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, 5]]),
+    }
+    cond_var = {
+        'var4': np.array([[1, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, 2, 3, np.nan, 5], [np.nan, 2, 3, 4, 5]]),
+    }
+    expected_mask = np.array([[1, 0, 1, 0, 0], [1, 1, 1, 0, 1], [1, 1, 1, 1, 1], [1, 1, 0, 0, 0]])
+
+    result_mask = create_sg_mask(sim_var, auxdesc_var, auxcond_var, cond_var, nr, nc)
+    assert np.array_equal(result_mask, expected_mask), "Test failed: The mask does not match the expected output."
+    print("Test passed: The mask matches the expected output.")
     
     return True
 
@@ -289,7 +319,7 @@ def test_build_ti():
     novalue = -9999999
     seed = 852
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
-    simulated_var_dirty, auxiliary_var_dirty, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    simulated_var_dirty, auxiliary_var_dirty, names_var, types_var = create_variables(csv_file_path)
     simulated_var, auxiliary_var = check_variables(simulated_var_dirty, auxiliary_var_dirty, names_var, types_var, novalue=novalue)
     nr, nc = get_sim_grid_dimensions(simulated_var)
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
