@@ -19,124 +19,98 @@ def test_get_simulation_info():
      simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, config = get_simulation_info()
 
 def test_check_variables():
-    """
-    Test the check_variables function with simulated and real datasets.
-    
-    This function creates two sets of test variables: one set with hardcoded example values,
-    and another set loaded from a pickle file. It then calls the check_variables function
-    with these datasets to verify its behavior.
-    """
-    
-    # Simulated variable values (example values)
-    varAval11, varBval11 = 2, 3.142
-    varAval12, varBval12 = 2, 1.987
-    varAval13, varBval13 = 3, 8.654
+    # Test 1: Valid input (should pass)
+    sim_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
+        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
+    }
+    auxdesc_var = {
+        'aux1': np.array([[10.0, 20.0], [30.0, 40.0]])
+    }
+    auxcond_var = {
+        'aux1': np.array([[50, 60], [70, 80]])
+    }
+    cond_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, 4.0]])
+    }
+    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
+    types_var = [['continuous', 'continuous'], ['continuous'], ['continuous'], ['continuous']]
+    try:
+        sim_var_out, auxdesc_var_out, auxcond_var_out, cond_var_out = check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        print("Test 1 passed")
+    except Exception as e:
+        print(f"Test 1 failed: {e}")
 
-    varAval21, varBval21 = 3, 2.345
-    varAval22, varBval22 = 5, 4.321
-    varAval23, varBval23 = 5, 9.876
-    
-    # Auxiliary variable values (example values)
-    var1val11, var2val11 = 0.123, 1.456
-    var1val12, var2val12 = 2.345, 3.678
-    var1val13, var2val13 = 4.567, 5.890
+    # Test 2: Type mismatch in simulated variable (should raise TypeError)
+    sim_var['var1'] = np.array([['a', 'b'], ['c', 'd']])
+    try:
+        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        print("Test 2 failed: TypeError was expected")
+    except TypeError as e:
+        print(f"Test 2 passed: {e}")
 
-    var1val21, var2val21 = 6.789, 7.012
-    var1val22, var2val22 = 8.234, 9.345
-    var1val23, var2val23 = 0.456, 1.234
+    # Test 3: Shape inconsistency (should raise ValueError)
+    sim_var['var1'] = np.array([[1.0, 2.0]])
+    try:
+        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        print("Test 3 failed: ValueError was expected")
+    except ValueError as e:
+        print(f"Test 3 passed: {e}")
 
-    # Define variable names and types
-    names_var = [
-        ["varA", "varB"],
-        ["aux1", "aux2"]
-    ]
+    # Test 4: Name mismatch in conditioning variables (should raise NameError)
+    sim_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
+        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
+    }
+    names_var[3] = ['var3']
+    cond_var['var3'] = cond_var['var1']
+    try:
+        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        print("Test 4 failed: NameError was expected")
+    except NameError as e:
+        print(f"Test 4 passed: {e}")
 
-    # Type must be set as "continuous" or "categorical".
-    types_var = [
-        ["categorical", "continuous"],
-        ["continuous", "continuous"]
-    ]
-    
-    # Simulated variables can be partially informed
-    sim_var = [
-        np.array([[varAval11, varAval12, varAval13],
-                  [varAval21, varAval22, varAval23]], dtype=int),
-        np.array([[varBval11, varBval12, varBval13],
-                  [varBval21, varBval22, varBval23]], dtype=float)
-    ]
-    
-    # Auxiliary variables must be fully informed
-    aux_var = [
-        np.array([[var1val11, var1val12, var1val13], 
-                  [var1val21, var1val22, var1val23]], dtype=float),
-        np.array([[var2val11, var2val12, var2val13], 
-                  [var2val21, var2val22, var2val23]], dtype=float)
-    ]
-    
-    simulated_var = {}
-    auxiliary_var = {}
-    
-    # Populate simulated and auxiliary variables dictionaries
-    for i in range(len(names_var[0])):
-        simulated_var[names_var[0][i]] = sim_var[i]
-    for i in range(len(names_var[1])):
-        auxiliary_var[names_var[1][i]] = aux_var[i]
-        
-    # Call check_variables with the first dataset
-    check_variables(simulated_var, auxiliary_var, names_var, types_var)
-    
-    # Testing with another dataset
-    path2data = "C:/Users/Axel (Travail)/Documents/ENSG/CET/GeoclassificationMPS/Missing-Data/data/"
-    suffix = "-simple"
-    picklefn = "mt-isa-data" + suffix + ".pickle"
-    pickledestination = path2data + picklefn
-    
-    # Load variables from a pickle file
-    with open(pickledestination, 'rb') as f:
-        [_, grid_geo, grid_lmp, grid_mag,
-            grid_grv, grid_ext, vec_x, vec_y
-        ] = pickle.load(f)
-     
-    names_var = [
-        ["grid_geo", "grid_lmp"],
-        []
-    ]
+    # Test 5: Missing auxiliary conditioning variable (should raise NameError)
+    names_var[3] = ['var1']
+    names_var[2] = []
+    try:
+        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        print("Test 5 failed: NameError was expected")
+    except NameError as e:
+        print(f"Test 5 passed: {e}")
 
-    # Type must be set as "continuous" or "categorical".
-    types_var = [
-        ["categorical", "continuous"],
-        []
-    ]
-    
-    sim_var = [grid_geo, grid_lmp]
-    aux_var = []
-    
-    simulated_var = {}
-    auxiliary_var = {}
-    
-    # Populate simulated and auxiliary variables dictionaries
-    for i in range(len(names_var[0])):
-        simulated_var[names_var[0][i]] = sim_var[i]
-    for i in range(len(names_var[1])):
-        auxiliary_var[names_var[1][i]] = aux_var[i]
-        
-    # Call check_variables with the second dataset
-    check_variables(simulated_var, auxiliary_var, names_var, types_var)
+    # Test 6: Valid input with novalue handling (should pass and replace novalue with np.nan)
+    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
+    sim_var['var1'] = np.array([[1.0, 2.0], [3.0, -9999999]])
+    try:
+        sim_var_out, auxdesc_var_out, auxcond_var_out, cond_var_out = check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
+        assert np.isnan(sim_var_out['var1'][1, 1]), "Test 6 failed: novalue was not replaced by np.nan"
+        print("Test 6 passed")
+    except Exception as e:
+        print(f"Test 6 failed: {e}")
 
 def test_create_auxiliary_and_simulated_var():
+    """
+    Test function for create_auxiliary_and_simulated_var to ensure it properly categorizes variables
+    and handles errors appropriately.
+    """
     # Create a temporary directory to store the test numpy arrays
     temp_dir = "temp_test_dir"
     os.makedirs(temp_dir, exist_ok=True)
     
     # Sample data for the test
     test_data = [
-        {'var_name': 'var1', 'categ_conti': 'categ', 'sim_aux': 'aux', 'path': f'{temp_dir}/array1.npy'},
-        {'var_name': 'var2', 'categ_conti': 'conti', 'sim_aux': 'sim', 'path': f'{temp_dir}/array2.npy'},
+        {'var_name': 'sim_var1', 'categ_conti': 'categ', 'nature': 'sim', 'path': f'{temp_dir}/array_sim1.npy'},
+        {'var_name': 'auxdesc_var1', 'categ_conti': 'conti', 'nature': 'auxdesc', 'path': f'{temp_dir}/array_auxdesc1.npy'},
+        {'var_name': 'auxcond_var1', 'categ_conti': 'categ', 'nature': 'auxcond', 'path': f'{temp_dir}/array_auxcond1.npy'},
+        {'var_name': 'cond_var1', 'categ_conti': 'conti', 'nature': 'cond', 'path': f'{temp_dir}/array_cond1.npy'}
     ]
     
     # Create numpy arrays and save them to the specified paths
-    np.save(f'{temp_dir}/array1.npy', np.array([1, 2, 3]))
-    np.save(f'{temp_dir}/array2.npy', np.array([4, 5, 6]))
+    np.save(f'{temp_dir}/array_sim1.npy', np.array([1, 2, 3]))
+    np.save(f'{temp_dir}/array_auxdesc1.npy', np.array([4, 5, 6]))
+    np.save(f'{temp_dir}/array_auxcond1.npy', np.array([7, 8, 9]))
+    np.save(f'{temp_dir}/array_cond1.npy', np.array([10, 11, 12]))
     
     # Create a DataFrame from the sample data and save it to a CSV file
     df = pd.DataFrame(test_data)
@@ -144,23 +118,34 @@ def test_create_auxiliary_and_simulated_var():
     df.to_csv(csv_file_path, sep=';', index=False)
     
     # Call the function to test
-    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
+    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
     
     # Check if the function outputs the expected results
-    assert len(auxiliary_var) == 1, "Expected 1 auxiliary variable."
-    assert len(simulated_var) == 1, "Expected 1 simulated variable."
-    assert np.array_equal(auxiliary_var['var1'], np.array([1, 2, 3])), "Unexpected data in auxiliary variable 'var1'."
-    assert np.array_equal(simulated_var['var2'], np.array([4, 5, 6])), "Unexpected data in simulated variable 'var2'."
-    assert names_var == [['var2'], ['var1']], f"Unexpected names_var: {names_var}"
-    assert types_var == [['conti'], ['categ']], f"Unexpected types_var: {types_var}"
+    assert len(sim_var) == 1, "Expected 1 simulated variable."
+    assert len(auxdesc_var) == 1, "Expected 1 auxiliary describing variable."
+    assert len(auxcond_var) == 1, "Expected 1 auxiliary conditioning variable."
+    assert len(cond_var) == 1, "Expected 1 conditioning variable."
+    
+    assert np.array_equal(sim_var['sim_var1'], np.array([1, 2, 3])), "Unexpected data in simulated variable 'sim_var1'."
+    assert np.array_equal(auxdesc_var['auxdesc_var1'], np.array([4, 5, 6])), "Unexpected data in auxiliary describing variable 'auxdesc_var1'."
+    assert np.array_equal(auxcond_var['auxcond_var1'], np.array([7, 8, 9])), "Unexpected data in auxiliary conditioning variable 'auxcond_var1'."
+    assert np.array_equal(cond_var['cond_var1'], np.array([10, 11, 12])), "Unexpected data in conditioning variable 'cond_var1'."
+    
+    expected_names_var = [['sim_var1'], ['auxdesc_var1'], ['auxcond_var1'], ['cond_var1']]
+    expected_types_var = [['categ'], ['conti'], ['categ'], ['conti']]
+    
+    assert names_var == expected_names_var, f"Unexpected names_var: {names_var}"
+    assert types_var == expected_types_var, f"Unexpected types_var: {types_var}"
     
     # Clean up temporary files
-    os.remove(f'{temp_dir}/array1.npy')
-    os.remove(f'{temp_dir}/array2.npy')
+    os.remove(f'{temp_dir}/array_sim1.npy')
+    os.remove(f'{temp_dir}/array_auxdesc1.npy')
+    os.remove(f'{temp_dir}/array_auxcond1.npy')
+    os.remove(f'{temp_dir}/array_cond1.npy')
     os.remove(csv_file_path)
     os.rmdir(temp_dir)
 
-    print("Successfully passed test_create_auxiliary_and_simulated_var !")
+    print("Successfully passed test_create_auxiliary_and_simulated_var.")
 
 def test_get_sim_grid_dimensions():
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
