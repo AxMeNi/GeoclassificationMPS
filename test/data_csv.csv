@@ -1,5 +1,7 @@
-﻿var_name;categ_conti;sim_aux;path
-grid_geo;categorical;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy
-grid_grv;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy
-grid_lmp;continuous;aux;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_lmp.npy
-grid_mag;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_mag.npy
+﻿var_name;categ_conti;nature;path;grid
+grid_geo;categorical;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy;TI
+grid_grv;continuous;auxTI;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy;TI
+grid_lmp;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_lmp.npy;TI
+grid_mag;continuous;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_mag.npy;TI
+grid_grv;continuous;auxSG;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy;SG
+grid_mag;continuous;condIm;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_mag.npy;SG

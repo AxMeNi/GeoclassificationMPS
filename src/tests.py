@@ -5,92 +5,21 @@ __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
 
-from ti_generation import *
 from data_treatment import *
 from interface import get_simulation_info
+from ti_mask_generation import *
 from sg_mask_generation import *
+from build_ti_cd import *
 
 import matplotlib.pyplot as plt
-import pickle  # For loading pickled data
 import os
 
 ##################################### TEST INTERFACE.PY
 
 def test_get_simulation_info():
-     sim_var, auxdesc_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs = get_simulation_info()
+     sim_var, auxTI_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs = get_simulation_info()
 
 ##################################### TEST DATA_TREATMENT.PY
-
-def test_check_variables():
-    # Test 1: Valid input (should pass)
-    sim_var = {
-        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
-        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
-    }
-    auxdesc_var = {
-        'aux1': np.array([[10.0, 20.0], [30.0, 40.0]])
-    }
-    auxcond_var = {
-        'aux1': np.array([[50, 60], [70, 80]])
-    }
-    cond_var = {
-        'var1': np.array([[1.0, 2.0], [3.0, 4.0]])
-    }
-    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
-    types_var = [['continuous', 'continuous'], ['continuous'], ['continuous'], ['continuous']]
-    try:
-        sim_var_out, auxdesc_var_out, auxcond_var_out, cond_var_out = check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        print("Test 1 passed")
-    except Exception as e:
-        print(f"Test 1 failed: {e}")
-
-    # Test 2: Type mismatch in simulated variable (should raise TypeError)
-    sim_var['var1'] = np.array([['a', 'b'], ['c', 'd']])
-    try:
-        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        print("Test 2 failed: TypeError was expected")
-    except TypeError as e:
-        print(f"Test 2 passed: {e}")
-
-    # Test 3: Shape inconsistency (should raise ValueError)
-    sim_var['var1'] = np.array([[1.0, 2.0]])
-    try:
-        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        print("Test 3 failed: ValueError was expected")
-    except ValueError as e:
-        print(f"Test 3 passed: {e}")
-
-    # Test 4: Name mismatch in conditioning variables (should raise NameError)
-    sim_var = {
-        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
-        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
-    }
-    names_var[3] = ['var3']
-    cond_var['var3'] = cond_var['var1']
-    try:
-        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        print("Test 4 failed: NameError was expected")
-    except NameError as e:
-        print(f"Test 4 passed: {e}")
-
-    # Test 5: Missing auxiliary conditioning variable (should raise NameError)
-    names_var[3] = ['var1']
-    names_var[2] = []
-    try:
-        check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        print("Test 5 failed: NameError was expected")
-    except NameError as e:
-        print(f"Test 5 passed: {e}")
-
-    # Test 6: Valid input with novalue handling (should pass and replace novalue with np.nan)
-    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
-    sim_var['var1'] = np.array([[1.0, 2.0], [3.0, -9999999]])
-    try:
-        sim_var_out, auxdesc_var_out, auxcond_var_out, cond_var_out = check_variables(sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var)
-        assert np.isnan(sim_var_out['var1'][1, 1]), "Test 6 failed: novalue was not replaced by np.nan"
-        print("Test 6 passed")
-    except Exception as e:
-        print(f"Test 6 failed: {e}")
 
 def test_create_variables():
     """
@@ -103,56 +32,123 @@ def test_create_variables():
     
     # Sample data for the test
     test_data = [
-        {'var_name': 'sim_var1', 'categ_conti': 'categ', 'nature': 'sim', 'path': f'{temp_dir}/array_sim1.npy'},
-        {'var_name': 'auxdesc_var1', 'categ_conti': 'conti', 'nature': 'auxdesc', 'path': f'{temp_dir}/array_auxdesc1.npy'},
-        {'var_name': 'auxcond_var1', 'categ_conti': 'categ', 'nature': 'auxcond', 'path': f'{temp_dir}/array_auxcond1.npy'},
-        {'var_name': 'cond_var1', 'categ_conti': 'conti', 'nature': 'cond', 'path': f'{temp_dir}/array_cond1.npy'}
+        {'var_name': 'sim_var1', 'categ_conti': 'categ', 'nature': 'sim', 'grid':'TI', 'path': f'{temp_dir}/array_sim1.npy'},
+        {'var_name': 'auxTI_var1', 'categ_conti': 'conti', 'nature': 'auxTI', 'grid':'TI', 'path': f'{temp_dir}/array_auxTI1.npy'},
+        {'var_name': 'auxSG_var1', 'categ_conti': 'categ', 'nature': 'auxSG', 'grid':'SG', 'path': f'{temp_dir}/array_auxSG1.npy'},
+        {'var_name': 'condIm_var1', 'categ_conti': 'conti', 'nature': 'condIm', 'grid':'SG', 'path': f'{temp_dir}/array_condIm1.npy'}
     ]
     
-    # Create numpy arrays and save them to the specified paths
     np.save(f'{temp_dir}/array_sim1.npy', np.array([1, 2, 3]))
-    np.save(f'{temp_dir}/array_auxdesc1.npy', np.array([4, 5, 6]))
-    np.save(f'{temp_dir}/array_auxcond1.npy', np.array([7, 8, 9]))
-    np.save(f'{temp_dir}/array_cond1.npy', np.array([10, 11, 12]))
+    np.save(f'{temp_dir}/array_auxTI1.npy', np.array([4, 5, 6]))
+    np.save(f'{temp_dir}/array_auxSG1.npy', np.array([7, 8, 9]))
+    np.save(f'{temp_dir}/array_condIm1.npy', np.array([10, 11, 12]))
     
-    # Create a DataFrame from the sample data and save it to a CSV file
     df = pd.DataFrame(test_data)
     csv_file_path = f'{temp_dir}/test_data.csv'
     df.to_csv(csv_file_path, sep=';', index=False)
     
-    # Call the function to test
-    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     
-    # Check if the function outputs the expected results
     assert len(sim_var) == 1, "Expected 1 simulated variable."
-    assert len(auxdesc_var) == 1, "Expected 1 auxiliary describing variable."
-    assert len(auxcond_var) == 1, "Expected 1 auxiliary conditioning variable."
-    assert len(cond_var) == 1, "Expected 1 conditioning variable."
+    assert len(auxTI_var) == 1, "Expected 1 auxiliary TI variable."
+    assert len(auxSG_var) == 1, "Expected 1 auxiliary SG variable."
+    assert len(condIm_var) == 1, "Expected 1 conditioning image variable."
     
     assert np.array_equal(sim_var['sim_var1'], np.array([1, 2, 3])), "Unexpected data in simulated variable 'sim_var1'."
-    assert np.array_equal(auxdesc_var['auxdesc_var1'], np.array([4, 5, 6])), "Unexpected data in auxiliary describing variable 'auxdesc_var1'."
-    assert np.array_equal(auxcond_var['auxcond_var1'], np.array([7, 8, 9])), "Unexpected data in auxiliary conditioning variable 'auxcond_var1'."
-    assert np.array_equal(cond_var['cond_var1'], np.array([10, 11, 12])), "Unexpected data in conditioning variable 'cond_var1'."
+    assert np.array_equal(auxTI_var['auxTI_var1'], np.array([4, 5, 6])), "Unexpected data in auxiliary TI variable 'auxTI_var1'."
+    assert np.array_equal(auxSG_var['auxSG_var1'], np.array([7, 8, 9])), "Unexpected data in auxiliary SG variable 'auxSG_var1'."
+    assert np.array_equal(condIm_var['condIm_var1'], np.array([10, 11, 12])), "Unexpected data in conditioning image variable 'condIm_var1'."
     
-    expected_names_var = [['sim_var1'], ['auxdesc_var1'], ['auxcond_var1'], ['cond_var1']]
+    expected_names_var = [['sim_var1'], ['auxTI_var1'], ['auxSG_var1'], ['condIm_var1']]
     expected_types_var = [['categ'], ['conti'], ['categ'], ['conti']]
     
     assert names_var == expected_names_var, f"Unexpected names_var: {names_var}"
     assert types_var == expected_types_var, f"Unexpected types_var: {types_var}"
     
-    # Clean up temporary files
     os.remove(f'{temp_dir}/array_sim1.npy')
-    os.remove(f'{temp_dir}/array_auxdesc1.npy')
-    os.remove(f'{temp_dir}/array_auxcond1.npy')
-    os.remove(f'{temp_dir}/array_cond1.npy')
+    os.remove(f'{temp_dir}/array_auxTI1.npy')
+    os.remove(f'{temp_dir}/array_auxSG1.npy')
+    os.remove(f'{temp_dir}/array_condIm1.npy')
     os.remove(csv_file_path)
     os.rmdir(temp_dir)
 
     print("Successfully passed test_create_variables.")
 
+def test_check_variables():
+    # Test 1: Valid input (should pass)
+    sim_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
+        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
+    }
+    auxTI_var = {
+        'aux1': np.array([[10.0, 20.0], [30.0, 40.0]])
+    }
+    auxSG_var = {
+        'aux1': np.array([[50, 60], [70, 80]])
+    }
+    condIm_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, 4.0]])
+    }
+    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
+    types_var = [['continuous', 'continuous'], ['continuous'], ['continuous'], ['continuous']]
+    try:
+        sim_var_out, auxTI_var_out, auxSG_var_out, condIm_var_out = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        print("Test 1 passed")
+    except Exception as e:
+        print(f"Test 1 failed: {e}")
+
+    # Test 2: Type mismatch in simulated variable (should raise TypeError)
+    sim_var['var1'] = np.array([['a', 'b'], ['c', 'd']])
+    try:
+        check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        print("Test 2 failed: TypeError was expected")
+    except TypeError as e:
+        print(f"Test 2 passed: {e}")
+
+    # Test 3: Shape inconsistency (should raise ValueError)
+    sim_var['var1'] = np.array([[1.0, 2.0]])
+    try:
+        check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        print("Test 3 failed: ValueError was expected")
+    except ValueError as e:
+        print(f"Test 3 passed: {e}")
+
+    # Test 4: Name mismatch in conditioning variables (should raise NameError)
+    sim_var = {
+        'var1': np.array([[1.0, 2.0], [3.0, -9999999]]),
+        'var2': np.array([[4.0, 5.0], [6.0, 7.0]])
+    }
+    names_var[3] = ['var3']
+    condIm_var['var3'] = condIm_var['var1']
+    try:
+        check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        print("Test 4 failed: NameError was expected")
+    except NameError as e:
+        print(f"Test 4 passed: {e}")
+
+    # Test 5: Missing auxiliary conditioning variable (should raise NameError)
+    names_var[3] = ['var1']
+    names_var[2] = []
+    try:
+        check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        print("Test 5 failed: NameError was expected")
+    except NameError as e:
+        print(f"Test 5 passed: {e}")
+
+    # Test 6: Valid input with novalue handling (should pass and replace novalue with np.nan)
+    names_var = [['var1', 'var2'], ['aux1'], ['aux1'], ['var1']]
+    sim_var['var1'] = np.array([[1.0, 2.0], [3.0, -9999999]])
+    try:
+        sim_var_out, auxTI_var_out, auxSG_var_out, condIm_var_out = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var)
+        assert np.isnan(sim_var_out['var1'][1, 1]), "Test 6 failed: novalue was not replaced by np.nan"
+        print("Test 6 passed")
+    except Exception as e:
+        print(f"Test 6 failed: {e}")
+
+
 def test_get_sim_grid_dimensions():
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
-    sim_var, auxdesc_var, auxcond_var, cond_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     nr, nc = get_sim_grid_dimensions(sim_var)
     print(nr,nc)
     
@@ -168,22 +164,68 @@ def test_create_sg_mask():
     sim_var = {
         'var1': np.array([[1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, np.nan], [np.nan, 2, 3, np.nan, 5], [1, 2, 3, 4, 5]]),
     }
-    auxdesc_var = {
+    auxTI_var = {
         'var2': np.array([[np.nan, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, np.nan], [np.nan, 2, 3, 4, 5]]),
     }
-    auxcond_var = {
+    auxSG_var = {
         'var3': np.array([[1, 2, 3, 4, 5], [np.nan, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, np.nan, 3, 4, 5]]),
     }
-    cond_var = {
+    condIm_var = {
         'var4': np.array([[1, 2, 3, 4, 5], [1, 2, np.nan, 4, 5], [1, 2, 3, np.nan, 5], [np.nan, 2, 3, 4, 5]]),
     }
-    expected_mask = np.array([[1, 0, 1, 0, 0], [1, 1, 1, 0, 1], [1, 1, 1, 1, 1], [1, 1, 0, 0, 0]])
+    expected_mask = np.array([[0., 1., 1., 1., 1.],
+                              [0., 1., 0., 1., 1.],
+                              [1., 0., 0., 1., 0.],
+                              [0., 0., 1., 1., 1.]])
 
-    result_mask = create_sg_mask(sim_var, auxdesc_var, auxcond_var, cond_var, nr, nc)
+    result_mask = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
     assert np.array_equal(result_mask, expected_mask), "Test failed: The mask does not match the expected output."
     print("Test passed: The mask matches the expected output.")
     
     return True
+
+def test_merge_masks():
+    """
+    Test the merge_masks function to ensure it correctly merges two binary masks.
+    """
+    # Test case 1: 
+    mask1 = np.array([[0, 0, 1], [1, 0, 1]])
+    mask2 = np.array([[0, 1, 0], [0, 0, 1]])
+    expected_result = np.array([[0, 0, 0], [0, 0, 1]])
+    result = merge_masks(mask1, mask2)
+    assert np.array_equal(result, expected_result), f"Test case 1 failed: {result}"
+
+    # Test case 2:
+    mask1 = np.array([[1, 0, 1], [0, 1, 0]])
+    mask2 = np.array([[0, 0, 0], [0, 0, 0]])
+    expected_result = np.array([[0, 0, 0], [0, 0, 0]])
+    result = merge_masks(mask1, mask2)
+    assert np.array_equal(result, expected_result), f"Test case 2 failed: {result}"
+
+    # Test case 3: 
+    mask1 = np.array([[0, 0, 0], [0, 0, 0]])
+    mask2 = np.array([[1, 0, 1], [0, 1, 0]])
+    expected_result = np.array([[0, 0, 0], [0, 0, 0]])
+    result = merge_masks(mask1, mask2)
+    assert np.array_equal(result, expected_result), f"Test case 3 failed: {result}"
+
+    # Test case 4:
+    mask1 = np.array([[1, 1, 0], [0, 1, 1]])
+    mask2 = np.array([[1, 1, 0], [0, 1, 1]])
+    expected_result = np.array([[1, 1, 0], [0, 1, 1]])
+    result = merge_masks(mask1, mask2)
+    assert np.array_equal(result, expected_result), f"Test case 4 failed: {result}"
+
+    # Test case 5:
+    mask1 = np.array([[1, 1], [0, 1]])
+    mask2 = np.array([[1, 1, 0], [0, 1, 1]])
+    try:
+        result = merge_masks(mask1, mask2)
+        print("Test case 5 failed: ValueError not raised.")
+    except ValueError as e:
+        print("Test case 5 passed: ", e)
+
+    print("All test cases passed.")
 
 ##################################### TEST TI_GENERATION.PY
 
@@ -309,9 +351,9 @@ def test_gen_ti_frame_single_rectangle():
     plt.show()
     
 
-def test_build_ti():
+def test_build_ti_cd():
     print("\n##################################################################")
-    print("\t\t\tTESTING BUILD TI")
+    print("\t\t\tTESTING BUILD TI CD")
     print("##################################################################\n")
     
     import geone.imgplot as imgplt
@@ -319,14 +361,17 @@ def test_build_ti():
     novalue = -9999999
     seed = 852
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
-    simulated_var_dirty, auxiliary_var_dirty, names_var, types_var = create_variables(csv_file_path)
-    simulated_var, auxiliary_var = check_variables(simulated_var_dirty, auxiliary_var_dirty, names_var, types_var, novalue=novalue)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=novalue)
     nr, nc = get_sim_grid_dimensions(simulated_var)
+    simgrid_mask1 = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
+    
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
      
     print("**************************")
     
-    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
     ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, names_var, simgrid_mask)
 
     # Check TI list length
@@ -365,7 +410,7 @@ def test_build_ti():
     #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
     ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 50, 2, seed)
     #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 15, seed)
-    ti_list2, cd_list2 = build_ti(ti_frame2, need_to_cut2, simulated_var, nc, nr, auxiliary_var, names_var)
+    ti_list2, cd_list2 = build_ti(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, condIm_var, names_var)
 
     # Check TI list length
     assert len(ti_list2) == len(ti_frame2), "TI list length mismatch."
