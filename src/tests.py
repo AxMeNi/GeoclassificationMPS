@@ -359,20 +359,20 @@ def test_build_ti_cd():
     import geone.imgplot as imgplt
     
     novalue = -9999999
-    seed = 852
+    seed = 854
     csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
     sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
-    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=novalue)
-    nr, nc = get_sim_grid_dimensions(simulated_var)
+    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=novalue)    
+    nr, nc = get_sim_grid_dimensions(auxSG_var)
     simgrid_mask1 = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
     
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
      
     print("**************************")
     
-    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
     simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
-    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, names_var, simgrid_mask)
+    ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
 
     # Check TI list length
     assert len(ti_list) == len(ti_frame), "TI list length mismatch."
@@ -386,15 +386,15 @@ def test_build_ti_cd():
         print(f"CD {idx + 1} shape: {cd.val.shape}")
     
     # Visualize the Training Images (TIs)
-    # for idx, ti in enumerate(ti_list):
-        # assert isinstance(ti, gn.img.Img), "TI is not of type Img."
+    for idx, ti in enumerate(ti_list):
+        assert isinstance(ti, gn.img.Img), "TI is not of type Img."
         # print(f"Training Image {idx + 1}")
         # imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}", vmin=0)
         # plt.show()
 
     # Visualize the Conditioning Data (CDs)
-    # for idx, cd in enumerate(cd_list):
-        # assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+    for idx, cd in enumerate(cd_list):
+        assert isinstance(cd, gn.img.Img), "CD is not of type Img."
         # print(f"Conditioning Data {idx + 1}")
         # imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1},{ti.varname[0]}")
         # plt.show()
@@ -407,11 +407,12 @@ def test_build_ti_cd():
     
     print(">>>>> Test completed successfully with single TI frame.\n**************************")
     
-    #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
-    ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 50, 2, seed)
-    #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 15, seed)
-    ti_list2, cd_list2 = build_ti(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, condIm_var, names_var)
+    ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 90, 2, seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 2, seed)
+    ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1)
 
+                
     # Check TI list length
     assert len(ti_list2) == len(ti_frame2), "TI list length mismatch."
 
@@ -419,7 +420,6 @@ def test_build_ti_cd():
     
     for idx, ti in enumerate(ti_list2):
         print(f"TI {idx + 1} shape: {ti.val.shape}")
-        print(ti)
         if np.any(ti.val == np.nan):
             print(f"NaN value in TI")
     
@@ -429,20 +429,19 @@ def test_build_ti_cd():
     # Visualize the Training Images (TIs)
     for idx, ti in enumerate(ti_list2):
         assert isinstance(ti, gn.img.Img), "TI is not of type Img."
-        imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}, {ti.varname[0]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
-        plt.show()
+        # imgplt.drawImage2D(ti, iv=0, categ=True, title=f"TI {idx + 1}, {ti.varname[0]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
+        # plt.show()
 
     # Visualize the Conditioning Data (CDs)
-    # for idx, cd in enumerate(cd_list2):
-        # assert isinstance(cd, gn.img.Img), "CD is not of type Img."
-        # print(f"Conditioning Data {idx + 1}")
-        # imgplt.drawImage2D(cd, iv=0, title=f"CD {idx + 1},{ti.varname[0]}")
+    for idx, cd in enumerate(cd_list2):
+        assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+        # imgplt.drawImage2D(cd, iv=0, categ=False, title=f"CD {idx + 1},{cd.varname[0]}")
         # plt.show()
         # imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
         # plt.show()
@@ -471,20 +470,20 @@ def test_build_ti_cd():
     # gn.imgplot.drawImage2D(im, iv=1, title='Probability to select TI B')
     # plt.show()
     
-    
-    
+
     deesse_input = gn.deesseinterface.DeesseInput(
-        nx=nc, ny=nr, nz=1,
+        nx=cc_sg, ny=rr_sg, nz=1,
         sx=1, sy=1, sz=1,
         ox=0, oy=0, oz=0,
         nv=4, varname=["grid_geo","grid_grv","gris_lmp","grid_mag"],
-        TI=ti_list2,
+        TI=ti_list,
         #pdfTI = pdf_ti,
-        dataImage=cd_list2,
+        #mask = simgrid_mask1,
+        dataImage=cd_list,
         distanceType=['categorical',"continuous","continuous","continuous"],
         nneighboringNode=4*[12*4],
-        distanceThreshold=4*[0.4],
-        maxScanFraction=2*[1],
+        distanceThreshold=4*[0.9],
+        maxScanFraction=1*[0.5],
         npostProcessingPathMax=1,
         seed=seed,
         nrealization=1
@@ -500,7 +499,7 @@ def test_build_ti_cd():
     
     plt.show()
     
-    gn.imgplot.drawImage2D(sim[0], iv=1, categ=True, title=f'Real #{0} - {deesse_input.varname[1]}')
+    gn.imgplot.drawImage2D(sim[0], iv=1, categ=False, title=f'Real #{0} - {deesse_input.varname[1]}')
     
     plt.show()
     

@@ -34,7 +34,7 @@ def run_tests():
     t_GenTiFrameSquares = False
     t_GenTiFrameSeparatedSquares = False
     t_GenTiFrameSingleRectangle = False
-    t_BuildTiCd = False #TODO faire le cas où il y a des conditioning data et tout le reste...
+    t_BuildTiCd = True #TODO faire le cas où il y a des conditioning data et tout le reste...
     
     #----------------------------------------------------------------------------------------#
     

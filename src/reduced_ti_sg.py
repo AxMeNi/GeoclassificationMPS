@@ -471,7 +471,9 @@ def get_ti_sg(cc_dg, rr_dg,
     Raises:
     ------
     ValueError
-        If only one of the dimensions (`cc_sg`, `rr_sg` or `cc_ti`, `rr_ti`) is provided instead of both.
+        - If only one of the dimensions (`cc_sg`, `rr_sg` or `cc_ti`, `rr_ti`) is provided instead of both.
+        - If the percentages provided are higher than 100
+        - If the dimensions of the simulation or the training image are larger than the size of the auxiliary variable.
 
     Notes:
     -----
@@ -487,17 +489,30 @@ def get_ti_sg(cc_dg, rr_dg,
     if seed is None:
         seed = int(rd.randint(1,2**32-1))
         print(f"Seed used to generate the TI and the simulation grid : {seed}")
-
     np.random.seed(seed)
+        
+    if (pct_ti is not None):
+        if (pct_ti > 100):
+            raise ValueError(f"The percentage of the grid covered by the TI provided is higher than 100! Please consider chosing a percentage lower than 100.")
+    
+    if  (pct_sg is not None):
+        if (pct_ti > 100):
+            raise ValueError(f"The percentage of the grid covered by the simulation grid provided is higher than 100! Please consider chosing a percentage lower than 100.")
+    
     
     if (cc_sg is None) and (rr_sg is None):
         area_sg = int(pct_sg/100 * (cc_dg * rr_dg))
         cc_sg_list, rr_sg_list = generate_random_dimensions(cc_dg, rr_dg, area_sg)
     else:
+        if (cc_sg > cc_dg) or (rr_sg > rr_dg):
+            raise ValueError(f"The dimensions of the simulation grid are too large! Please enter the dimensions within the auxiliary grid limits: nmax_columns = {cc_dg}, nmax_rows = {rr_dg}.")
         cc_sg_list, rr_sg_list = np.array([cc_sg]), np.array([rr_sg])
         
     if (cc_ti is None) and (rr_ti is None):
         area_ti = int(pct_ti/100 * (cc_dg * rr_dg))
+    else:
+        if (cc_ti > cc_dg) or (rr_ti > rr_dg):
+            raise ValueError(f"The dimensions of the TI are too large! Please enter the dimensions within the auxiliary grid limits: nmax_columns = {cc_dg}, nmax_rows = {rr_dg}.")
     
     while cc_sg_list.size > 0:
     
