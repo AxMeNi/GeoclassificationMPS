@@ -407,10 +407,10 @@ def test_build_ti_cd():
     
     print(">>>>> Test completed successfully with single TI frame.\n**************************")
     
-    ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
-    #ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 90, 2, seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
+    ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 87, 2, seed)
     #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 2, seed)
-    ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1)
+    ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
 
                 
     # Check TI list length
@@ -429,26 +429,26 @@ def test_build_ti_cd():
     # Visualize the Training Images (TIs)
     for idx, ti in enumerate(ti_list2):
         assert isinstance(ti, gn.img.Img), "TI is not of type Img."
-        # imgplt.drawImage2D(ti, iv=0, categ=True, title=f"TI {idx + 1}, {ti.varname[0]}")
-        # plt.show()
-        # imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
-        # plt.show()
-        # imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
-        # plt.show()
-        # imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
-        # plt.show()
+        imgplt.drawImage2D(ti, iv=0, categ=True, title=f"TI {idx + 1}, {ti.varname[0]}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
+        plt.show()
+        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
+        plt.show()
 
     # Visualize the Conditioning Data (CDs)
     for idx, cd in enumerate(cd_list2):
         assert isinstance(cd, gn.img.Img), "CD is not of type Img."
-        # imgplt.drawImage2D(cd, iv=0, categ=False, title=f"CD {idx + 1},{cd.varname[0]}")
-        # plt.show()
-        # imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
-        # plt.show()
-        # imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
-        # plt.show()
-        # imgplt.drawImage2D(cd, iv=3, title=f"CD {idx + 1},{ti.varname[3]}")
-        # plt.show()
+        imgplt.drawImage2D(cd, iv=0, categ=False, title=f"CD {idx + 1},{cd.varname[0]}")
+        plt.show()
+        imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
+        plt.show()
+        imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
+        plt.show()
+        imgplt.drawImage2D(cd, iv=3, title=f"CD {idx + 1},{ti.varname[3]}")
+        plt.show()
     
     
     print(">>>>> Test completed successfully with separated TI frames.\n**************************")
@@ -472,18 +472,18 @@ def test_build_ti_cd():
     
 
     deesse_input = gn.deesseinterface.DeesseInput(
-        nx=cc_sg, ny=rr_sg, nz=1,
+        nx=nc, ny=nr, nz=1,
         sx=1, sy=1, sz=1,
         ox=0, oy=0, oz=0,
         nv=4, varname=["grid_geo","grid_grv","gris_lmp","grid_mag"],
-        TI=ti_list,
+        TI=ti_list2,
         #pdfTI = pdf_ti,
-        #mask = simgrid_mask1,
-        dataImage=cd_list,
+        mask = simgrid_mask1,
+        dataImage=cd_list2,
         distanceType=['categorical',"continuous","continuous","continuous"],
-        nneighboringNode=4*[12*4],
-        distanceThreshold=4*[0.9],
-        maxScanFraction=1*[0.5],
+        nneighboringNode=4*[24],
+        distanceThreshold=4*[0.1],
+        maxScanFraction=2*[0.5],
         npostProcessingPathMax=1,
         seed=seed,
         nrealization=1
