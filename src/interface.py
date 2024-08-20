@@ -6,6 +6,7 @@ __date__ = "juillet 2024"
 
 from launcher import *
 from data_treatment import *
+from matplotlib.colors import LinearSegmentedColormap
 
 import numpy as np
 import pandas as pd
@@ -45,41 +46,39 @@ def get_simulation_info():
     # grid_grv;continuous;sim;C:\path\to\grid_grv.npy
     # grid_lmp;continuous;sim;C:\path\to\grid_lmp.npy
     # grid_mag;continuous;sim;C:\path\to\grid_mag.npy
-    # grid_geo;categorical;cond;C:\path\to\grid_geo_cond.npy
+    # grid_geo;categorical;condIm;C:\path\to\grid_geo_cond.npy
     # auxiliary;continuous;auxTI;C:\path\to\auxTI.npy
     # auxiliary;continuous;auxSG;C:\path\to\auxSG.npy
          
     ##################### RANDOM PARAMETERS #####################
 
-    seed = 12345
+    seed = 852
 
     ##################### NOVALUE #####################
 
     novalue = -9999999
 
     ##################### TRAINING IMAGE PARAMETERS #####################
-
-    ti_pct_area = 33  
-    ti_ndisks = 1  # 
-    ti_realid = 1  #    
-
+    
+    ti_method = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]
+    ti_pct_area = None 
+    ti_shapes = 1   
+    
+    ti_sg_overlap_percentage=50  
+    pct_sg=10
+    pct_ti=30
+    cc_sg=None
+    rr_sg=None
+    cc_ti=None
+    rr_ti=None
+    
     ##################### DEESSE SIMULATION PARAMETERS #####################
-
 
     nn = 12  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
     numberofmpsrealizations = 1  # Number of Deesse realizations
     nthreads = 1  # Number of threads for parallel processing
-
-    ##################### LAUNCHING PARAMETERS #####################
-
-    configs = [
-        (33, 1, 1, 10, 4, True, True), # Percentage area of the TI, Number of disks in the TI, Realization ID for the TI
-        (33, 1, 1, 10, 4, True, False),
-        (33, 1, 1, 10, 4, False, False),
-        (33, 1, 1, 10, 4, False, True)
-    ]
 
     ##################### COLORMAP PARAMETERS #####################
 
@@ -89,7 +88,7 @@ def get_simulation_info():
     cmap_name = 'my_tab20'
     mycmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
     ticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
-
+    print(type(mycmap),type(ticmap), type(cm))
     ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False
@@ -98,17 +97,20 @@ def get_simulation_info():
     
     sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
-        
-    ##################### GRID DIMENSIONS #####################
     
     nr, nc = get_sim_grid_dimensions(sim_var)
    
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
-    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
-    ti_list, cd_list = build_ti(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, names_var, simgrid_mask)
-        
-        
-    return sim_var, auxTI_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
+       
+    return seed, \
+            ti_method, \
+            ti_pct_area, ti_shapes, \
+            ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+            nn, dt, ms, numberofmpsrealizations, nthreads, \
+            cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
+            shorten, \
+            sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+            nr, nc 
             
 
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -158,26 +160,31 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
 
 
 
-def launch_simulation():
+def launch_simulation(seed, 
+                    ti_method, 
+                    ti_pct_area, ti_shapes,
+                    ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                    nn, dt, ms, numberofmpsrealizations, nthreads,
+                    cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+                    shorten,
+                    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                    nr, nc):
     
-    for config in configs:
-        ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd, xycv = config
-        print(f"Running configuration: geolcd={geolcd}, xycv={xycv}")
-        
-        if shorten :
-            execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd)
-        else :
-            launcher(simulated_var = simulated_var_modified, 
-                auxiliary_var = auxiliary_var_modified, 
-                var_names = var_names, 
-                var_types = var_types, 
-                ti_pct_area = ti_pct_area, 
-                ti_ndisks = ti_ndisks, 
-                ti_realid = ti_realid, 
-                mps_nreal = mps_nreal, 
-                nthreads = nthreads, 
-                geolcd = True, 
-                timesleep = 0, 
-                verb = False,
-                addtitle = 'addtitle',
-                seed = seed)
+    
+    if shorten :
+        execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads)
+    else :
+        launcher(simulated_var = simulated_var_modified, 
+            auxiliary_var = auxiliary_var_modified, 
+            var_names = var_names, 
+            var_types = var_types, 
+            ti_pct_area = ti_pct_area, 
+            ti_ndisks = ti_ndisks, 
+            ti_realid = ti_realid, 
+            mps_nreal = mps_nreal, 
+            nthreads = nthreads, 
+            geolcd = True, 
+            timesleep = 0, 
+            verb = False,
+            addtitle = 'addtitle',
+            seed = seed)

@@ -10,6 +10,7 @@ from interface import get_simulation_info
 from ti_mask_generation import *
 from sg_mask_generation import *
 from build_ti_cd import *
+from matplotlib.colors import *
 
 import matplotlib.pyplot as plt
 import os
@@ -17,7 +18,48 @@ import os
 ##################################### TEST INTERFACE.PY
 
 def test_get_simulation_info():
-     sim_var, auxTI_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs = get_simulation_info()
+    # Test Case: Check if the function returns all the expected variables
+    seed, \
+    ti_method, \
+    ti_pct_area, ti_shapes, \
+    ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+    nn, dt, ms, numberofmpsrealizations, nthreads, \
+    cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
+    shorten, \
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+    nr, nc = get_simulation_info()
+
+    assert isinstance(seed, int), "Seed should be an integer."
+    assert isinstance(ti_method, list) and all(isinstance(m, str) for m in ti_method), "ti_method should be a list of strings."
+    assert ti_pct_area is None or isinstance(ti_pct_area, float), "ti_pct_area should be None or a float."
+    assert isinstance(ti_shapes, int), "ti_shapes should be an integer."
+    assert isinstance(ti_sg_overlap_percentage, int), "ti_sg_overlap_percentage should be an integer."
+    assert isinstance(pct_sg, int) and isinstance(pct_ti, int), "pct_sg and pct_ti should be integers."
+    assert cc_sg is None or isinstance(cc_sg, int), "cc_sg should be None or an integer."
+    assert rr_sg is None or isinstance(rr_sg, int), "rr_sg should be None or an integer."
+    assert cc_ti is None or isinstance(cc_ti, int), "cc_ti should be None or an integer."
+    assert rr_ti is None or isinstance(rr_ti, int), "rr_ti should be None or an integer."
+    assert isinstance(nn, int), "nn should be an integer."
+    assert isinstance(dt, float), "dt should be a float."
+    assert isinstance(ms, float), "ms should be a float."
+    assert isinstance(numberofmpsrealizations, int), "numberofmpsrealizations should be an integer."
+    assert isinstance(nthreads, int), "nthreads should be an integer."
+    assert isinstance(cm, ListedColormap), "cm should be a LinearSegmentedColormap instance."
+    assert isinstance(myclrs, np.ndarray), "myclrs should be a numpy array."
+    assert isinstance(n_bin, int), "n_bin should be an integer."
+    assert isinstance(cmap_name, str), "cmap_name should be a string."
+    assert isinstance(mycmap, LinearSegmentedColormap), "mycmap should be a LinearSegmentedColormap instance."
+    assert isinstance(ticmap, LinearSegmentedColormap), "ticmap should be a LinearSegmentedColormap instance."
+    assert isinstance(shorten, bool), "shorten should be a boolean."
+    assert isinstance(sim_var, dict), "sim_var should be a dictionary."
+    assert isinstance(auxTI_var, dict), "auxTI_var should be a dictionary."
+    assert isinstance(auxSG_var, dict), "auxSG_var should be a dictionary."
+    assert condIm_var is None or isinstance(condIm_var, dict), "condIm_var should be None or a dictionary."
+    assert isinstance(names_var, list) and all(isinstance(name, str) for name in names_var[0]), "names_var should be a list of strings."
+    assert isinstance(types_var, list) and all(isinstance(t, str) for t in types_var[0]), "types_var should be a list of strings."
+    assert isinstance(nr, int) and isinstance(nc, int), "nr and nc should be integers."
+
+    print("The function get_simulation_info is working correctly, all checks passed!")
 
 ##################################### TEST DATA_TREATMENT.PY
 
@@ -494,7 +536,10 @@ def test_build_ti_cd():
     plt.show()
 
     
-def test_gen_twenty_random_ti_cd():
+def test_gen_n_random_ti_cd():
+    print("\n##################################################################")
+    print("\t\t\tTESTING GEN N RANDOM TI CD")
+    print("##################################################################\n")
     import random
     
     seed = 852
@@ -520,7 +565,8 @@ def test_gen_twenty_random_ti_cd():
     # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"
     method = "ReducedTiCd" 
 
-    cd_lists, ti_lists = gen_twenty_random_ti_cd(
+    cd_lists, ti_lists = gen_n_random_ti_cd(
+        n=20,
         nc=nc, nr=nr, 
         sim_var=sim_var, auxTI_var=auxTI_var, auxSG_var=auxSG_var, 
         names_var=names_var, simgrid_mask=simgrid_mask, 
@@ -543,4 +589,4 @@ def test_gen_twenty_random_ti_cd():
     # Verify if all conditions are True
     assert all(appendFlags), "The condition for exiting the while loop was not met."
 
-    print("Test passed. The condition for exiting the while loop was met.")
+    print("Test passed.")

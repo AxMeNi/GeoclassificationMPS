@@ -10,7 +10,7 @@ def run_tests():
     """
     to run the tests
     """
-    t_GetSimulationInfo = False #TODO
+    t_GetSimulationInfo = True 
     
     t_CreateVariables = False 
     t_CheckVariables = False
@@ -36,7 +36,7 @@ def run_tests():
     t_GenTiFrameCdMask = False
     
     t_BuildTiCd = False #TODO faire le cas où il y a des conditioning data et tout le reste...
-    t_GenTwentyRandomTiCd = True
+    t_GenNRandomTiCd = False
     
     #----------------------------------------------------------------------------------------#
     
@@ -55,7 +55,7 @@ def run_tests():
     if t_GenTiFrameCdMask : test_gen_ti_frame_cd_mask()
     
     if t_BuildTiCd : test_build_ti_cd()
-    if t_GenTwentyRandomTiCd : test_gen_twenty_random_ti_cd()
+    if t_GenNRandomTiCd : test_gen_n_random_ti_cd()
 
 
 def run_simulations():

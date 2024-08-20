@@ -211,23 +211,25 @@ def build_ti_cd(ti_frames_list,
     return ti_list, cd_list
 
 
-def gen_twenty_random_ti_cd(nc, nr,
-                            sim_var, auxTI_var, auxSG_var,
-                            names_var, 
-                            simgrid_mask,
-                            condIm_var = {},
-                            method = "DependentCircles",
-                            ti_pct_area = 90, ti_nshapes = 10, 
-                            ti_sg_overlap_percentage = 10, 
-                            pct_sg = 10, pct_ti = 30, 
-                            cc_sg = None, rr_sg = None, 
-                            cc_ti = None, rr_ti = None,
-                            seed = None):
+def gen_n_random_ti_cd(n, nc, nr,
+                        sim_var, auxTI_var, auxSG_var,
+                        names_var, 
+                        simgrid_mask,
+                        condIm_var = {},
+                        method = "DependentCircles",
+                        ti_pct_area = 90, ti_nshapes = 10, 
+                        ti_sg_overlap_percentage = 10, 
+                        pct_sg = 10, pct_ti = 30, 
+                        cc_sg = None, rr_sg = None, 
+                        cc_ti = None, rr_ti = None,
+                        seed = None):
     """
     Generate twenty random training images (TIs) and conditional data (CD) based on the selected method.
 
     Parameters:
     -----------
+    n : int 
+        Number of iterations to operate.
     nc : int
         Number of columns in the grid.
     nr : int
@@ -283,29 +285,34 @@ def gen_twenty_random_ti_cd(nc, nr,
     """        
     if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]:
         raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiCd\".")
+    
     ti_lists = []
     cd_lists = []
     appendFlags = [False]
-    for i in range(20):
+    
+    for i in range(n):
         while not all(appendFlags):
+        
             if method == "DependentCircles":
                 ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                
             if method == "DependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                
             if method == "IndependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                
             if method == "ReducedTiCd":
                 ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
+                
             appendFlags = [np.all(np.isin(np.unique(cd.val), np.unique(ti.val))) for cd in cd_list for ti in ti_list]
         cd_lists.append(cd_list)
         ti_lists.append(ti_list) 
         
     return cd_lists, ti_lists
 
-def chose_random_masks():
-    return
