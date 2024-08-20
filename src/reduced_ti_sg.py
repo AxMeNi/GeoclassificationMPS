@@ -385,7 +385,7 @@ def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_s
         return False
 
     if pos == "TOPRIGHT":
-        if (c_ti + cc_ti < c_overlap + cc_overlap) or (r_ti + rr_ti < r_overlap + rr_overlap):
+        if (c_ti + cc_ti < c_overlap + cc_overlap) or (r_ti + rr_ti < r_overlap + rr_overlap) :
             return False
 
     if pos == "RIGHT":
@@ -393,23 +393,23 @@ def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_s
             return False
 
     if pos == "BOTTOMRIGHT":
-        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti < c_overlap + cc_overlap):
+        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti < c_overlap + cc_overlap) or (c_ti > c_overlap + cc_overlap) or (r_ti > r_overlap):
             return False
 
     if pos == "BOTTOM":
-        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap):
+        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap) or (r_ti > r_overlap) :
             return False
 
     if pos == "BOTTOMLEFT":
-        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap):
+        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap) or (r_ti > r_overlap) or (c_ti > c_overlap) :
             return False
 
     if pos == "LEFT":
-        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap):
+        if (r_ti + rr_ti != r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap) or (r_ti > r_overlap) or (c_ti > c_overlap) :
             return False
 
     if pos == "TOPLEFT":
-        if (r_ti + rr_ti < r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap):
+        if (r_ti + rr_ti < r_overlap + rr_overlap) or (c_ti + cc_ti != c_overlap + cc_overlap) or (r_ti > r_overlap + rr_overlap) or (c_ti > c_overlap):
             return False
 
     if pos == "TOP":
@@ -495,13 +495,13 @@ def get_ti_sg(cc_dg, rr_dg,
         if (pct_ti > 100):
             raise ValueError(f"The percentage of the grid covered by the TI provided is higher than 100! Please consider chosing a percentage lower than 100.")
     
-    if  (pct_sg is not None):
-        if (pct_ti > 100):
+    if (pct_sg is not None):
+        if (pct_sg > 100):
             raise ValueError(f"The percentage of the grid covered by the simulation grid provided is higher than 100! Please consider chosing a percentage lower than 100.")
-    
     
     if (cc_sg is None) and (rr_sg is None):
         area_sg = int(pct_sg/100 * (cc_dg * rr_dg))
+        
         cc_sg_list, rr_sg_list = generate_random_dimensions(cc_dg, rr_dg, area_sg)
     else:
         if (cc_sg > cc_dg) or (rr_sg > rr_dg):
@@ -514,10 +514,11 @@ def get_ti_sg(cc_dg, rr_dg,
         if (cc_ti > cc_dg) or (rr_ti > rr_dg):
             raise ValueError(f"The dimensions of the TI are too large! Please enter the dimensions within the auxiliary grid limits: nmax_columns = {cc_dg}, nmax_rows = {rr_dg}.")
     
+    
     while cc_sg_list.size > 0:
     
-        cc_sg, rr_sg, cc_sg_list, rr_sg_list = chose_random_dimensions(cc_sg_list, rr_sg_list)
-        
+        cc_sg, rr_sg, cc_sg_list, rr_sg_list = chose_random_dimensions(cc_sg_list, rr_sg_list)           
+                
         positions_sg = generate_random_sg_origin(cc_dg, rr_dg, cc_sg, rr_sg)
 
         while positions_sg.size > 0:
@@ -551,9 +552,10 @@ def get_ti_sg(cc_dg, rr_dg,
                         valid_ti_pos = check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_sg, c_overlap, r_overlap, cc_overlap, rr_overlap, pos)
 
                         if valid_ti_pos :
+
                             return c_sg, cc_sg, r_sg ,rr_sg, c_overlap, cc_overlap, r_overlap, rr_overlap, c_ti, cc_ti, r_ti, rr_ti
     
-    print("No position matched with the paramaters given to create the simulation grid and the TI, please change the parameters.")
+    print("No position matched with the given paramaters to create the simulation grid and the TI, please change the parameters.")
     exit()
     
     

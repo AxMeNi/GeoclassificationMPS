@@ -151,20 +151,17 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
         
         rr_end = min(nr, rr_start + side_length)
         cc_end = min(nc, cc_start + side_length)
-        
+
         #Rows and columns
         rr, cc = rectangle(start=(rr_start, cc_start), end=(rr_end, cc_end), shape=(nr, nc))
         
         # Ensure rr and cc are within bounds
         rr = np.clip(rr, 0, nr-1)
         cc = np.clip(cc, 0, nc-1)
-
+  
         square_frame = np.zeros((nr, nc))
         square_frame[rr, cc] = 1
-        
         ti_frames_list.append(square_frame)
-        
-        current_pct = np.sum(square_frame) / (nc * nr) * 100
         
     need_to_cut = [True for _ in range(len(ti_frames_list))]
     
@@ -173,7 +170,7 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
 
 
 
-def gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
+def gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
     """
     Generate a binary frame representing a single rectangle within a grid and a simulation grid mask.
 
@@ -225,6 +222,7 @@ def gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10
 
     nr_frame, nc_frame = rectangle(start=(r0_ti, c0_ti), end=(r0_ti+rr_ti, c0_ti + cc_ti), shape=(nr, nc))
     nr_mask, nc_mask = rectangle(start=(r0_sg, c0_sg), end=(r0_sg+rr_sg, c0_sg+cc_sg), shape=(nr, nc))
+    # nr_frame, nc_frame = rectangle(start=(r0_overlap, c0_overlap), end=(r0_overlap+rr_overlap, c0_overlap+cc_overlap), shape=(nr, nc))
     
     frame[nr_frame, nc_frame] = 1
     simgrid_mask[nr_mask, nc_mask] = 1

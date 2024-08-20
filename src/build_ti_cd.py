@@ -201,3 +201,22 @@ def build_ti_cd(ti_frames_list,
         cd_list.append(cd)  
     
     return ti_list, cd_list
+
+
+def gen_twenty_random_ti_cd(seed, method = "DependentCircles"):
+    if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", ""]
+    ti_lists = []
+    cd_lists = []
+    for i in range(19):
+        while cd.unique not in ti.unique:
+            if method = "DependentCircles"
+            gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed)
+            ti_list, cd_list = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
+            seed += 1
+        cd_lists.append()
+        ti_lists.append() 
+        
+    return 
+
+def chose_random_masks():
+    return

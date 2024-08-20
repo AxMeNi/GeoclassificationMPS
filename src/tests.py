@@ -230,14 +230,13 @@ def test_merge_masks():
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
-    nc = 100  # nombre de colonnes
-    nr = 100  # nombre de lignes
+    nc = 1000  # nombre de colonnes
+    nr = 1000  # nombre de lignes
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
     ti_ndisks = 10  # nombre de disques
-    seed = 15  # graine pour le générateur de nombres aléatoires
+    seed = 852  # graine pour le générateur de nombres aléatoires
 
-    mask, need_to_cut = gen_ti_frame_circles(nc, nr, ti_pct_area, ti_ndisks, seed)[0]
-
+    mask = gen_ti_frame_circles(nc, nr, ti_pct_area, ti_ndisks, seed)[0][0]
     plt.figure(figsize=(8, 8))
     plt.imshow(mask, cmap='gray', origin='lower')
     plt.title(f'Binary Mask Generated with {ti_ndisks} Disks')
@@ -248,9 +247,9 @@ def test_gen_ti_frame_circles():
 def test_gen_ti_frame_squares():
     nc = 337  # nombre de colonnes
     nr = 529  # nombre de lignes
-    ti_pct_area = 87  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 15  # nombre de carrés
-    seed = 852  # graine pour le générateur de nombres aléatoires
+    ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
+    ti_nsquares = 5  # nombre de carrés
+    seed = 854  # graine pour le générateur de nombres aléatoires
     
     mask_list, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)
     mask = mask_list[0]
@@ -262,15 +261,14 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     print("\t\tTESTING GEN TI FRAME SEPARATED SQUARES")
     print("##################################################################\n")
 
-    nc = 1000  # nombre de colonnes
-    nr = 1000  # nombre de lignes
-    ti_pct_area = 10  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 25  # nombre de carrés
-    seed = 15  
+    nc = 337  # nombre de colonnes
+    nr = 529 # nombre de lignes
+    ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
+    ti_nsquares = 5  # nombre de carrés
+    seed = 854 
     plot_size = nc
     
     squares, need_to_cut = gen_ti_frame_separatedSquares(nc, nr, ti_pct_area, ti_nsquares, seed)
-    
     
     num_plots = len(squares)
     cols = 5  # Number of columns
@@ -287,9 +285,7 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
         if i < num_plots:
             square_plot = np.zeros((plot_size, plot_size))
             square = squares[i]
-            for idx in square:
-                if 0 <= idx[0] < plot_size and 0 <= idx[1] < plot_size:
-                    square_plot[idx[0], idx[1]] = 1
+            square_plot = np.where((square == 1), 1, 0)
             ax.imshow(square_plot, cmap='gray', origin='lower')
             ax.set_title(f"Square {i}")
         else:
@@ -298,15 +294,15 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     plt.tight_layout()
     plt.show()
 
-def test_gen_ti_frame_single_rectangle():
+def test_gen_ti_frame_cd_mask():
     print("\n##################################################################")
     print("\t\tTESTING GEN TI FRAME SINGLE RECTANGLE")
     print("##################################################################\n")
     
-    nc, nr = 624, 350
+    nc, nr = 1000, 1000
     seed = 4
    
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -317,7 +313,7 @@ def test_gen_ti_frame_single_rectangle():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5, seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5, seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -328,7 +324,7 @@ def test_gen_ti_frame_single_rectangle():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -339,13 +335,13 @@ def test_gen_ti_frame_single_rectangle():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 3, cc_ti = 100, rr_ti = 50, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 2, cc_ti = 100, rr_ti = 50")
+    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
@@ -370,7 +366,7 @@ def test_build_ti_cd():
      
     print("**************************")
     
-    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
     simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
     ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
 
@@ -407,9 +403,9 @@ def test_build_ti_cd():
     
     print(">>>>> Test completed successfully with single TI frame.\n**************************")
     
-    #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =70, ti_ndisks = 5, seed = seed)
-    ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 87, 2, seed)
-    #ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 87, 2, seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =87, ti_ndisks = 5, seed = seed)
+    #ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 90, 5, seed)
+    ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 90, 5, seed)
     ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
 
                 
@@ -427,28 +423,26 @@ def test_build_ti_cd():
         print(f"CD {idx + 1} shape: {cd.val.shape}")
         
     # Visualize the Training Images (TIs)
-    for idx, ti in enumerate(ti_list2):
-        assert isinstance(ti, gn.img.Img), "TI is not of type Img."
-        imgplt.drawImage2D(ti, iv=0, categ=True, title=f"TI {idx + 1}, {ti.varname[0]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
-        plt.show()
-        imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
-        plt.show()
+    # for idx, ti in enumerate(ti_list2):
+        # assert isinstance(ti, gn.img.Img), "TI is not of type Img."
+        # imgplt.drawImage2D(ti, iv=0, categ=True, title=f"TI {idx + 1}, {ti.varname[0]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=1, title=f"TI {idx + 1}, {ti.varname[1]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=2, title=f"TI {idx + 1}, {ti.varname[2]}")
+        # plt.show()
+        # imgplt.drawImage2D(ti, iv=3, title=f"TI {idx + 1}, {ti.varname[3]}")
+        # plt.show()
 
     # Visualize the Conditioning Data (CDs)
-    for idx, cd in enumerate(cd_list2):
-        assert isinstance(cd, gn.img.Img), "CD is not of type Img."
-        imgplt.drawImage2D(cd, iv=0, categ=False, title=f"CD {idx + 1},{cd.varname[0]}")
-        plt.show()
-        imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
-        plt.show()
-        imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
-        plt.show()
-        imgplt.drawImage2D(cd, iv=3, title=f"CD {idx + 1},{ti.varname[3]}")
-        plt.show()
+    # for idx, cd in enumerate(cd_list2):
+        # assert isinstance(cd, gn.img.Img), "CD is not of type Img."
+        # imgplt.drawImage2D(cd, iv=0, categ=False, title=f"CD {idx + 1},{cd.varname[0]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=1, title=f"CD {idx + 1},{ti.varname[1]}")
+        # plt.show()
+        # imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
+        # plt.show()
     
     
     print(">>>>> Test completed successfully with separated TI frames.\n**************************")
@@ -475,15 +469,15 @@ def test_build_ti_cd():
         nx=nc, ny=nr, nz=1,
         sx=1, sy=1, sz=1,
         ox=0, oy=0, oz=0,
-        nv=4, varname=["grid_geo","grid_grv","gris_lmp","grid_mag"],
+        nv=2, varname=["grid_geo","grid_grv"],
         TI=ti_list2,
         #pdfTI = pdf_ti,
         mask = simgrid_mask1,
         dataImage=cd_list2,
-        distanceType=['categorical',"continuous","continuous","continuous"],
-        nneighboringNode=4*[24],
-        distanceThreshold=4*[0.1],
-        maxScanFraction=2*[0.5],
+        distanceType=['categorical',"continuous"],
+        nneighboringNode=2*[24],
+        distanceThreshold=2*[0.1],
+        maxScanFraction=1*[0.5],
         npostProcessingPathMax=1,
         seed=seed,
         nrealization=1
@@ -499,7 +493,8 @@ def test_build_ti_cd():
     
     plt.show()
     
-    gn.imgplot.drawImage2D(sim[0], iv=1, categ=False, title=f'Real #{0} - {deesse_input.varname[1]}')
+    # gn.imgplot.drawImage2D(sim[0], iv=1, categ=False, title=f'Real #{0} - {deesse_input.varname[1]}')
     
-    plt.show()
+    # plt.show()
     
+def test_gen_twenty_random_ti_cd():

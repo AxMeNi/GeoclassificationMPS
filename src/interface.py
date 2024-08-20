@@ -10,6 +10,13 @@ from data_treatment import *
 import numpy as np
 import pandas as pd
 
+#################################################################
+#     ##  ### ##      ##    ##    ###     ##    ####   ##    ####
+### #### # ## #### ##### ##### ### ## ###### ### ## ##### #######
+### #### ## # #### #####   ###  # ###   ####     ## #####   #####
+### #### ###  #### ##### ##### # #### ###### ### ## ##### #######
+#     ## #### #### #####    ## ## ### ###### ### ###   ##    ####
+#################################################################
 
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 # ║ INTERFACE FOR PROGRAMMING A COMBINED DEESSE AND LOOPUI SIMULATION                                                  ║
@@ -28,16 +35,19 @@ def get_simulation_info():
     #
     # Column 1: var_name      - The name of the variable.
     # Column 2: categ_conti   - The type of variable, either "categorical" or "continuous".
-    # Column 3: sim_aux       - Indicates whether the variable is an auxiliary ("aux") or simulated ("sim") variable.
+    # Column 3: nature        - Indicates whether the variable is asimulated ("sim") variable, auxiliary descriptive ("auxTI") variable, auxiliary conditioning ("auxSG"), or conditioning ("cond") variable.
     # Column 4: path          - The full file path to the .npy file containing the numpy array data. (format .npy and the array must be in 2 dimensions)
     #
     # Example (first line contains headers):
     #
-    # var_name;categ_conti;sim_aux;path
-    # grid_geo;categorical;aux;C:\path\to\grid_geo.npy
+    # var_name;categ_conti;nature;path
+    # grid_geo;categorical;sim;C:\path\to\grid_geo_sim.npy
     # grid_grv;continuous;sim;C:\path\to\grid_grv.npy
     # grid_lmp;continuous;sim;C:\path\to\grid_lmp.npy
     # grid_mag;continuous;sim;C:\path\to\grid_mag.npy
+    # grid_geo;categorical;cond;C:\path\to\grid_geo_cond.npy
+    # auxiliary;continuous;auxTI;C:\path\to\auxTI.npy
+    # auxiliary;continuous;auxSG;C:\path\to\auxSG.npy
          
     ##################### RANDOM PARAMETERS #####################
 
@@ -86,21 +96,19 @@ def get_simulation_info():
     
     ##################### PICKING SIM AND AUX VAR #####################
     
-    simulated_var, auxiliary_var, names_var, types_var = create_auxiliary_and_simulated_var(csv_file_path)
-    simulated_var, auxiliary_var = check_variables(simulated_var, auxiliary_var, names_var, types_var, novalue)
-    
-    
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
+        
     ##################### GRID DIMENSIONS #####################
-    nr, nc = get_sim_grid_dimensions(simulated_var)
-
-
     
+    nr, nc = get_sim_grid_dimensions(sim_var)
+   
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
-    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_single_rectangle(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
-    ti_list, cd_list = build_ti(ti_frame, need_to_cut, simulated_var, cc_sg, rr_sg, auxiliary_var, novalue, names_var, simgrid_mask)
+    ti_frame, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_list, cd_list = build_ti(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, names_var, simgrid_mask)
         
         
-    return simulated_var, auxiliary_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
+    return sim_var, auxTI_var, types_var, names_var, nn, dt, ms, numberofmpsrealizations, nthreads, configs
             
 
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
