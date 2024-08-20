@@ -13,7 +13,7 @@ from skimage.morphology import binary_dilation  # For morphological operations
 from time import *
 from math import *
 
-def gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed):
+def gen_ti_frame_circles(nr, nc, ti_pct_area = 90, ti_ndisks = 10, seed = None):
     """
     Generate a binary frame representing multiple disks within a grid.
 
@@ -37,6 +37,9 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed):
     need_to_cut : list of boolean
         True if the simulated_var will be needed to be cut within the ti_frame shape to create a smaller TI.
     """
+    if seed is None:
+        seed = int(rd.randint(1,2**32-1))
+        print(f"Seed used to generate the TI : {seed}")
     rng = np.random.default_rng(seed=seed)
     rndr = rng.integers(low=0, high=nr, size=ti_ndisks)
     rndc = rng.integers(low=0, high=nc, size=ti_ndisks)
@@ -56,7 +59,7 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed):
     
     return ti_frame, need_to_cut
     
-def gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed):
+def gen_ti_frame_squares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None):
     """
     Generate a binary frame representing multiple squares within a grid.
 
@@ -80,6 +83,9 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed):
     need_to_cut : list of boolean
         True if the simulated_var will be needed to be cut within the ti_frame shape to create a smaller TI.
     """
+    if seed is None:
+        seed = int(rd.randint(1,2**32-1))
+        print(f"Seed used to generate the TI : {seed}")
     rng = np.random.default_rng(seed=seed)
     rndr = rng.integers(low=0, high=nr, size=ti_nsquares)
     rndc = rng.integers(low=0, high=nc, size=ti_nsquares)
@@ -106,7 +112,7 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed):
     
     return ti_frame, need_to_cut
     
-def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
+def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None):
     """
     Generate a binary frame representing multiple squares within a grid and return each square as a separate array.
 
@@ -130,6 +136,9 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed):
     need_to_cut : list of boolean
         True if the simulated_var will be needed to be cut within the ti_frame shape to create a smaller TI.
     """
+    if seed is None:
+        seed = int(rd.randint(1,2**32-1))
+        print(f"Seed used to generate the TI : {seed}")
     rng = np.random.default_rng(seed=seed)
     rndr = rng.integers(low=0, high=nr, size=ti_nsquares)
     rndc = rng.integers(low=0, high=nc, size=ti_nsquares)

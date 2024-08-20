@@ -4,8 +4,12 @@ __nom_fichier__ = "interface"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
+from ti_mask_generation import gen_ti_frame_cd_mask, gen_ti_frame_circles, gen_ti_frame_squares, gen_ti_frame_separatedSquares
+from sg_mask_generation import merge_masks
+
 import numpy as np
 import geone as gn
+import os
 from time import time
 
 
@@ -16,8 +20,8 @@ def build_ti_cd(ti_frames_list,
                 nc_simgrid, nr_simgrid, 
                 auxTI_var, auxSG_var,
                 names_var,
-                simgrid_mask = None,
-                condIm_var = None):
+                simgrid_mask,
+                condIm_var = {}):
     """
     Build training images (TI) and conditioning data (CD) for geostatistical simulations.
 
@@ -107,7 +111,9 @@ def build_ti_cd(ti_frames_list,
                 ti.append_var(val=var_value_cut, varname=var_name)
                            
             gn.img.writeImageTxt(f"TI{i}.txt", ti)      
-            ti = gn.img.readImageTxt(f"TI{i}.txt")    
+            ti = gn.img.readImageTxt(f"TI{i}.txt")
+            os.remove(f"TI{i}.txt")
+            
             ti_list.append(ti)
             
         # Case for which no cut is needed
@@ -163,7 +169,8 @@ def build_ti_cd(ti_frames_list,
             cd.append_var(val=var_value_masked, varname=var_name)
         
     gn.img.writeImageTxt(f"{name}.txt", cd)      
-    cd = gn.img.readImageTxt(f"{name}.txt")     
+    cd = gn.img.readImageTxt(f"{name}.txt") 
+    os.remove(f"{name}.txt")
     
     cd_list.append(cd)    
 
@@ -196,27 +203,109 @@ def build_ti_cd(ti_frames_list,
                 cd.append_var(val=var_value_masked, varname=var_name)
         
         gn.img.writeImageTxt(f"{name}.txt", cd)      
-        cd = gn.img.readImageTxt(f"{name}.txt")     
+        cd = gn.img.readImageTxt(f"{name}.txt")
+        os.remove(f"{name}.txt")        
         
         cd_list.append(cd)  
     
     return ti_list, cd_list
 
 
-def gen_twenty_random_ti_cd(seed, method = "DependentCircles"):
-    if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", ""]
+def gen_twenty_random_ti_cd(nc, nr,
+                            sim_var, auxTI_var, auxSG_var,
+                            names_var, 
+                            simgrid_mask,
+                            condIm_var = {},
+                            method = "DependentCircles",
+                            ti_pct_area = 90, ti_nshapes = 10, 
+                            ti_sg_overlap_percentage = 10, 
+                            pct_sg = 10, pct_ti = 30, 
+                            cc_sg = None, rr_sg = None, 
+                            cc_ti = None, rr_ti = None,
+                            seed = None):
+    """
+    Generate twenty random training images (TIs) and conditional data (CD) based on the selected method.
+
+    Parameters:
+    -----------
+    nc : int
+        Number of columns in the grid.
+    nr : int
+        Number of rows in the grid.
+    sim_var : dict of geone Img
+        Dictionary containing the simulated variables.
+    auxTI_var : dict of geone Img
+        Dictionary containing the auxiliary variables for the training images.
+    auxSG_var : dict of geone Img
+        Dictionary containing the auxiliary variables for the simulation grid.
+    names_var : list
+        List of variable names.
+    simgrid_mask : ndarray
+        Mask defining the simulation grid.
+    condIm_var : dict of geone Img, optional
+        Dictionary containing conditioning image variables. Default is None.
+    method : str, optional
+        Method used to generate the TIs and CDs. Choose between "DependentCircles", "DependentSquares",
+        "IndependentSquares", and "ReducedTiCd". Default is "DependentCircles".
+    ti_pct_area : float, optional
+        Percentage of the grid area to cover with the training image shapes. Default is 90.
+    ti_nshapes : int, optional
+        Number of shapes to generate within the training image. Default is 10.
+    ti_sg_overlap_percentage : float, optional
+        Percentage overlap between the training image and the simulation grid. Default is 10.
+    pct_sg : float, optional
+        Percentage of the grid area to cover with the simulation grid. Default is 10.
+    pct_ti : float, optional
+        Percentage of the grid area to cover with the training image. Default is 30.
+    cc_sg : int, optional
+        Width of the simulation grid. If not provided, calculated based on `pct_sg`.
+    rr_sg : int, optional
+        Height of the simulation grid. If not provided, calculated based on `pct_sg`.
+    cc_ti : int, optional
+        Width of the training image. If not provided, calculated based on `pct_ti`.
+    rr_ti : int, optional
+        Height of the training image. If not provided, calculated based on `pct_ti`.
+    seed : int, optional
+        Seed for the random number generator. Default is None.
+
+    Returns:
+    --------
+    cd_lists : list of list
+        A list containing 20 lists of conditional data (CD) corresponding to the generated TIs.
+    ti_lists : list of list
+        A list containing 20 lists of training images (TI) generated according to the specified method.
+    
+    Raises:
+    -------
+    ValueError
+        If the method provided is not one of the valid options ("DependentCircles", "DependentSquares", 
+        "IndependentSquares", "ReducedTiCd").
+    """        
+    if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]:
+        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiCd\".")
     ti_lists = []
     cd_lists = []
-    for i in range(19):
-        while cd.unique not in ti.unique:
-            if method = "DependentCircles"
-            gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed)
-            ti_list, cd_list = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
-            seed += 1
-        cd_lists.append()
-        ti_lists.append() 
+    appendFlags = [False]
+    for i in range(20):
+        while not all(appendFlags):
+            if method == "DependentCircles":
+                ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
+                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+            if method == "DependentSquares":
+                ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
+                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+            if method == "IndependentSquares":
+                ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
+                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+            if method == "ReducedTiCd":
+                ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
+                merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
+                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
+            appendFlags = [np.all(np.isin(np.unique(cd.val), np.unique(ti.val))) for cd in cd_list for ti in ti_list]
+        cd_lists.append(cd_list)
+        ti_lists.append(ti_list) 
         
-    return 
+    return cd_lists, ti_lists
 
 def chose_random_masks():
     return

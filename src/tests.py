@@ -492,9 +492,55 @@ def test_build_ti_cd():
     gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
     
     plt.show()
-    
-    # gn.imgplot.drawImage2D(sim[0], iv=1, categ=False, title=f'Real #{0} - {deesse_input.varname[1]}')
-    
-    # plt.show()
+
     
 def test_gen_twenty_random_ti_cd():
+    import random
+    
+    seed = 852
+    random.seed(seed)
+    
+    nc, nr = 50, 50 
+    sim_var = {
+        'var1': np.random.randint(0, 5, size=(nr, nc)),
+        'var2': np.random.randint(0, 5, size=(nr, nc))
+    }
+    auxTI_var = {
+        'aux_var1': np.random.randint(0, 5, size=(nr, nc)),
+        'aux_var2': np.random.randint(0, 5, size=(nr, nc))
+    }
+    auxSG_var = {
+        'aux_var_sg1': np.random.randint(0, 5, size=(nr, nc)),
+        'aux_var_sg2': np.random.randint(0, 5, size=(nr, nc))
+    }
+    names_var = ['var1', 'var2']
+    simgrid_mask = np.ones((nr, nc))
+    condIm_var = {} 
+    
+    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"
+    method = "ReducedTiCd" 
+
+    cd_lists, ti_lists = gen_twenty_random_ti_cd(
+        nc=nc, nr=nr, 
+        sim_var=sim_var, auxTI_var=auxTI_var, auxSG_var=auxSG_var, 
+        names_var=names_var, simgrid_mask=simgrid_mask, 
+        condIm_var=condIm_var, 
+        method=method,
+        ti_pct_area=90, ti_nshapes=10, 
+        ti_sg_overlap_percentage=10, 
+        pct_sg=10, pct_ti=30, 
+        cc_sg=None, rr_sg=None, 
+        cc_ti=None, rr_ti=None,
+        seed=seed
+    )
+
+    for cd_list, ti_list in zip(cd_lists, ti_lists):
+        for cd, ti in zip(cd_list, ti_list):
+            print(np.unique(ti.val), np.unique(cd.val))
+
+    appendFlags = [np.all(np.isin(np.unique(cd.val), np.unique(ti.val))) for cd in cd_lists[0] for ti in ti_lists[0]]
+
+    # Verify if all conditions are True
+    assert all(appendFlags), "The condition for exiting the while loop was not met."
+
+    print("Test passed. The condition for exiting the while loop was met.")
