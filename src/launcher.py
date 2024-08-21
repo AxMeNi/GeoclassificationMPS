@@ -13,9 +13,14 @@ and visualization. It also loads pre-processed data from a pickle file.
 Author: Guillaume Pirot
 Date: Fri Jul 28 11:12:36 2023
 """
-from simulation_functions_ter import *
 from ti_mask_generation import *
+from data_treatment import get_unique_names_and_types
+from sg_mask_generation import *
+from build_ti_cd import *
+
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+from datetime import datetime 
 
 
 #### COLORS PARAMETERS
@@ -35,14 +40,13 @@ def launcher(seed,
             pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
             nn, dt, ms, numberofmpsrealizations, nthreads,
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
-            sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
             nr, nc
             ):
     """
 
     """
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
-    time.sleep(timesleep)
     
     #Initialization of variables
     ti_list = []
@@ -54,30 +58,65 @@ def launcher(seed,
     #Creation of the TI and of the SG
     if "DependentCircles" in ti_methods :
         ti_frame_DC, ntc_DC = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
-        ti_list_DC, cd_list_DC = build_ti_cd(ti_frame_DC, need_to_cut_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-        ti_list.append(ti_list_DC)
-        cd_list.append(cd_list_DC)
+        ti_list_DC, cd_list_DC = build_ti_cd(ti_frame_DC, ntc_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.extend(ti_list_DC)
+        cd_list.extend(cd_list_DC)
+        simgrid_mask = simgrid_mask_aux
+        cc_sg, rr_sg = nc, nr
         
     if "DependentSquares" in ti_methods :
         ti_frame_DS, ntc_DS = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
-        ti_list_DS, cd_list_DS = build_ti_cd(ti_frame_DS, need_to_cut_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-        ti_list.append(ti_list_DS)
-        cd_list.append(cd_list_DS)
+        ti_list_DS, cd_list_DS = build_ti_cd(ti_frame_DS, ntc_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.extend(ti_list_DS)
+        cd_list.extend(cd_list_DS)
+        simgrid_mask = simgrid_mask_aux
+        cc_sg, rr_sg = nc, nr
         
     if "IndependentSquares" in ti_methods :
         ti_frame_IS, ntc_IS = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
-        ti_list_IS, cd_list_IS = build_ti_cd(ti_frame_IS, need_to_cut_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-        ti_list.append(ti_list_IS)
-        cd_list.append(cd_list_IS)
+        ti_list_IS, cd_list_IS = build_ti_cd(ti_frame_IS, ntc_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.extend(ti_list_IS)
+        cd_list.extend(cd_list_IS)
+        simgrid_mask = simgrid_mask_aux
+        cc_sg, rr_sg = nc, nr
         
-    if "ReducedTiCd" in ti_methods :
-        ti_frame_RTC, need_to_cut_RTC, simgrid_mask_RTC, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
-        simgrid_mask_merged = merge_masks(simgrid_mask_aux, simgrid_mask_RTC)
-        ti_list_RTC, cd_list_RTC = build_ti_cd(ti_frame_RTC, need_to_cut_RTC, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask_merged, condIm_var)
-        ti_list.append(ti_list_RTC)
-        cd_list.append(cd_list_RTC)
+    if "ReducedTiSg" in ti_methods :
+        ti_frame_RTS, ntc_RTS, simgrid_mask_RTS, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
+        simgrid_mask = simgrid_mask_RTS
+        ti_list_RTS, cd_list_RTS = build_ti_cd(ti_frame_RTS, ntc_RTS, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+        ti_list.extend(ti_list_RTS)
+        cd_list.extend(cd_list_RTS)
+        
     
     nTI = len(ti_list)
+    names, distance_types = get_unique_names_and_types(names_var, types_var)
     
+    deesse_input = gn.deesseinterface.DeesseInput(
+        nx=cc_sg, ny=rr_sg, nz=1,
+        sx=1, sy=1, sz=1,
+        ox=0, oy=0, oz=0,
+        nv=nvar, varname=names,
+        TI=ti_list,
+        #pdfTI = pdf_ti,
+        mask = simgrid_mask,
+        dataImage=cd_list,
+        distanceType=distance_types,
+        nneighboringNode=nvar*[nn],
+        distanceThreshold=nvar*[dt],
+        maxScanFraction=nTI*[ms],
+        npostProcessingPathMax=1,
+        seed=seed,
+        nrealization=1
+    ) 
+    
+    deesse_output = gn.deesseinterface.deesseRun(deesse_input)
+
+    sim = deesse_output['sim']
+    
+    plt.subplots(1, 4, figsize=(17,10), sharex=True, sharey=True)
+    
+    gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
+    
+    plt.show()
     
     return

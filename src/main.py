@@ -5,6 +5,7 @@ __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
 from tests import *
+from interface import *
 
 def run_tests():
     """
@@ -17,7 +18,7 @@ def run_tests():
     t_CountVariables =              False
     t_CheckVariables =              False
     t_GetSimGridDimensions =        False
-    t_GetUniqueNamesAndTypes =      True
+    t_GetUniqueNamesAndTypes =      False
     
     t_generate_random_dimensions =  False #TODO
     t_chose_random_dimensions =     False #TODO
@@ -71,8 +72,8 @@ def run_simulations():
     
 if __name__ == '__main__':
 
-    bool_run_simu = False
-    bool_run_tests = True
+    bool_run_simu = True
+    bool_run_tests = False
     
-    if bool_run_simu: run_simulations()
+    if bool_run_simu: run_simulation()
     if bool_run_tests: run_tests()

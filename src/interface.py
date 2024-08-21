@@ -60,10 +60,14 @@ def get_simulation_info():
 
     ##################### TRAINING IMAGE PARAMETERS #####################
     
-    ti_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"] #List of method
-    ti_pct_area = None 
-    ti_nshapes = 1   
+    #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
+    ti_methods = ["DependentCircles", "IndependentSquares"] #List of methods
     
+    #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
+    ti_pct_area = 90
+    ti_nshapes = 15 
+    
+    #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
     pct_sg=10
     pct_ti=30
@@ -74,7 +78,7 @@ def get_simulation_info():
     
     ##################### DEESSE SIMULATION PARAMETERS #####################
 
-    nn = 12  # Number of neighboring nodes
+    nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
     numberofmpsrealizations = 1  # Number of Deesse realizations
@@ -88,7 +92,7 @@ def get_simulation_info():
     cmap_name = 'my_tab20'
     mycmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
     ticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
-    print(type(mycmap),type(ticmap), type(cm))
+
     ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False
@@ -112,7 +116,7 @@ def get_simulation_info():
             nn, dt, ms, numberofmpsrealizations, nthreads, \
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
             shorten, \
-            sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
             nr, nc 
             
 
@@ -170,7 +174,7 @@ def launch_simulation(seed,
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,
-                    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
                     nr, nc):
     
     
@@ -179,9 +183,30 @@ def launch_simulation(seed,
     else :
         launcher(seed, 
                 ti_methods, 
-                ti_pct_area, ti_shapes,
+                ti_pct_area, ti_nshapes,
                 pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
                 nn, dt, ms, numberofmpsrealizations, nthreads,
                 cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
-                sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
                 nr, nc)
+
+def run_simulation():
+    seed, \
+    ti_methods, \
+    ti_pct_area, ti_nshapes, \
+    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+    nn, dt, ms, numberofmpsrealizations, nthreads, \
+    cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
+    shorten, \
+    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+    nr, nc = get_simulation_info()
+    
+    launch_simulation(seed, 
+                    ti_methods, 
+                    ti_pct_area, ti_nshapes,
+                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                    nn, dt, ms, numberofmpsrealizations, nthreads,
+                    cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+                    shorten,
+                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                    nr, nc)

@@ -419,7 +419,7 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     plt.tight_layout()
     plt.show()
 
-def test_gen_ti_frame_cd_mask():
+def test_gen_ti_frame_sg_mask():
     print("\n##################################################################")
     print("\t\tTESTING GEN TI FRAME SINGLE RECTANGLE")
     print("##################################################################\n")
@@ -427,7 +427,7 @@ def test_gen_ti_frame_cd_mask():
     nc, nr = 1000, 1000
     seed = 4
    
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -438,7 +438,7 @@ def test_gen_ti_frame_cd_mask():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5, seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5, seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -449,7 +449,7 @@ def test_gen_ti_frame_cd_mask():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -460,7 +460,7 @@ def test_gen_ti_frame_cd_mask():
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
@@ -491,7 +491,7 @@ def test_build_ti_cd():
      
     print("**************************")
     
-    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
     simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
     ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
 
@@ -645,8 +645,8 @@ def test_gen_n_random_ti_cd():
     simgrid_mask = np.ones((nr, nc))
     condIm_var = {} 
     
-    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"
-    method = "ReducedTiCd" 
+    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
+    method = "ReducedTiSg" 
 
     cd_lists, ti_lists = gen_n_random_ti_cd(
         n=20,

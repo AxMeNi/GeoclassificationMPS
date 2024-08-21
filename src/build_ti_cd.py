@@ -284,7 +284,7 @@ def gen_n_random_ti_cd(n, nc, nr,
         "IndependentSquares", "ReducedTiCd").
     """        
     if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]:
-        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiCd\".")
+        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiSg\".")
     
     ti_lists = []
     cd_lists = []
@@ -305,7 +305,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 
-            if method == "ReducedTiCd":
+            if method == "ReducedTiSg":
                 ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)

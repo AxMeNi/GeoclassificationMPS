@@ -22,7 +22,7 @@ def check_ti_methods(ti_methods):
     ------
     ValueError
         If none of the required methods ("DependentCircles", "DependentSquares", "IndependentSquares", 
-        "ReducedTiCd") are found in the `ti_methods` list, a ValueError is raised with an appropriate 
+        "ReducedTiSg") are found in the `ti_methods` list, a ValueError is raised with an appropriate 
         error message.
     
     Returns
@@ -30,11 +30,13 @@ def check_ti_methods(ti_methods):
     None
         This function does not return any value; it either completes successfully or raises an exception.
     """
-    required_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]
+    required_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"]
     
     if not any(method in ti_methods for method in required_methods):
-        raise ValueError('ti_methods must contain at least one of the four following methods: "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"')
+        raise ValueError('The list ti_methods must contain at least one of the four following methods: "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"')
         exit()
+    if ("ReducedTiSg" in ti_methods) and (len(ti_methods) > 1):
+        raise ValueError("Cannot chose ReducedTiSg with other methods, ReducedTiSg must be chosen solo.")
     return
 
 def create_variables(csv_file_path):
