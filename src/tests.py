@@ -571,52 +571,9 @@ def test_build_ti_cd():
     
     
     print(">>>>> Test completed successfully with separated TI frames.\n**************************")
-    
-    # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
-    # xx = im.xx()[0]
-    # yy = im.yy()[0]
-    # nTI = 2
-    # pB = (np.minimum(np.maximum(xx, 190), 290) - 190) / 100
-    # pA = 1.0 - pB
-    # pdf_ti = np.zeros((2, 1, nr, nc))
-    # pdf_ti[0,0,:,:] = pA
-    # pdf_ti[1,0,:,:] = pB
-    # im.append_var(pdf_ti, varname=['pA', 'pB'])
-    # plt.subplots(1,2, figsize=(17,5), sharey=True) # 1 x 2 sub-plots
-    # plt.subplot(1,2,1)
-    # gn.imgplot.drawImage2D(im, iv=0, title='Probability to select TI A')
-    # plt.subplot(1,2,2)
-    # gn.imgplot.drawImage2D(im, iv=1, title='Probability to select TI B')
-    # plt.show()
+
     
 
-    deesse_input = gn.deesseinterface.DeesseInput(
-        nx=nc, ny=nr, nz=1,
-        sx=1, sy=1, sz=1,
-        ox=0, oy=0, oz=0,
-        nv=2, varname=["grid_geo","grid_grv"],
-        TI=ti_list2,
-        #pdfTI = pdf_ti,
-        mask = simgrid_mask1,
-        dataImage=cd_list2,
-        distanceType=['categorical',"continuous"],
-        nneighboringNode=2*[24],
-        distanceThreshold=2*[0.1],
-        maxScanFraction=1*[0.5],
-        npostProcessingPathMax=1,
-        seed=seed,
-        nrealization=1
-    )  
-
-    deesse_output = gn.deesseinterface.deesseRun(deesse_input)
-
-    sim = deesse_output['sim']
-    
-    plt.subplots(1, 4, figsize=(17,10), sharex=True, sharey=True)
-    
-    gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
-    
-    plt.show()
 
     
 def test_gen_n_random_ti_cd():

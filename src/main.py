@@ -6,6 +6,9 @@ __date__ = "juillet 2024"
 
 from tests import *
 from interface import *
+    
+bool_run_simu = True
+bool_run_tests = False
 
 def run_tests():
     """
@@ -64,16 +67,9 @@ def run_tests():
     if t_BuildTiCd : test_build_ti_cd()
     if t_GenNRandomTiCd : test_gen_n_random_ti_cd()
 
-
-def run_simulations():
-    launch_simulation()
-    
-    
+   
     
 if __name__ == '__main__':
-
-    bool_run_simu = True
-    bool_run_tests = False
     
     if bool_run_simu: run_simulation()
     if bool_run_tests: run_tests()

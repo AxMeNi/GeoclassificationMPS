@@ -4,7 +4,7 @@ __nom_fichier__ = "interface"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
-from ti_mask_generation import gen_ti_frame_cd_mask, gen_ti_frame_circles, gen_ti_frame_squares, gen_ti_frame_separatedSquares
+from ti_mask_generation import gen_ti_frame_sg_mask, gen_ti_frame_circles, gen_ti_frame_squares, gen_ti_frame_separatedSquares
 from sg_mask_generation import merge_masks
 
 import numpy as np
@@ -224,7 +224,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                         cc_ti = None, rr_ti = None,
                         seed = None):
     """
-    Generate twenty random training images (TIs) and conditional data (CD) based on the selected method.
+    Generate n random training images (TIs) and conditional data (CD) based on the selected method.
 
     Parameters:
     -----------
@@ -273,9 +273,9 @@ def gen_n_random_ti_cd(n, nc, nr,
     Returns:
     --------
     cd_lists : list of list
-        A list containing 20 lists of conditional data (CD) corresponding to the generated TIs.
+        A list containing n lists of conditional data (CD) corresponding to the generated TIs.
     ti_lists : list of list
-        A list containing 20 lists of training images (TI) generated according to the specified method.
+        A list containing n lists of training images (TI) generated according to the specified method.
     
     Raises:
     -------

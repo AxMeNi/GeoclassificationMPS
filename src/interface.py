@@ -60,8 +60,8 @@ def get_simulation_info():
 
     ##################### TRAINING IMAGE PARAMETERS #####################
     
-    #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    ti_methods = ["DependentCircles", "IndependentSquares"] #List of methods
+    #"DependentCircles", "DependentSquares", "IndependentSquares", 
+    ti_methods = ["ReducedTiSg"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
     ti_pct_area = 90
@@ -69,12 +69,15 @@ def get_simulation_info():
     
     #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
-    pct_sg=10
-    pct_ti=30
-    cc_sg=None
-    rr_sg=None
+    pct_sg=None
+    pct_ti=70
+    cc_sg=50
+    rr_sg=50
     cc_ti=None
     rr_ti=None
+    
+    #Number of random TI and CD sets to generate a simulation with
+    nRandomTICDsets = 1
     
     ##################### DEESSE SIMULATION PARAMETERS #####################
 
@@ -106,13 +109,11 @@ def get_simulation_info():
     nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
-   
-    print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
        
     return seed, \
             ti_methods, \
             ti_pct_area, ti_nshapes, \
-            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets \
             nn, dt, ms, numberofmpsrealizations, nthreads, \
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
             shorten, \
@@ -126,51 +127,14 @@ def get_simulation_info():
 
 
 def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd, timesleep=0, verb=True):
-    """
-    Function to execute the main program with given parameters.
-    """
-
-    # Generate the TI mask
-    grid_msk = gen_ti_mask(nx, ny, ti_pct_area, ti_ndisks, myseed + ti_realid)
-
-    # Build the TI with given parameters
-    geocodes, ngeocodes, tiMissingGeol, cond_data = build_ti(
-        grid_msk, ti_ndisks, ti_pct_area, ti_realid, geolcd)
-
-    # Run DEESSE simulation
-    deesse_output = run_deesse(tiMissingGeol, mps_nreal, nn, dt, ms, seed, nthreads, geolcd, cond_data)
-
-    # Retrieve the simulation results
-    sim = deesse_output['sim']
-
-    # Perform statistics on the realizations
-    # Gather all realizations into one image
-    all_sim = gn.img.gatherImages(sim)  # all_sim is one image with nreal variables
-    # Compute the pixel-wise proportion for the given categories
-    all_sim_stats = gn.img.imageCategProp(all_sim, geocodes)
-
-    # Initialize the realizations array with NaN values
-    realizations = np.ones((ny, nx, mps_nreal)) * np.nan
-    for i in range(mps_nreal):
-        ix = i * tiMissingGeol.nv
-        realizations[:, :, i] = all_sim.val[ix, 0, :, :]  # Assign the simulation values to the realizations array
-
-    # Create a title for the plot
-    addtitle = f'geolcd: {geolcd} - xycv: {xycv}'
-    # Plot the realizations and reference grid
-    plot_real_and_ref(realizations, reference=grid_geo, mask=1 - grid_msk, nrealmax=mps_nreal, addtitle=addtitle)
-
-    # Print message indicating completion
-    print("Simulation and plotting complete.")
-
-    # Additional analysis and output can be added here
+    return
 
 
 
 def launch_simulation(seed, 
                     ti_methods, 
                     ti_pct_area, ti_nshapes,
-                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,
@@ -184,7 +148,7 @@ def launch_simulation(seed,
         launcher(seed, 
                 ti_methods, 
                 ti_pct_area, ti_nshapes,
-                pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
                 nn, dt, ms, numberofmpsrealizations, nthreads,
                 cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                 nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
@@ -194,7 +158,7 @@ def run_simulation():
     seed, \
     ti_methods, \
     ti_pct_area, ti_nshapes, \
-    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets, \
     nn, dt, ms, numberofmpsrealizations, nthreads, \
     cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
     shorten, \
@@ -204,7 +168,7 @@ def run_simulation():
     launch_simulation(seed, 
                     ti_methods, 
                     ti_pct_area, ti_nshapes,
-                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,

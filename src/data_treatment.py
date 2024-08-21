@@ -98,7 +98,7 @@ def create_variables(csv_file_path):
         - "auxSG" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid.
         - "condIm" for a conditioning image variable.
     """
-    data_df = pd.read_csv(csv_file_path, sep=';')
+    data_df = pd.read_csv(csv_file_path, sep='\t')
     
     sim_var = {}
     auxTI_var = {}
@@ -170,7 +170,7 @@ def create_variables(csv_file_path):
                             \n    - \"auxTI\" for an auxiliary variable describing the simulated variable(s) in the TI;\
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
-                            
+                        
     return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var
  
    
@@ -378,6 +378,7 @@ def get_sim_grid_dimensions(auxTI_var):
         nc, nr = ar.shape[0], ar.shape[1]
     else:
         raise ValueError(f"No auxiliary variable was provided, please provide at least one auxiliary variable to constrain the shape of the simulation grid")
+    print(f"Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
     return nc, nr
 
 def get_unique_names_and_types(names_var, types_var):
