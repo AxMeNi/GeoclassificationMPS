@@ -22,7 +22,7 @@ def test_get_simulation_info():
     seed, \
     ti_method, \
     ti_pct_area, ti_shapes, \
-    ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
     nn, dt, ms, numberofmpsrealizations, nthreads, \
     cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
     shorten, \
@@ -33,7 +33,7 @@ def test_get_simulation_info():
     assert isinstance(ti_method, list) and all(isinstance(m, str) for m in ti_method), "ti_method should be a list of strings."
     assert ti_pct_area is None or isinstance(ti_pct_area, float), "ti_pct_area should be None or a float."
     assert isinstance(ti_shapes, int), "ti_shapes should be an integer."
-    assert isinstance(ti_sg_overlap_percentage, int), "ti_sg_overlap_percentage should be an integer."
+    assert isinstance(pct_ti_sg_overlap, int), "pct_ti_sg_overlap should be an integer."
     assert isinstance(pct_sg, int) and isinstance(pct_ti, int), "pct_sg and pct_ti should be integers."
     assert cc_sg is None or isinstance(cc_sg, int), "cc_sg should be None or an integer."
     assert rr_sg is None or isinstance(rr_sg, int), "rr_sg should be None or an integer."
@@ -62,6 +62,33 @@ def test_get_simulation_info():
     print("The function get_simulation_info is working correctly, all checks passed!")
 
 ##################################### TEST DATA_TREATMENT.PY
+
+def test_check_ti_methods():
+    try:
+        check_ti_methods(["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"])
+        print("Test case 1 passed.")
+    except ValueError as e:
+        print(f"Test case 1 failed: {e}")
+    try:
+        check_ti_methods(["DependentCircles", "IndependentSquares"])
+        print("Test case 2 passed.")
+    except ValueError as e:
+        print(f"Test case 2 failed: {e}")
+    try:
+        check_ti_methods(["SomeOtherMethod"])
+        print("Test case 3 failed: No error raised.")
+    except ValueError as e:
+        print(f"Test case 3 passed: {e}")
+    try:
+        check_ti_methods([])
+        print("Test case 4 failed: No error raised.")
+    except ValueError as e:
+        print(f"Test case 4 passed: {e}")
+    try:
+        check_ti_methods(["ReducedTiCd"])
+        print("Test case 5 passed.")
+    except ValueError as e:
+        print(f"Test case 5 failed: {e}")
 
 def test_create_variables():
     """
@@ -115,6 +142,28 @@ def test_create_variables():
     os.rmdir(temp_dir)
 
     print("Successfully passed test_create_variables.")
+
+def test_count_variables():
+    names_var1 = [["var1", "var2"],["var3", "var4"],["var5", "var6"],["var7", "var8"]]
+    expected1 = 8
+    result1 = count_variables(names_var1)
+    assert result1 == expected1, f"Test case 1 failed: expected {expected1}, got {result1}"
+    print(f"Test case 1 passed: {result1} unique variables.")
+    names_var2 = [["var1", "var2"],["var3", "var2"],["var5", "var3"],["var6", "var7"]]
+    expected2 = 6
+    result2 = count_variables(names_var2)
+    assert result2 == expected2, f"Test case 2 failed: expected {expected2}, got {result2}"
+    print(f"Test case 2 passed: {result2} unique variables.")
+    names_var3 = [["var1", "var1"],["var1", "var1"],["var1", "var1"],["var1", "var1"]]
+    expected3 = 1
+    result3 = count_variables(names_var3)
+    assert result3 == expected3, f"Test case 3 failed: expected {expected3}, got {result3}"
+    print(f"Test case 3 passed: {result3} unique variables.")
+    names_var4 = [[],[],[],[]]
+    expected4 = 0
+    result4 = count_variables(names_var4)
+    assert result4 == expected4, f"Test case 4 failed: expected {expected4}, got {result4}"
+    print(f"Test case 4 passed: {result4} unique variables.")
 
 def test_check_variables():
     # Test 1: Valid input (should pass)
@@ -195,6 +244,40 @@ def test_get_sim_grid_dimensions():
     print(nr,nc)
     
     return True
+
+def test_get_unique_names_and_types():
+
+    # Test Case 1: Simple case with unique names and corresponding types
+    names_var_1 = [["var1", "var2"], ["var3", "var4"], ["var5", "var6"], ["var7", "var8"]]
+    types_var_1 = [["categorical", "continuous"], ["continuous", "categorical"], ["categorical", "continuous"], ["continuous", "categorical"]]
+    expected_unique_names_1 = ['var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var7', 'var8']
+    expected_unique_types_1 = ['categorical', 'continuous', 'continuous', 'categorical', 'categorical', 'continuous', 'continuous', 'categorical']
+    unique_names_1, unique_types_1 = get_unique_names_and_types(names_var_1, types_var_1)
+    assert unique_names_1 == expected_unique_names_1, f"Test Case 1 Failed: {unique_names_1} != {expected_unique_names_1}"
+    assert unique_types_1 == expected_unique_types_1, f"Test Case 1 Failed: {unique_types_1} != {expected_unique_types_1}"
+    print("Test Case 1 Passed")
+
+    # Test Case 2: Empty input
+    names_var_2 = [[], [], [], []]
+    types_var_2 = [[], [], [], []]
+    expected_unique_names_2 = []
+    expected_unique_types_2 = []
+    unique_names_2, unique_types_2 = get_unique_names_and_types(names_var_2, types_var_2)
+    assert unique_names_2 == expected_unique_names_2, f"Test Case 2 Failed: {unique_names_2} != {expected_unique_names_2}"
+    assert unique_types_2 == expected_unique_types_2, f"Test Case 2 Failed: {expected_unique_types_2} != {expected_unique_types_2}"
+    print("Test Case 2 Passed")
+
+    # Test Case 3: All variables have the same name
+    names_var_3 = [["var1", "var1"], ["var1", "var1"], ["var1", "var1"], ["var1", "var1"]]
+    types_var_3 = [["categorical", "categorical"], ["categorical", "categorical"], ["categorical", "categorical"], ["categorical", "categorical"]]
+    expected_unique_names_3 = ['var1']
+    expected_unique_types_3 = ['categorical']
+    unique_names_4, unique_types_3 = get_unique_names_and_types(names_var_3, types_var_3)
+    assert unique_names_3 == expected_unique_names_3, f"Test Case 3 Failed: {unique_names_3} != {expected_unique_names_3}"
+    assert unique_types_3 == expected_unique_types_3, f"Test Case 3 Failed: {unique_types_3} != {expected_unique_types_3}"
+    print("Test Case 3 Passed")
+
+
     
 ##################################### TEST SG_MASK_GENERATION.PY
 
@@ -344,46 +427,46 @@ def test_gen_ti_frame_cd_mask():
     nc, nr = 1000, 1000
     seed = 4
    
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5)
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("ti_sg_overlap_percentage = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50")
+    plt.title("pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5, seed=seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5, seed=seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 4, pct_ti = 5")
+    plt.title("pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("ti_sg_overlap_percentage = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25")
+    plt.title("pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
+    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
     ti_frame = ti_frame_list[0]
     
     plt.figure(figsize=(8, 8))
     plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
     plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("ti_sg_overlap_percentage = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50")
+    plt.title("pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50")
     plt.colorbar(label="Presence")
     plt.axis('on')
     plt.show()
@@ -408,7 +491,7 @@ def test_build_ti_cd():
      
     print("**************************")
     
-    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
+    ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
     simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
     ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
 
@@ -573,7 +656,7 @@ def test_gen_n_random_ti_cd():
         condIm_var=condIm_var, 
         method=method,
         ti_pct_area=90, ti_nshapes=10, 
-        ti_sg_overlap_percentage=10, 
+        pct_ti_sg_overlap=10, 
         pct_sg=10, pct_ti=30, 
         cc_sg=None, rr_sg=None, 
         cc_ti=None, rr_ti=None,

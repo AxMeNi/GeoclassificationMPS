@@ -179,7 +179,7 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, se
 
 
 
-def gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
+def gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
     """
     Generate a binary frame representing a single rectangle within a grid and a simulation grid mask.
 
@@ -189,7 +189,7 @@ def gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=
         Number of rows in the grid.
     nc : int
         Number of columns in the grid.
-    ti_sg_overlap_percentage : float, optional
+    pct_ti_sg_overlap : float, optional
         Percentage overlap between the training image and the simulation grid (default is 10).
     pct_sg : float, optional
         Percentage of the grid area to cover with the simulation grid, if dimensions are not provided (default is 10).
@@ -222,7 +222,7 @@ def gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage=10, pct_sg=10, pct_ti=
     output = get_ti_sg(nc, nr, 
                       cc_sg, rr_sg, pct_sg, 
                       cc_ti, rr_ti, pct_ti, 
-                      ti_sg_overlap_percentage, seed)
+                      pct_ti_sg_overlap, seed)
 
     c0_sg, cc_sg, r0_sg ,rr_sg, c0_overlap, cc_overlap, r0_overlap, rr_overlap, c0_ti, cc_ti, r0_ti, rr_ti = output
 

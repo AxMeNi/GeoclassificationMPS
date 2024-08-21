@@ -218,7 +218,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                         condIm_var = {},
                         method = "DependentCircles",
                         ti_pct_area = 90, ti_nshapes = 10, 
-                        ti_sg_overlap_percentage = 10, 
+                        pct_ti_sg_overlap = 10, 
                         pct_sg = 10, pct_ti = 30, 
                         cc_sg = None, rr_sg = None, 
                         cc_ti = None, rr_ti = None,
@@ -253,7 +253,7 @@ def gen_n_random_ti_cd(n, nc, nr,
         Percentage of the grid area to cover with the training image shapes. Default is 90.
     ti_nshapes : int, optional
         Number of shapes to generate within the training image. Default is 10.
-    ti_sg_overlap_percentage : float, optional
+    pct_ti_sg_overlap : float, optional
         Percentage overlap between the training image and the simulation grid. Default is 10.
     pct_sg : float, optional
         Percentage of the grid area to cover with the simulation grid. Default is 10.
@@ -284,7 +284,7 @@ def gen_n_random_ti_cd(n, nc, nr,
         "IndependentSquares", "ReducedTiCd").
     """        
     if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]:
-        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiCd\".")
+        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiCd\".")
     
     ti_lists = []
     cd_lists = []
@@ -306,7 +306,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 
             if method == "ReducedTiCd":
-                ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
+                ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
                 

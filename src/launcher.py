@@ -14,7 +14,7 @@ Author: Guillaume Pirot
 Date: Fri Jul 28 11:12:36 2023
 """
 from simulation_functions_ter import *
-from ti_generation import *
+from ti_mask_generation import *
 import matplotlib.pyplot as plt
 
 
@@ -29,122 +29,55 @@ defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0]
 
 
 
-def launcher(simulated_var, 
-        auxiliary_var, 
-        var_names, 
-        var_types, 
-        ti_pct_area, 
-        ti_ndisks, 
-        ti_realid, 
-        mps_nreal, 
-        nthreads, 
-        geolcd=True, 
-        timesleep=0, 
-        verb=False,
-        addtitle='',
-        seed=0,
-        myclrs = defaultclrs,
-        mycmap = defaultcmap,
-        ticmap = defaultticmap
-        ):
+def launcher(seed, 
+            ti_methods, 
+            ti_pct_area, ti_nshapes,
+            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+            nn, dt, ms, numberofmpsrealizations, nthreads,
+            cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+            sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+            nr, nc
+            ):
     """
-    Main function for generating and analyzing training images (TI) in geostatistics.
 
-    Parameters:
-    ti_pct_area (float): Percentage of the area to be used for TI.
-    ti_ndisks (int): Number of disks to be used for TI.
-    ti_realid (int): Realization ID for TI.
-    mps_nreal (int): Number of multiple-point statistics realizations.
-    nthreads (int): Number of threads to use.
-    geolcd (bool): Use geological codes (default is True).
-    xycv (bool): Use cross-validation on x and y coordinates (default is False).
-    timesleep (int): Time to sleep before starting (default is 0).
-    verb (bool): Verbose mode, if True, will plot intermediate results (default is False).
-    addtitle (str): Additional title for plots (default is empty).
-
-    Returns:
-    None
     """
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
     time.sleep(timesleep)
     
-    create_directories()
+    #Initialization of variables
+    ti_list = []
+    cd_list = []
+    
+    #Create a simulation grid mask based on no values of the auxiliary variables
+    simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
+    
+    #Creation of the TI and of the SG
+    if "DependentCircles" in ti_methods :
+        ti_frame_DC, ntc_DC = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
+        ti_list_DC, cd_list_DC = build_ti_cd(ti_frame_DC, need_to_cut_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.append(ti_list_DC)
+        cd_list.append(cd_list_DC)
+        
+    if "DependentSquares" in ti_methods :
+        ti_frame_DS, ntc_DS = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
+        ti_list_DS, cd_list_DS = build_ti_cd(ti_frame_DS, need_to_cut_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.append(ti_list_DS)
+        cd_list.append(cd_list_DS)
+        
+    if "IndependentSquares" in ti_methods :
+        ti_frame_IS, ntc_IS = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
+        ti_list_IS, cd_list_IS = build_ti_cd(ti_frame_IS, need_to_cut_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+        ti_list.append(ti_list_IS)
+        cd_list.append(cd_list_IS)
+        
+    if "ReducedTiCd" in ti_methods :
+        ti_frame_RTC, need_to_cut_RTC, simgrid_mask_RTC, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
+        simgrid_mask_merged = merge_masks(simgrid_mask_aux, simgrid_mask_RTC)
+        ti_list_RTC, cd_list_RTC = build_ti_cd(ti_frame_RTC, need_to_cut_RTC, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask_merged, condIm_var)
+        ti_list.append(ti_list_RTC)
+        cd_list.append(cd_list_RTC)
+    
+    nTI = len(ti_list)
     
     
-    # GENERATE TI MASK
-    print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - GENERATE MASK")
-    grid_msk = gen_ti_mask_circles(nx, ny, ti_pct_area, ti_ndisks, seed + ti_realid)
-
-    # PLOT TI MASK
-    if verb:
-        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - PLOT MASK")
-        plt.figure(dpi=300), plt.title('TI mask')
-        plt.imshow(grid_msk, origin='lower', interpolation='none')
-        plt.show()
-
-    # BUILD TI
-    print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - BUILD TI")
-    geocodes, ngeocodes, tiMissingGeol, cond_data = build_ti(grid_msk, ti_ndisks, ti_pct_area, ti_realid, geolcd)
-
-    
-    sim = deesse_output['sim']
-
-    # Do some statistics on the realizations
-    # ... gather all the realizations into one image
-    all_sim = gn.img.gatherImages(sim)  # all_sim is one image with nreal variables
-    # ... compute the pixel-wise proportion for the given categories
-    all_sim_stats = gn.img.imageCategProp(all_sim, geocodes)
-    realizations = np.ones((ny, nx, mps_nreal)) * np.nan
-    for i in range(mps_nreal):
-        ix = i * tiMissingGeol.nv
-        realizations[:, :, i] = all_sim.val[ix, 0, :, :]
-
-    geocode_entropy = entropy(realizations)
-
-    # Local performance - errors
-    error = np.zeros((ny, nx, ngeocodes + 1))
-    for i in range(ngeocodes):
-        tmp1 = realizations == geocodes[i]
-        tmp2 = grid_geo == geocodes[i]  # np.tile(np.reshape(grid_geo==codelist[i],(ny,nx,1)), (1,1,nreal))
-        error[:, :, i] = np.mean(tmp1, axis=2) - tmp2
-    # error across all lithocode
-    for r in range(mps_nreal):
-        error[:, :, -1] += 1 * ((grid_geo - realizations[:, :, r]) != 0) / mps_nreal
-
-    # confusion matrix, TP/FP/TN/FN and related indicators
-    reference = grid_geo
-    mask = 1 - grid_msk
-    confusion_matrix, classes, training_size, testing_size = get_confusion_matrix(realizations, reference, mask)
-    tfpn = get_true_false_pos_neg(confusion_matrix, classes, training_size, testing_size)
-    classification_performance(tfpn)
-    confusion_matrix_th, classes, thresholds = get_confusion_matrix_th(realizations, reference, mask, nthresholds_tpfn)
-    TPR, FPR = get_tpr_fpr(confusion_matrix_th)
-
-    if verb:
-        # PLOT REAL
-        plot_real_and_ref(realizations, grid_geo, grid_msk, addtitle=addtitle)
-        # PLOT ENTROPY AND CONFUSION MATRIX
-        plot_entropy_and_confusionmx(geocode_entropy, confusion_matrix, mps_nreal)
-
-    # EXPORT / SAVE
-    datafilepath = path2real + 'data' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(
-        ti_pct_area) + '-r-' + str(ti_realid) + '.pickle'
-    with open(datafilepath, 'wb') as f:
-        pickle.dump([realizations, grid_msk
-                     ], f)
-
-    datafilepath = path2ind + 'data' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(
-        ti_pct_area) + '-r-' + str(ti_realid) + '.pickle'
-    with open(datafilepath, 'wb') as f:
-        pickle.dump([class_hist_count_marg_mag, class_hist_count_marg_grv, class_hist_count_marg_lmp,
-                     class_hist_count_pct_marg_mag, class_hist_count_pct_marg_grv, class_hist_count_pct_marg_lmp,
-                     shannon_entropy_joint_dist, shannon_entropy_marg, shannon_entropy_joint_mag_grv,
-                     shannon_entropy_pct_joint_dist, shannon_entropy_pct_marg, shannon_entropy_pct_joint_mag_grv,
-                     jsdist_joint_dist, jsdist_marg_mag, jsdist_marg_grv, jsdist_marg_lmp, jsdist_joint_mag_grv,
-                     tpl_dist,
-                     geocode_entropy, error, confusion_matrix, mps_nreal, tfpn, TPR, FPR
-                     ], f)
-
-    # FINISHED
-    print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - FINISHED")
     return

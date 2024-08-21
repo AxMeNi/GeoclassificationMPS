@@ -132,7 +132,7 @@ def chose_random_sg_origin(positions_sg):
     positions_sg = np.delete(positions_sg, rd_index_position_sg,axis=0)
     return c_sg, r_sg, positions_sg
 
-def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage):
+def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap):
     """
     Choose a random overlap area and compute the position and dimensions of the overlap.
 
@@ -148,7 +148,7 @@ def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, ti_sg_ov
         Number of columns in the simulation grid.
     rr_sg : int
         Number of rows in the simulation grid.
-    ti_sg_overlap_percentage : int
+    pct_ti_sg_overlap : int
         The SG should cover this percentage of the TI.
 
     Returns:
@@ -165,7 +165,7 @@ def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, ti_sg_ov
     rd_index_c_overlap_temp = np.random.choice(len(c_overlap_list))
             
     c_overlap = c_overlap_list[rd_index_c_overlap_temp]
-    r_overlap = compute_row(c_overlap, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage)
+    r_overlap = compute_row(c_overlap, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap)
   
     c_overlap_list = np.delete(c_overlap_list, rd_index_c_overlap_temp)
     
@@ -182,7 +182,7 @@ def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, ti_sg_ov
     
     return cc_overlap, rr_overlap, c_overlap_list, positions_overlap
 
-def compute_row(col, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage):
+def compute_row(col, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap):
     """
     Compute the row position based on the column position and overlap percentage.
 
@@ -198,7 +198,7 @@ def compute_row(col, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage):
         Number of columns in the simulation grid.
     rr_sg : int
         Number of rows in the simulation grid.
-    ti_sg_overlap_percentage : float
+    pct_ti_sg_overlap : float
         Percentage of overlap between the training image and simulation grid.
 
     Returns:
@@ -206,7 +206,7 @@ def compute_row(col, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage):
     int
         Computed row position based on the column position and overlap percentage.
     """
-    row = int(rr_sg+r_sg-(((ti_sg_overlap_percentage/100)*cc_sg*rr_sg)/(cc_sg-(col-c_sg))))
+    row = int(rr_sg+r_sg-(((pct_ti_sg_overlap/100)*cc_sg*rr_sg)/(cc_sg-(col-c_sg))))
     return row
 
 
@@ -424,7 +424,7 @@ def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_s
 def get_ti_sg(cc_dg, rr_dg, 
               cc_sg=None, rr_sg=None, pct_sg=10, 
               cc_ti=None, rr_ti=None, pct_ti=30, 
-              ti_sg_overlap_percentage=0, seed=None):
+              pct_ti_sg_overlap=0, seed=None):
     """
     Generate the position and dimensions of a training image (TI) and a simulation grid (SG) based on the dimensions of the data grid (DG) and specified overlap area.
 
@@ -446,7 +446,7 @@ def get_ti_sg(cc_dg, rr_dg,
         Number of rows in the training image (TI). If not provided, it will be calculated based on `pct_ti`.
     pct_ti : int, optional
         Percentage of the data grid area to be used for the training image (TI) if `cc_ti` and `rr_ti` are not provided. Default is 30%.
-    ti_sg_overlap_percentage : int, optional
+    pct_ti_sg_overlap : int, optional
         Percentage of the simulation grid (SG) area to be overlapped with the training image (TI). Default is 0%.
     seed : int, optional
         Seed for random number generation to ensure reproducibility. If not provided, a random seed will be generated.
@@ -479,7 +479,7 @@ def get_ti_sg(cc_dg, rr_dg,
     -----
     - This function uses random sampling to generate positions and dimensions for the simulation grid and training image based on the data grid constraints.
     - Boundary checks are performed to ensure that the generated positions and dimensions are valid.
-    - The overlap area between the training image and simulation grid is optional and controlled by `ti_sg_overlap_percentage`.
+    - The overlap area between the training image and simulation grid is optional and controlled by `pct_ti_sg_overlap`.
     - If no valid position is found, the function will exit with an error message.
     """
     if (cc_sg is None and rr_sg is not None) or (cc_sg is not None and rr_sg is None) or (cc_ti is None and rr_ti is not None) or (cc_ti is not None and rr_ti is None):
@@ -526,10 +526,10 @@ def get_ti_sg(cc_dg, rr_dg,
             c_sg, r_sg, positions_sg = chose_random_sg_origin(positions_sg)
             
 
-            c_overlap_list = np.arange(c_sg, int(c_sg+cc_sg-(ti_sg_overlap_percentage/100)*cc_sg))
+            c_overlap_list = np.arange(c_sg, int(c_sg+cc_sg-(pct_ti_sg_overlap/100)*cc_sg))
 
             while c_overlap_list.size > 0:
-                cc_overlap, rr_overlap, c_overlap_list, positions_overlap = chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, ti_sg_overlap_percentage)
+                cc_overlap, rr_overlap, c_overlap_list, positions_overlap = chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap)
 
                 while positions_overlap.size > 0:
                     c_overlap, r_overlap, positions_overlap = chose_random_overlap_origin(positions_overlap)
@@ -581,13 +581,13 @@ if __name__ == "__main__":
 
     ### For the overlap area
 
-    ti_sg_overlap_percentage = 10
+    pct_ti_sg_overlap = 10
     
     
-    #output = get_ti_sg(cc_dg, rr_dg, ti_sg_overlap_percentage, cc_sg = cc_sg, rr_sg = rr_sg, cc_ti = cc_ti, rr_ti = rr_ti)
-    #output = get_ti_sg(cc_dg, rr_dg, ti_sg_overlap_percentage, pct_sg = pct_sg, pct_ti = pct_ti)
-    #output = get_ti_sg(cc_dg, rr_dg, ti_sg_overlap_percentage, pct_ti = pct_ti, cc_sg = cc_sg, rr_sg = rr_sg)
-    output = get_ti_sg(cc_dg, rr_dg, ti_sg_overlap_percentage = 10, pct_sg = 23, cc_ti = 100, rr_ti = 50, seed=55)
+    #output = get_ti_sg(cc_dg, rr_dg, pct_ti_sg_overlap, cc_sg = cc_sg, rr_sg = rr_sg, cc_ti = cc_ti, rr_ti = rr_ti)
+    #output = get_ti_sg(cc_dg, rr_dg, pct_ti_sg_overlap, pct_sg = pct_sg, pct_ti = pct_ti)
+    #output = get_ti_sg(cc_dg, rr_dg, pct_ti_sg_overlap, pct_ti = pct_ti, cc_sg = cc_sg, rr_sg = rr_sg)
+    output = get_ti_sg(cc_dg, rr_dg, pct_ti_sg_overlap = 10, pct_sg = 23, cc_ti = 100, rr_ti = 50, seed=55)
     c_sg, cc_sg, r_sg ,rr_sg, c_overlap, cc_overlap, r_overlap, rr_overlap, c_ti, cc_ti, r_ti, rr_ti = output
     print(f"c_sg={c_sg}, cc_sg={cc_sg}, r_sg={r_sg}, rr_sg={rr_sg}, c_overlap={c_overlap}, cc_overlap={cc_overlap}, r_overlap={r_overlap}, rr_overlap={rr_overlap}, c_ti={c_ti}, cc_ti={cc_ti}, r_ti={r_ti}, rr_ti={rr_ti} ")
 

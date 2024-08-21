@@ -7,6 +7,35 @@ __date__ = "juillet 2024"
 import numpy as np
 import pandas as pd
 
+def check_ti_methods(ti_methods):
+    """
+    Validates that the input list `ti_methods` contains at least one of the four required methods: 
+    "DependentCircles", "DependentSquares", "IndependentSquares", or "ReducedTiCd".
+
+    Parameters
+    ----------
+    ti_methods : list of str
+        A list containing method names to be checked. The list must include at least one of the 
+        following methods: "DependentCircles", "DependentSquares", "IndependentSquares", or "ReducedTiCd".
+    
+    Raises
+    ------
+    ValueError
+        If none of the required methods ("DependentCircles", "DependentSquares", "IndependentSquares", 
+        "ReducedTiCd") are found in the `ti_methods` list, a ValueError is raised with an appropriate 
+        error message.
+    
+    Returns
+    -------
+    None
+        This function does not return any value; it either completes successfully or raises an exception.
+    """
+    required_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]
+    
+    if not any(method in ti_methods for method in required_methods):
+        raise ValueError('ti_methods must contain at least one of the four following methods: "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"')
+        exit()
+    return
 
 def create_variables(csv_file_path):
     """
@@ -141,7 +170,8 @@ def create_variables(csv_file_path):
                             \n    - \"condIm\" for a conditioning image variable.")
                             
     return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var
-    
+ 
+   
 
 def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999):
     """
@@ -312,6 +342,33 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
     
     return sim_var, auxTI_var, auxSG_var, condIm_var
 
+ 
+def count_variables(names_var):
+    """
+    Count the total number of unique variables based on the names provided in names_var.
+
+    Parameters:
+    ----------
+    names_var : list of lists
+        A list of four sublists, where each sublist contains the names of the variables for each category:
+        - `names_var[0]`: List of names of simulated variables.
+        - `names_var[1]`: List of names of auxiliary TI variables.
+        - `names_var[2]`: List of names of auxiliary SG variables.
+        - `names_var[3]`: List of names of conditioning image variables.
+
+    Returns:
+    -------
+    int
+        The total number of unique variables across all categories.
+    """
+    unique_variables = set()
+    
+    for category in names_var:
+        unique_variables.update(category)
+    
+    return len(unique_variables)
+
+
 
 def get_sim_grid_dimensions(auxTI_var):
     ar  = auxTI_var[next(iter(auxTI_var))]
@@ -320,6 +377,36 @@ def get_sim_grid_dimensions(auxTI_var):
     else:
         raise ValueError(f"No auxiliary variable was provided, please provide at least one auxiliary variable to constrain the shape of the simulation grid")
     return nc, nr
+
+def get_unique_names_and_types(names_var, types_var):
+    """
+    Create a list of all unique variable names and a corresponding list of their types.
+
+    Parameters:
+    ----------
+    names_var : list of lists
+        A list of lists, where each sublist contains the names of the variables for each category.
+    types_var : list of lists
+        A list of lists, where each sublist contains the types (categorical or continuous) of the variables for each category.
+
+    Returns:
+    -------
+    unique_names : list
+        A list of unique variable names.
+    unique_types : list
+        A list of types corresponding to the unique variable names.
+    """
+    unique_names = []
+    unique_types = []
+
+    for name_list, type_list in zip(names_var, types_var):
+        for name, var_type in zip(name_list, type_list):
+            if name not in unique_names:
+                unique_names.append(name)
+                unique_types.append(var_type)
+
+    return unique_names, unique_types
+
     
     
 def create_directories(path2ti,path2cd,path2real, path2log, path2ind):

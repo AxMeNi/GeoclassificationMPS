@@ -60,11 +60,11 @@ def get_simulation_info():
 
     ##################### TRAINING IMAGE PARAMETERS #####################
     
-    ti_method = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]
+    ti_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"] #List of method
     ti_pct_area = None 
-    ti_shapes = 1   
+    ti_nshapes = 1   
     
-    ti_sg_overlap_percentage=50  
+    pct_ti_sg_overlap=50  
     pct_sg=10
     pct_ti=30
     cc_sg=None
@@ -95,17 +95,20 @@ def get_simulation_info():
     
     ##################### PICKING SIM AND AUX VAR #####################
     
+    check_ti_methods(ti_methods)
+    
     sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
+    nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
    
     print(f"Data dimension : \n \t >> Number of rows : {nr} \n \t >> Number of columns : {nc}")
        
     return seed, \
-            ti_method, \
-            ti_pct_area, ti_shapes, \
-            ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
+            ti_methods, \
+            ti_pct_area, ti_nshapes, \
+            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, \
             nn, dt, ms, numberofmpsrealizations, nthreads, \
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
             shorten, \
@@ -161,9 +164,9 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
 
 
 def launch_simulation(seed, 
-                    ti_method, 
-                    ti_pct_area, ti_shapes,
-                    ti_sg_overlap_percentage, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                    ti_methods, 
+                    ti_pct_area, ti_nshapes,
+                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,
@@ -174,17 +177,11 @@ def launch_simulation(seed,
     if shorten :
         execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads)
     else :
-        launcher(simulated_var = simulated_var_modified, 
-            auxiliary_var = auxiliary_var_modified, 
-            var_names = var_names, 
-            var_types = var_types, 
-            ti_pct_area = ti_pct_area, 
-            ti_ndisks = ti_ndisks, 
-            ti_realid = ti_realid, 
-            mps_nreal = mps_nreal, 
-            nthreads = nthreads, 
-            geolcd = True, 
-            timesleep = 0, 
-            verb = False,
-            addtitle = 'addtitle',
-            seed = seed)
+        launcher(seed, 
+                ti_methods, 
+                ti_pct_area, ti_shapes,
+                pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti,
+                nn, dt, ms, numberofmpsrealizations, nthreads,
+                cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+                sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                nr, nc)
