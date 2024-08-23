@@ -24,12 +24,12 @@ from datetime import datetime
 
 
 #### COLORS PARAMETERS
-cm = plt.get_cmap('tab20')
-defaultclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
-n_bin = 11
-cmap_name = 'my_tab20'
-defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
-defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], defaultclrs)), N=n_bin + 1)
+# cm = plt.get_cmap('tab20')
+# defaultclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
+# n_bin = 11
+# cmap_name = 'my_tab20'
+# defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
+# defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], defaultclrs)), N=n_bin + 1)
 
 
 
@@ -55,7 +55,7 @@ def launcher(seed,
     #Create a simulation grid mask based on no values of the auxiliary variables
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
     
-    for i_set in range(nRandomTICDsets):
+    if nRandomTICDsets == 1 :
     
         #Creation of the TI and of the SG
         if "DependentCircles" in ti_methods :
@@ -90,6 +90,8 @@ def launcher(seed,
             cd_list.extend(cd_list_RTS)
             simgrid_mask = None
         
+        for ti in ti_list:
+            print(ti.val)
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -139,4 +141,9 @@ def launcher(seed,
         
         plt.show()
     
+    else:
+        if len(ti_methods) > 1:
+            raise ValueError(f"Cannot run the following methods: {', '.join(ti_methods)} for {nRandomTICDsets} random TI/CD sets. Please consider chosing only one method or only one set.")
+            #Insert here the case of multiple sets of ti and cd
+        
     return

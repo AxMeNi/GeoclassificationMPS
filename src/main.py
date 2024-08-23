@@ -7,8 +7,8 @@ __date__ = "juillet 2024"
 from tests import *
 from interface import *
     
-bool_run_simu = True
-bool_run_tests = False
+bool_run_simu = False
+bool_run_tests = True
 
 def run_tests():
     """
@@ -43,7 +43,7 @@ def run_tests():
     t_GenTiFrameCdMask =            False
     
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
-    t_GenNRandomTiCd =              False
+    t_GenNRandomTiCd =              True
     
     #----------------------------------------------------------------------------------------#
     

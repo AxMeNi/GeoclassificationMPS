@@ -60,7 +60,7 @@ def get_simulation_info():
 
     ##################### TRAINING IMAGE PARAMETERS #####################
     
-    #"DependentCircles", "DependentSquares", "IndependentSquares", 
+    #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
     ti_methods = ["ReducedTiSg"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
@@ -69,10 +69,10 @@ def get_simulation_info():
     
     #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
-    pct_sg=None
+    pct_sg=30
     pct_ti=70
-    cc_sg=50
-    rr_sg=50
+    cc_sg=None
+    rr_sg=None
     cc_ti=None
     rr_ti=None
     
@@ -113,7 +113,7 @@ def get_simulation_info():
     return seed, \
             ti_methods, \
             ti_pct_area, ti_nshapes, \
-            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets \
+            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets, \
             nn, dt, ms, numberofmpsrealizations, nthreads, \
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
             shorten, \

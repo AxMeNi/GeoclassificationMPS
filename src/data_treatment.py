@@ -98,7 +98,8 @@ def create_variables(csv_file_path):
         - "auxSG" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid.
         - "condIm" for a conditioning image variable.
     """
-    data_df = pd.read_csv(csv_file_path, sep='\t')
+    
+    data_df = pd.read_csv(csv_file_path, sep=';')
     
     sim_var = {}
     auxTI_var = {}
@@ -233,7 +234,7 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
     TypeError
         If the data type of a variable does not match its expected type.
     ValueError
-        If an invalid type is specified, or if variables do not have consistent dimensions.
+        If an invalid type is specified, or if variables do not have consistent dimensions or if one of the auxiliary variable provided don't have the same range of value in the TI and in the SG.
     NameError
         If a conditioning variable's name does not match any simulated variable, or if an auxSG variable lacks a corresponding auxTI variable.
 
@@ -298,7 +299,7 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
             if not np.issubdtype(condIm_array.dtype, np.number):
                 raise TypeError(f"Type mismatch for condIm var '{varname_condIm}'. Expected numerical type for 'continuous', got {condIm_array.dtype}.")    
         elif expected_type == "categorical":
-            if not np.issubdtype(cond_array.dtype, np.integer):
+            if not np.issubdtype(condIm_array.dtype, np.integer):
                 raise TypeError(f"Type mismatch for condIm var '{varname_condIm}'. Expected integer type for 'categorical', got {condIm_array.dtype}.")    
         else:
             raise ValueError(f"Invalid type for {varname_condIm} '{expected_type}' specified. Expected 'continuous' or 'categorical'.")
@@ -341,6 +342,11 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
     for name_auxTIvar in names_var[1]:
         if name_auxTIvar not in names_var[2] :
             raise NameError(f"The auxiliary TI variable '{name_auxTIvar}' has not matching auxSG_var. All auxiliary variables must be TI and conditioning.")
+    
+    #Check that the range of the values of each auxTI is the same as its corresponding auxSG
+    for name_auxvar in names_var[1]:
+        if np.nanmin(auxTI_var[name_auxvar]) != np.nanmin(auxSG_var[name_auxvar]) or np.nanmax(auxTI_var[name_auxvar]) != np.nanmax(auxSG_var[name_auxvar]):
+            raise ValueError(f"The auxiliary variable {name_auxvar} has not the same min and max value in the TI and in the SG. An auxiliary variable must have the same range of value in the TI and in the SG.")
     
     return sim_var, auxTI_var, auxSG_var, condIm_var
 

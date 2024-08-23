@@ -222,7 +222,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                         pct_sg = 10, pct_ti = 30, 
                         cc_sg = None, rr_sg = None, 
                         cc_ti = None, rr_ti = None,
-                        seed = None):
+                        givenseed = None):
     """
     Generate n random training images (TIs) and conditional data (CD) based on the selected method.
 
@@ -248,7 +248,7 @@ def gen_n_random_ti_cd(n, nc, nr,
         Dictionary containing conditioning image variables. Default is None.
     method : str, optional
         Method used to generate the TIs and CDs. Choose between "DependentCircles", "DependentSquares",
-        "IndependentSquares", and "ReducedTiCd". Default is "DependentCircles".
+        "IndependentSquares", and "ReducedTiSg". Default is "DependentCircles".
     ti_pct_area : float, optional
         Percentage of the grid area to cover with the training image shapes. Default is 90.
     ti_nshapes : int, optional
@@ -282,8 +282,9 @@ def gen_n_random_ti_cd(n, nc, nr,
     ValueError
         If the method provided is not one of the valid options ("DependentCircles", "DependentSquares", 
         "IndependentSquares", "ReducedTiCd").
-    """        
-    if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"]:
+    """
+    seed = givenseed
+    if method not in ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"]:
         raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiSg\".")
     
     ti_lists = []
@@ -291,28 +292,56 @@ def gen_n_random_ti_cd(n, nc, nr,
     appendFlags = [False]
     
     for i in range(n):
-        while not all(appendFlags):
-        
+        all_good = False
+        while not all_good:
+            seed+=1
             if method == "DependentCircles":
                 ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
-                
+                simgrid_mask_final = simgrid_mask
+                cc_sg, rr_sg = nc, nr
             if method == "DependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
-                
+                simgrid_mask_final = simgrid_mask
+                cc_sg, rr_sg = nc, nr
             if method == "IndependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
-                
+                simgrid_mask_final = simgrid_mask
+                cc_sg, rr_sg = nc, nr
             if method == "ReducedTiSg":
-                ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_cd_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
+                ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
-                
-            appendFlags = [np.all(np.isin(np.unique(cd.val), np.unique(ti.val))) for cd in cd_list for ti in ti_list]
+            
+            for cd in cd_list:
+                for ti in ti_list:
+                    cd_vars = cd.varname
+                    ti_vars = ti.varname
+                    
+                    common_vars = [var for var in cd_vars if var in ti_vars]
+                    
+                    for var in common_vars:
+                        cd_index = cd_vars.index(var)
+                        ti_index = ti_vars.index(var)
+                        
+                        cd_values = cd.val[cd_index]
+                        ti_values = ti.val[ti_index]
+                        
+                        #Condition to make sure the variables are of the same range (same max, same min)
+                        cd_min, cd_max = np.nanmin(cd_values), np.nanmax(cd_values)
+
+                        ti_min, ti_max = np.nanmin(ti_values), np.nanmax(ti_values)
+                        
+                        if cd_min != ti_min or cd_max != ti_max:
+                            all_good = False
+                        else:
+                            all_good = True
+                            
+        ti_lists.append(ti_list)
         cd_lists.append(cd_list)
-        ti_lists.append(ti_list) 
-        
+
+                        
     return cd_lists, ti_lists
 

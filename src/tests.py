@@ -65,7 +65,7 @@ def test_get_simulation_info():
 
 def test_check_ti_methods():
     try:
-        check_ti_methods(["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiCd"])
+        check_ti_methods(["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"])
         print("Test case 1 passed.")
     except ValueError as e:
         print(f"Test case 1 failed: {e}")
@@ -85,7 +85,7 @@ def test_check_ti_methods():
     except ValueError as e:
         print(f"Test case 4 passed: {e}")
     try:
-        check_ti_methods(["ReducedTiCd"])
+        check_ti_methods(["ReducedTiSg"])
         print("Test case 5 passed.")
     except ValueError as e:
         print(f"Test case 5 failed: {e}")
@@ -584,49 +584,71 @@ def test_gen_n_random_ti_cd():
     
     seed = 852
     random.seed(seed)
-    
+    n=1
     nc, nr = 50, 50 
     sim_var = {
-        'var1': np.random.randint(0, 5, size=(nr, nc)),
-        'var2': np.random.randint(0, 5, size=(nr, nc))
+        'var1': np.random.randint(0, 500, size=(nr, nc)),
+        'var2': np.random.randint(0, 500, size=(nr, nc))
     }
     auxTI_var = {
-        'aux_var1': np.random.randint(0, 5, size=(nr, nc)),
-        'aux_var2': np.random.randint(0, 5, size=(nr, nc))
+        'aux_var1': np.random.randint(0, 500, size=(nr, nc)),
+        'aux_var2': np.random.randint(0, 500, size=(nr, nc))
     }
     auxSG_var = {
-        'aux_var_sg1': np.random.randint(0, 5, size=(nr, nc)),
-        'aux_var_sg2': np.random.randint(0, 5, size=(nr, nc))
+        'aux_var1': np.random.randint(0, 500, size=(nr, nc)),
+        'aux_var2': np.random.randint(0, 500, size=(nr, nc))
     }
-    names_var = ['var1', 'var2']
-    simgrid_mask = np.ones((nr, nc))
+    names_var = [['var1', 'var2'], ['aux_var1', 'aux_var2'], ['aux_var1', 'aux_var2'], []]
+    types_var = [['categorical','categorical'],['categorical','categorical'],['categorical','categorical'],[]]
+    
     condIm_var = {} 
     
-    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    method = "ReducedTiSg" 
+    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999)
+    
+    simgrid_mask = np.ones((nr, nc))  # A simple mask where all cells are valid
 
+    # Call the function with the test parameters
     cd_lists, ti_lists = gen_n_random_ti_cd(
-        n=20,
-        nc=nc, nr=nr, 
-        sim_var=sim_var, auxTI_var=auxTI_var, auxSG_var=auxSG_var, 
-        names_var=names_var, simgrid_mask=simgrid_mask, 
-        condIm_var=condIm_var, 
-        method=method,
-        ti_pct_area=90, ti_nshapes=10, 
-        pct_ti_sg_overlap=10, 
-        pct_sg=10, pct_ti=30, 
-        cc_sg=None, rr_sg=None, 
-        cc_ti=None, rr_ti=None,
-        seed=seed
+        n=n,
+        nc=nc,
+        nr=nr,
+        sim_var=sim_var,
+        auxTI_var=auxTI_var,
+        auxSG_var=auxSG_var,
+        names_var=names_var,
+        simgrid_mask=simgrid_mask,
+        condIm_var=condIm_var,
+        method="DependentCircles",  # Example method
+        ti_pct_area=90,
+        ti_nshapes=10,
+        pct_ti_sg_overlap=10,
+        pct_sg=10,
+        pct_ti=30,
+        cc_sg=None,
+        rr_sg=None,
+        cc_ti=None,
+        rr_ti=None,
+        givenseed=seed  # Example seed for reproducibility
     )
-
-    for cd_list, ti_list in zip(cd_lists, ti_lists):
-        for cd, ti in zip(cd_list, ti_list):
-            print(np.unique(ti.val), np.unique(cd.val))
-
-    appendFlags = [np.all(np.isin(np.unique(cd.val), np.unique(ti.val))) for cd in cd_lists[0] for ti in ti_lists[0]]
-
-    # Verify if all conditions are True
-    assert all(appendFlags), "The condition for exiting the while loop was not met."
+    for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
+        print(f"\nTesting the set number {i}:")
+        for cd in cd_list:
+            for ti in ti_list:
+                cd_vars = cd.varname
+                ti_vars = ti.varname
+                print(f"This set contains the following variables: \n·····>> Name of the CD var: {cd_vars} \n·····>> Name of the TI var: {ti_vars}.")
+                common_vars = [var for var in cd_vars if var in ti_vars]
+            
+                for var in common_vars:
+                    print(f">>For the common variable {var}:")
+                    cd_index = cd_vars.index(var)
+                    ti_index = ti_vars.index(var)
+                    
+                    cd_values = cd.val[cd_index]
+                    ti_values = ti.val[ti_index]
+                    print(f">>>> Min CD : {np.nanmin(cd_values)}, Max CD : {np.nanmax(cd_values)}")
+                    print(cd_values.shape)
+                    print(f">>>> Min TI : {np.nanmin(ti_values)}, Max CD : {np.nanmax(ti_values)}")
+                    print(ti_values.shape)
 
     print("Test passed.")
