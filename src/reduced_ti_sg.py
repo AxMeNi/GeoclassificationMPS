@@ -487,9 +487,9 @@ def get_ti_sg(cc_dg, rr_dg,
         exit()
     
     if (cc_sg is not None and rr_sg is not None and pct_sg is not None):
-        print(ValueError(f"SG size must be precised : please consider chosing only a percentage or dimensions of the simulation grid."))
+        raise ValueError(f"SG size must be precised : please consider chosing only a percentage or dimensions of the simulation grid.")
     if (cc_ti is not None and rr_ti is not None and pct_ti is not None):
-        print(ValueError(f"TI size must be precised : please consider chosing only a percentage or dimensions of the training image."))
+        raise ValueError(f"TI size must be precised : please consider chosing only a percentage or dimensions of the training image.")
         
     if seed is None:
         seed = int(rd.randint(1,2**32-1))

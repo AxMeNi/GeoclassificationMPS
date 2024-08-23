@@ -584,19 +584,19 @@ def test_gen_n_random_ti_cd():
     
     seed = 852
     random.seed(seed)
-    n=1
-    nc, nr = 50, 50 
+    n=5
+    nc, nr = 500, 500
     sim_var = {
-        'var1': np.random.randint(0, 500, size=(nr, nc)),
-        'var2': np.random.randint(0, 500, size=(nr, nc))
+        'var1': np.random.randint(0, 25, size=(nr, nc)),
+        'var2': np.random.randint(0, 25, size=(nr, nc))
     }
     auxTI_var = {
-        'aux_var1': np.random.randint(0, 500, size=(nr, nc)),
-        'aux_var2': np.random.randint(0, 500, size=(nr, nc))
+        'aux_var1': np.random.randint(0, 25, size=(nr, nc)),
+        'aux_var2': np.random.randint(0, 25, size=(nr, nc))
     }
     auxSG_var = {
-        'aux_var1': np.random.randint(0, 500, size=(nr, nc)),
-        'aux_var2': np.random.randint(0, 500, size=(nr, nc))
+        'aux_var1': np.random.randint(0, 25, size=(nr, nc)),
+        'aux_var2': np.random.randint(0, 25, size=(nr, nc))
     }
     names_var = [['var1', 'var2'], ['aux_var1', 'aux_var2'], ['aux_var1', 'aux_var2'], []]
     types_var = [['categorical','categorical'],['categorical','categorical'],['categorical','categorical'],[]]
@@ -618,7 +618,7 @@ def test_gen_n_random_ti_cd():
         names_var=names_var,
         simgrid_mask=simgrid_mask,
         condIm_var=condIm_var,
-        method="DependentCircles",  # Example method
+        method="ReducedTiSg",  # Example method
         ti_pct_area=90,
         ti_nshapes=10,
         pct_ti_sg_overlap=10,
@@ -631,24 +631,22 @@ def test_gen_n_random_ti_cd():
         givenseed=seed  # Example seed for reproducibility
     )
     for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
-        print(f"\nTesting the set number {i}:")
-        for cd in cd_list:
-            for ti in ti_list:
+        print(f"\n\n\n----- Testing the set number {i}: -----")
+        for cd, i in zip(cd_list, range(1, len(cd_list)+1)):
+            for ti, j in zip(ti_list, range(1, len(ti_list)+1)):
+                print(f"\nCD{i}, TI{j}")
                 cd_vars = cd.varname
                 ti_vars = ti.varname
-                print(f"This set contains the following variables: \n·····>> Name of the CD var: {cd_vars} \n·····>> Name of the TI var: {ti_vars}.")
                 common_vars = [var for var in cd_vars if var in ti_vars]
             
                 for var in common_vars:
-                    print(f">>For the common variable {var}:")
+                    print(f"> For the common variable {var}:")
                     cd_index = cd_vars.index(var)
                     ti_index = ti_vars.index(var)
                     
                     cd_values = cd.val[cd_index]
                     ti_values = ti.val[ti_index]
                     print(f">>>> Min CD : {np.nanmin(cd_values)}, Max CD : {np.nanmax(cd_values)}")
-                    print(cd_values.shape)
                     print(f">>>> Min TI : {np.nanmin(ti_values)}, Max CD : {np.nanmax(ti_values)}")
-                    print(ti_values.shape)
-
-    print("Test passed.")
+                    print(cd_values.shape)
+    print("Test passed!")
