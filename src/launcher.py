@@ -157,6 +157,18 @@ def launcher(seed,
     else:
         if len(ti_methods) > 1:
             raise ValueError(f"Cannot run the following methods: {', '.join(ti_methods)} for {nRandomTICDsets} random TI/CD sets. Please consider chosing only one method or only one set.")
-            #Insert here the case of multiple sets of ti and cd
-        
+
+        cd_lists, ti_lists, nc_sg, nr_sg, simgrid_mask_final \ 
+            = gen_n_random_ti_cd(n, nc, nr,
+                        sim_var = sim_var, auxTI_var = auxTI_var, auxSG_var = auxSG_var,
+                        names_var = names_var, 
+                        simgrid_mask = simgrid_mask_aux,
+                        condIm_var = condIm_var,
+                        method = ti_methods,
+                        ti_pct_area = ti_pct_area, ti_nshapes = ti_nshapes, 
+                        pct_ti_sg_overlap = pct_ti_sg_overlap, 
+                        pct_sg = pct_sg, pct_ti = pct_ti, 
+                        cc_sg = None, rr_sg = None, 
+                        cc_ti = None, rr_ti = None,
+                        givenseed = None)
     return

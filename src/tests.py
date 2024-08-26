@@ -608,28 +608,28 @@ def test_gen_n_random_ti_cd():
     simgrid_mask = np.ones((nr, nc))  # A simple mask where all cells are valid
 
     # Call the function with the test parameters
-    cd_lists, ti_lists = gen_n_random_ti_cd(
-        n=n,
-        nc=nc,
-        nr=nr,
-        sim_var=sim_var,
-        auxTI_var=auxTI_var,
-        auxSG_var=auxSG_var,
-        names_var=names_var,
-        simgrid_mask=simgrid_mask,
-        condIm_var=condIm_var,
-        method="ReducedTiSg",  # Example method
-        ti_pct_area=90,
-        ti_nshapes=10,
-        pct_ti_sg_overlap=10,
-        pct_sg=10,
-        pct_ti=30,
-        cc_sg=None,
-        rr_sg=None,
-        cc_ti=None,
-        rr_ti=None,
-        givenseed=seed  # Example seed for reproducibility
-    )
+    cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(
+                                                        n=n,
+                                                        nc=nc,
+                                                        nr=nr,
+                                                        sim_var=sim_var,
+                                                        auxTI_var=auxTI_var,
+                                                        auxSG_var=auxSG_var,
+                                                        names_var=names_var,
+                                                        simgrid_mask=simgrid_mask,
+                                                        condIm_var=condIm_var,
+                                                        method="ReducedTiSg",  # Example method
+                                                        ti_pct_area=90,
+                                                        ti_nshapes=10,
+                                                        pct_ti_sg_overlap=10,
+                                                        pct_sg=10,
+                                                        pct_ti=30,
+                                                        cc_sg=None,
+                                                        rr_sg=None,
+                                                        cc_ti=None,
+                                                        rr_ti=None,
+                                                        givenseed=seed  # Example seed for reproducibility
+                                                    )
     for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
         print(f"\n\n\n----- Testing the set number {i}: -----")
         for cd, i in zip(cd_list, range(1, len(cd_list)+1)):

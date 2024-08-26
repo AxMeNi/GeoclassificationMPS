@@ -290,8 +290,8 @@ def gen_n_random_ti_cd(n, nc, nr,
     ti_lists = []
     cd_lists = []
     appendFlags = [False]
+    simgrid_mask_final = None
     seed = givenseed
-    appendFlags = [False]
     
     for i in range(n):
     
@@ -303,17 +303,17 @@ def gen_n_random_ti_cd(n, nc, nr,
                 ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
-                cc_sg, rr_sg = nc, nr
+                nc_sg, nr_sg = nc, nr
             if method == "DependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
-                cc_sg, rr_sg = nc, nr
+                nc_sg, nr_sg = nc, nr
             if method == "IndependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
                 ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
-                cc_sg, rr_sg = nc, nr
+                nc_sg, nr_sg = nc, nr
             if method == "ReducedTiSg":
                 ti_frame, need_to_cut, simgrid_mask2, nc_sg, nr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
@@ -347,5 +347,5 @@ def gen_n_random_ti_cd(n, nc, nr,
         appendFlags = [False]
 
                         
-    return cd_lists, ti_lists
+    return cd_lists, ti_lists, nc_sg, nr_sg, simgrid_mask_final
 
