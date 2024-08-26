@@ -335,7 +335,6 @@ def gen_n_random_ti_cd(n, nc, nr,
                         
                         #Condition to make sure the variables are of the same range (same max, same min)
                         cd_min, cd_max = np.nanmin(cd_values), np.nanmax(cd_values)
-
                         ti_min, ti_max = np.nanmin(ti_values), np.nanmax(ti_values)
                         
                         if cd_min != ti_min or cd_max != ti_max:

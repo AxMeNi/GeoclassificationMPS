@@ -648,5 +648,5 @@ def test_gen_n_random_ti_cd():
                     ti_values = ti.val[ti_index]
                     print(f">>>> Min CD : {np.nanmin(cd_values)}, Max CD : {np.nanmax(cd_values)}")
                     print(f">>>> Min TI : {np.nanmin(ti_values)}, Max CD : {np.nanmax(ti_values)}")
-                    print(cd_values.shape)
+
     print("Test passed!")

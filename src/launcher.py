@@ -90,8 +90,7 @@ def launcher(seed,
             cd_list.extend(cd_list_RTS)
             simgrid_mask = None
         
-        for ti in ti_list:
-            print(ti.val)
+        
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -128,12 +127,29 @@ def launcher(seed,
             maxScanFraction=nTI*[ms],
             npostProcessingPathMax=1,
             seed=seed,
-            nrealization=1
+            nrealization=5
         ) 
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
 
         sim = deesse_output['sim']
+        
+        ###############################################################################
+        all_sim = gn.img.gatherImages(sim)
+        categ_val = [1,2,3,4,5,6,7]
+        cm = plt.get_cmap('tab20')
+        defaultclrs = np.asarray(cm.colors)[[1, 2, 3, 4, 6, 7], :]
+        n_bin = 11
+        cmap_name = 'my_tab20'
+        defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
+        all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+        plt.subplots(1, 7, figsize=(17,5), sharey=True)
+        for i in range(7):
+            plt.subplot(1, 3, i+1) # select next sub-plot
+            gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=defaultcmap[i],
+                                   title=f'Prop. of categ. {i} (over {nreal} real.)')
+        plt.show()
+        ###############################################################################
         
         plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
         

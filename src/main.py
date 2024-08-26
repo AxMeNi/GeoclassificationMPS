@@ -7,8 +7,8 @@ __date__ = "juillet 2024"
 from tests import *
 from interface import *
     
-bool_run_simu = False
-bool_run_tests = True
+bool_run_simu = True
+bool_run_tests = False
 
 def run_tests():
     """
