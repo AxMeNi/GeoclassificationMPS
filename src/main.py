@@ -6,9 +6,7 @@ __date__ = "juillet 2024"
 
 from tests import *
 from interface import *
-    
-bool_run_simu = True
-bool_run_tests = False
+import sys
 
 def run_tests():
     """
@@ -70,6 +68,7 @@ def run_tests():
    
     
 if __name__ == '__main__':
+    arg = sys.argv[1]
     
-    if bool_run_simu: run_simulation()
-    if bool_run_tests: run_tests()
+    if arg == "-s" : run_simulation()
+    if arg == "-t" : run_tests()

@@ -144,7 +144,7 @@ def launcher(seed,
         for i in range(7):
             plt.subplot(1, 7, i+1) # select next sub-plot
             gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
-                                   title=f'Prop. of categ. {i} (over {5} real.)')
+                                   title=f'Prop. of categ. {i}')
         plt.show()
         ###############################################################################
         
