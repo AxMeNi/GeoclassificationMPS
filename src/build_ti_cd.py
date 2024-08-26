@@ -317,7 +317,7 @@ def gen_n_random_ti_cd(n, nc, nr,
             if method == "ReducedTiSg":
                 ti_frame, need_to_cut, simgrid_mask2, nc_sg, nr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
+                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc_sg, nr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
 
             for cd in cd_list:
                 for ti in ti_list:
@@ -336,8 +336,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                         #Condition to make sure the variables are of the same range (same max, same min)
                         cd_min, cd_max = np.nanmin(cd_values), np.nanmax(cd_values)
                         ti_min, ti_max = np.nanmin(ti_values), np.nanmax(ti_values)
-                        
-                        if cd_min != ti_min or cd_max != ti_max:
+                        if round(cd_min,7) != round(ti_min,7) or round(cd_max,7) != round(ti_max,7):
                             appendFlags.append(False)
                         else:
                             appendFlags.append(True)

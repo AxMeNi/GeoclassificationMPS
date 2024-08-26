@@ -61,7 +61,7 @@ def get_simulation_info():
     ##################### TRAINING IMAGE PARAMETERS #####################
     
     #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    ti_methods = ["ReducedTiSg"] #List of methods
+    ti_methods = ["DependentCircles"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
     ti_pct_area = 90
@@ -77,7 +77,7 @@ def get_simulation_info():
     rr_ti=None
     
     #Number of random TI and CD sets to generate a simulation with
-    nRandomTICDsets = 1
+    nRandomTICDsets = 2
     
     ##################### DEESSE SIMULATION PARAMETERS #####################
 

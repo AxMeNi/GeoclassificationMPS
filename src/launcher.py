@@ -158,17 +158,55 @@ def launcher(seed,
         if len(ti_methods) > 1:
             raise ValueError(f"Cannot run the following methods: {', '.join(ti_methods)} for {nRandomTICDsets} random TI/CD sets. Please consider chosing only one method or only one set.")
 
-        cd_lists, ti_lists, nc_sg, nr_sg, simgrid_mask_final \ 
-            = gen_n_random_ti_cd(n, nc, nr,
+        cd_lists, ti_lists, nc_sg, nr_sg, simgrid_mask_final = gen_n_random_ti_cd(nRandomTICDsets, nc, nr,
                         sim_var = sim_var, auxTI_var = auxTI_var, auxSG_var = auxSG_var,
                         names_var = names_var, 
                         simgrid_mask = simgrid_mask_aux,
                         condIm_var = condIm_var,
-                        method = ti_methods,
+                        method = ti_methods[0],
                         ti_pct_area = ti_pct_area, ti_nshapes = ti_nshapes, 
                         pct_ti_sg_overlap = pct_ti_sg_overlap, 
                         pct_sg = pct_sg, pct_ti = pct_ti, 
-                        cc_sg = None, rr_sg = None, 
-                        cc_ti = None, rr_ti = None,
-                        givenseed = None)
+                        cc_sg = cc_sg, rr_sg = rr_sg, 
+                        cc_ti = cc_ti, rr_ti = rr_ti,
+                        givenseed = seed)
+                        
+        for cd_list, ti_list in zip(cd_lists, ti_lists):
+            nTI = len(ti_list)
+            names, distance_types = get_unique_names_and_types(names_var, types_var)
+            
+            deesse_input = gn.deesseinterface.DeesseInput(
+                nx=nc_sg, ny=nr_sg, nz=1,
+                sx=1, sy=1, sz=1,
+                ox=0, oy=0, oz=0,
+                nv=nvar, varname=names,
+                TI=ti_list,
+                #pdfTI = pdf_ti,
+                mask = simgrid_mask_final,
+                dataImage=cd_list,
+                distanceType=distance_types,
+                nneighboringNode=nvar*[nn],
+                distanceThreshold=nvar*[dt],
+                maxScanFraction=nTI*[ms],
+                npostProcessingPathMax=1,
+                seed=seed,
+                nrealization=5
+            ) 
+            
+            deesse_output = gn.deesseinterface.deesseRun(deesse_input)
+
+            sim = deesse_output['sim']
+            
+            ###############################################################################
+            all_sim = gn.img.gatherImages(sim)
+            categ_val = [1,2,3,4,5,6,7]
+            all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+            prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
+            cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
+            plt.subplots(1, 7, figsize=(17,5), sharey=True)
+            for i in range(7):
+                plt.subplot(1, 7, i+1) # select next sub-plot
+                gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
+                                       title=f'Prop. of categ. {i}')
+            plt.show()
     return

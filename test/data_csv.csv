@@ -2,4 +2,3 @@ var_name;categ_conti;nature;path;grid
 grid_geo;categorical;sim;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy;TI
 grid_grv;continuous;auxTI;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy;TI
 grid_grv;continuous;auxSG;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_grv.npy;SG
-grid_geo;categorical;condIm;C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\data\grid_geo.npy;
