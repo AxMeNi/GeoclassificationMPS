@@ -61,7 +61,7 @@ def get_simulation_info():
     ##################### TRAINING IMAGE PARAMETERS #####################
     
     #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    ti_methods = ["DependentSquares"] #List of methods
+    ti_methods = ["ReducedTiSg"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
     ti_pct_area = 90

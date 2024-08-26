@@ -137,17 +137,14 @@ def launcher(seed,
         ###############################################################################
         all_sim = gn.img.gatherImages(sim)
         categ_val = [1,2,3,4,5,6,7]
-        cm = plt.get_cmap('tab20')
-        defaultclrs = np.asarray(cm.colors)[[1, 2, 3, 4, 6, 7], :]
-        n_bin = 11
-        cmap_name = 'my_tab20'
-        defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
         all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+        prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
+        cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
         plt.subplots(1, 7, figsize=(17,5), sharey=True)
         for i in range(7):
-            plt.subplot(1, 3, i+1) # select next sub-plot
-            gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=defaultcmap[i],
-                                   title=f'Prop. of categ. {i} (over {nreal} real.)')
+            plt.subplot(1, 7, i+1) # select next sub-plot
+            gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
+                                   title=f'Prop. of categ. {i} (over {5} real.)')
         plt.show()
         ###############################################################################
         
