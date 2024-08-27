@@ -127,7 +127,7 @@ def launcher(seed,
             maxScanFraction=nTI*[ms],
             npostProcessingPathMax=1,
             seed=seed,
-            nrealization=5
+            nrealization=numberofmpsrealizations
         ) 
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
@@ -190,7 +190,7 @@ def launcher(seed,
                 maxScanFraction=nTI*[ms],
                 npostProcessingPathMax=1,
                 seed=seed,
-                nrealization=5
+                nrealization=numberofmpsrealizations
             ) 
             
             deesse_output = gn.deesseinterface.deesseRun(deesse_input)

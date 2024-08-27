@@ -61,11 +61,11 @@ def get_simulation_info():
     ##################### TRAINING IMAGE PARAMETERS #####################
     
     #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    ti_methods = ["DependentCircles"] #List of methods
+    ti_methods = ["DependentSquares", "DependentCircles"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
     ti_pct_area = 90
-    ti_nshapes = 15 
+    ti_nshapes = 2 
     
     #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
@@ -77,14 +77,14 @@ def get_simulation_info():
     rr_ti=None
     
     #Number of random TI and CD sets to generate a simulation with
-    nRandomTICDsets = 2
+    nRandomTICDsets = 1
     
     ##################### DEESSE SIMULATION PARAMETERS #####################
 
     nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
-    numberofmpsrealizations = 1  # Number of Deesse realizations
+    numberofmpsrealizations = 10  # Number of Deesse realizations
     nthreads = 1  # Number of threads for parallel processing
 
     ##################### COLORMAP PARAMETERS #####################

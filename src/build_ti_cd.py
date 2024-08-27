@@ -336,6 +336,7 @@ def gen_n_random_ti_cd(n, nc, nr,
                         #Condition to make sure the variables are of the same range (same max, same min)
                         cd_min, cd_max = np.nanmin(cd_values), np.nanmax(cd_values)
                         ti_min, ti_max = np.nanmin(ti_values), np.nanmax(ti_values)
+                        print(cd_min, cd_max, ti_min, ti_max)
                         if round(cd_min,7) != round(ti_min,7) or round(cd_max,7) != round(ti_max,7):
                             appendFlags.append(False)
                         else:
