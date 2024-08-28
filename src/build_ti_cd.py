@@ -276,6 +276,7 @@ def gen_n_random_ti_cd(n, nc, nr,
         A list containing n lists of conditional data (CD) corresponding to the generated TIs.
     ti_lists : list of list
         A list containing n lists of training images (TI) generated according to the specified method.
+    nc_sg, nr_sg, simgrid_mask_final
     
     Raises:
     -------

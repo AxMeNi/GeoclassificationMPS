@@ -355,11 +355,11 @@ def test_merge_masks():
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
-    nc = 1000  # nombre de colonnes
-    nr = 1000  # nombre de lignes
+    nc = 1000 
+    nr = 1000 
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
-    ti_ndisks = 10  # nombre de disques
-    seed = 852  # graine pour le générateur de nombres aléatoires
+    ti_ndisks = 10 
+    seed = 852 
 
     mask = gen_ti_frame_circles(nc, nr, ti_pct_area, ti_ndisks, seed)[0][0]
     plt.figure(figsize=(8, 8))
@@ -370,11 +370,11 @@ def test_gen_ti_frame_circles():
     plt.show()
 
 def test_gen_ti_frame_squares():
-    nc = 337  # nombre de colonnes
-    nr = 529  # nombre de lignes
+    nc = 337  
+    nr = 529  
     ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
     ti_nsquares = 5  # nombre de carrés
-    seed = 854  # graine pour le générateur de nombres aléatoires
+    seed = 854
     
     mask_list, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)
     mask = mask_list[0]
@@ -386,8 +386,8 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     print("\t\tTESTING GEN TI FRAME SEPARATED SQUARES")
     print("##################################################################\n")
 
-    nc = 337  # nombre de colonnes
-    nr = 529 # nombre de lignes
+    nc = 337
+    nr = 529
     ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
     ti_nsquares = 5  # nombre de carrés
     seed = 854 
@@ -414,7 +414,7 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
             ax.imshow(square_plot, cmap='gray', origin='lower')
             ax.set_title(f"Square {i}")
         else:
-            ax.axis('off')  # Turn off unused subplots
+            ax.axis('off')
     
     plt.tight_layout()
     plt.show()
@@ -605,9 +605,8 @@ def test_gen_n_random_ti_cd():
     
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999)
     
-    simgrid_mask = np.ones((nr, nc))  # A simple mask where all cells are valid
+    simgrid_mask = np.ones((nr, nc)) 
 
-    # Call the function with the test parameters
     cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(
                                                         n=n,
                                                         nc=nc,
@@ -618,7 +617,7 @@ def test_gen_n_random_ti_cd():
                                                         names_var=names_var,
                                                         simgrid_mask=simgrid_mask,
                                                         condIm_var=condIm_var,
-                                                        method="ReducedTiSg",  # Example method
+                                                        method="ReducedTiSg",  
                                                         ti_pct_area=90,
                                                         ti_nshapes=10,
                                                         pct_ti_sg_overlap=10,
@@ -628,7 +627,7 @@ def test_gen_n_random_ti_cd():
                                                         rr_sg=None,
                                                         cc_ti=None,
                                                         rr_ti=None,
-                                                        givenseed=seed  # Example seed for reproducibility
+                                                        givenseed=seed 
                                                     )
     for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
         print(f"\n\n\n----- Testing the set number {i}: -----")
