@@ -930,8 +930,8 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
     prop_ti = np.zeros(ngeocodes)
     prop_ref = np.zeros(ngeocodes)
     for i in range(ngeocodes):
-        prop_ref[i] = np.sum(grid_geo == geocodes[i]) / np.prod(grid_msk.shape) * 100
-        prop_ti[i] = np.sum((grid_geo * grid_msk) == geocodes[i]) / np.sum(grid_msk) * 100
+        prop_ref[i] = np.sum(grid_geo == geocodes[i]) / np.prod(grid_msk.shape) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo) 
+        prop_ti[i] = np.sum((grid_geo * grid_msk) == geocodes[i]) / np.sum(grid_msk) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo but masked)
 
     stats_check = pd.DataFrame(columns=['geocodes', 'prop_ref', 'prop_ti'])
     stats_check['geocodes'] = geocodes
