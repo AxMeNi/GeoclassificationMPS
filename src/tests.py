@@ -238,7 +238,7 @@ def test_check_variables():
 
 
 def test_get_sim_grid_dimensions():
-    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
+    csv_file_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv"
     sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     nr, nc = get_sim_grid_dimensions(sim_var)
     print(nr,nc)
@@ -481,7 +481,7 @@ def test_build_ti_cd():
     
     novalue = -9999999
     seed = 854
-    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
+    csv_file_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv"
     sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=novalue)    
     nr, nc = get_sim_grid_dimensions(auxSG_var)

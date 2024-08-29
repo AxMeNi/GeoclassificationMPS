@@ -27,7 +27,7 @@ def get_simulation_info():
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    csv_file_path = r"C:\Users\Axel (Travail)\Documents\ENSG\CET\GeoclassificationMPS\test\data_csv.csv"
+    csv_file_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv"
     
     # Expected CSV File Format (Columns are separataed by ";"):
     #
