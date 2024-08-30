@@ -9,63 +9,37 @@ import pandas as pd
 
 
 
-def get_geocodes_proportions(ngeocodes, grid_geo, grid_mask, geocodes )
-    prop_ti = np.zeros(ngeocodes)
-    prop_ref = np.zeros(ngeocodes)
-    for i in range(ngeocodes):
-        prop_ref[i] = np.sum(grid_geo == geocodes[i]) / np.prod(grid_msk.shape) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo) 
-        prop_ti[i] = np.sum((grid_geo * grid_msk) == geocodes[i]) / np.sum(grid_msk) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo but masked)
+# def get_geocodes_proportions(ngeocodes, grid_geo, grid_mask, geocodes )
+    # prop_ti = np.zeros(ngeocodes)
+    # prop_ref = np.zeros(ngeocodes)
+    # for i in range(ngeocodes):
+        # prop_ref[i] = np.sum(grid_geo == geocodes[i]) / np.prod(grid_msk.shape) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo) 
+        # prop_ti[i] = np.sum((grid_geo * grid_msk) == geocodes[i]) / np.sum(grid_msk) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo but masked)
     
-    stats_check = pd.DataFrame(columns=['geocodes', 'prop_ref', 'prop_ti'])
-    stats_check['geocodes'] = geocodes
-    stats_check['prop_ref'] = prop_ref
-    stats_check['prop_ti'] = prop_ti
+    # stats_check = pd.DataFrame(columns=['geocodes', 'prop_ref', 'prop_ti'])
+    # stats_check['geocodes'] = geocodes
+    # stats_check['prop_ref'] = prop_ref
+    # stats_check['prop_ti'] = prop_ti
     
-    return stats_check
+    # return stats_check
 
 
-def get_vec_bins(grid_msk, grid_mag, grid_grv, grid_lmp, bintype='reg'):
-    """
-    Calculate bin vectors for variables based on grid mask.
-
-    Parameters:
-    ----------
-    grid_msk : ndarray
-        Mask defining areas of interest in the grid.
-    bintype : {'reg', 'pct'}, optional
-        Type of binning method:
-        - 'reg': Regular bins based on minimum and maximum values.
-        - 'pct': Bins based on percentiles.
-
-    Returns:
-    -------
-    vec_mag : ndarray
-        Vector of bins for magnetism variable.
-    vec_grv : ndarray
-        Vector of bins for gravity variable.
-    vec_lmp : ndarray
-        Vector of bins for lmp variable.
-    """
-    if bintype == 'reg':
-        vec_mag = np.linspace(np.nanmin(grid_mag[grid_msk == 1].flatten()),
-                              np.nanmax(grid_mag[grid_msk == 1].flatten()), nbins + 1)
-        vec_grv = np.linspace(np.nanmin(grid_grv[grid_msk == 1].flatten()),
-                              np.nanmax(grid_grv[grid_msk == 1].flatten()), nbins + 1)
-        vec_lmp = np.linspace(np.nanmin(grid_lmp[grid_msk == 1].flatten()),
-                              np.nanmax(grid_lmp[grid_msk == 1].flatten()), nbins + 1)
-    elif bintype == 'pct':
-        pctile_vec = np.linspace(0, 100, nbins + 1)
-        vec_mag = np.nanpercentile(grid_mag.flatten(), pctile_vec)
-        vec_grv = np.nanpercentile(grid_grv.flatten(), pctile_vec)
-        vec_lmp = np.nanpercentile(grid_lmp.flatten(), pctile_vec)
+def get_vec_bins(auxTI_var, auxSG_var, condIm_var, simgrid_mask, bintype='reg'):
+    
+    bins_aux = 
+    for var_name, var_value in auxTI_var.items():
+        if bintype == 'reg':
+            bins_aux = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()),
+                                  np.nanmax(var_value[simgrid_mask == 1].flatten()), nbins + 1)
+        elif bintype == 'pct':
+            pctile_vec = np.linspace(0, 100, nbins + 1)
+            vec_mag = np.nanpercentile(grid_mag.flatten(), pctile_vec)
 
     vec_mag[0] = vec_mag[0] - eps
-    vec_grv[0] = vec_grv[0] - eps
-    vec_lmp[0] = vec_lmp[0] - eps
-
-    return vec_mag, vec_grv, vec_lmp
 
 
+
+    return vec_mag
 def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
     """
     Count joint distributions of variables and geological codes.
