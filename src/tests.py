@@ -15,6 +15,7 @@ from matplotlib.colors import *
 import matplotlib.pyplot as plt
 import os
 
+
 ##################################### TEST INTERFACE.PY
 
 def test_get_simulation_info():
@@ -61,6 +62,7 @@ def test_get_simulation_info():
 
     print("The function get_simulation_info is working correctly, all checks passed!")
 
+
 ##################################### TEST DATA_TREATMENT.PY
 
 def test_check_ti_methods():
@@ -89,6 +91,7 @@ def test_check_ti_methods():
         print("Test case 5 passed.")
     except ValueError as e:
         print(f"Test case 5 failed: {e}")
+
 
 def test_create_variables():
     """
@@ -143,6 +146,7 @@ def test_create_variables():
 
     print("Successfully passed test_create_variables.")
 
+
 def test_count_variables():
     names_var1 = [["var1", "var2"],["var3", "var4"],["var5", "var6"],["var7", "var8"]]
     expected1 = 8
@@ -164,6 +168,7 @@ def test_count_variables():
     result4 = count_variables(names_var4)
     assert result4 == expected4, f"Test case 4 failed: expected {expected4}, got {result4}"
     print(f"Test case 4 passed: {result4} unique variables.")
+
 
 def test_check_variables():
     # Test 1: Valid input (should pass)
@@ -245,6 +250,7 @@ def test_get_sim_grid_dimensions():
     
     return True
 
+
 def test_get_unique_names_and_types():
 
     # Test Case 1: Simple case with unique names and corresponding types
@@ -278,7 +284,6 @@ def test_get_unique_names_and_types():
     print("Test Case 3 Passed")
 
 
-    
 ##################################### TEST SG_MASK_GENERATION.PY
 
 def test_create_sg_mask():
@@ -308,6 +313,7 @@ def test_create_sg_mask():
     print("Test passed: The mask matches the expected output.")
     
     return True
+
 
 def test_merge_masks():
     """
@@ -352,6 +358,7 @@ def test_merge_masks():
 
     print("All test cases passed.")
 
+
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
@@ -369,6 +376,7 @@ def test_gen_ti_frame_circles():
     plt.ylabel('rows')
     plt.show()
 
+
 def test_gen_ti_frame_squares():
     nc = 337  
     nr = 529  
@@ -380,7 +388,8 @@ def test_gen_ti_frame_squares():
     mask = mask_list[0]
     plt.imshow(mask, cmap='gray')
     plt.show()
-    
+  
+  
 def test_gen_ti_frame_separated_squares(showCoord=True):
     print("\n##################################################################")
     print("\t\tTESTING GEN TI FRAME SEPARATED SQUARES")
@@ -418,6 +427,7 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     
     plt.tight_layout()
     plt.show()
+
 
 def test_gen_ti_frame_sg_mask():
     print("\n##################################################################")
@@ -571,9 +581,6 @@ def test_build_ti_cd():
     
     
     print(">>>>> Test completed successfully with separated TI frames.\n**************************")
-
-    
-
 
     
 def test_gen_n_random_ti_cd():

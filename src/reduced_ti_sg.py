@@ -43,6 +43,7 @@ def generate_random_dimensions(cc_dg, rr_dg, area_to_cover):
 
     return cc_list, rr_list
 
+
 def chose_random_dimensions(cc_list, rr_list):
     """
     Randomly select a pair of dimensions from the given lists and remove the selected pair from the lists.
@@ -75,6 +76,7 @@ def chose_random_dimensions(cc_list, rr_list):
     
     return cc, rr, cc_list, rr_list
 
+
 def generate_random_sg_origin(cc_dg, rr_dg, cc_sg, rr_sg):
     """
     Generate all possible starting positions for a simulation grid within the data grid.
@@ -104,6 +106,7 @@ def generate_random_sg_origin(cc_dg, rr_dg, cc_sg, rr_sg):
     
     return positions_sg
 
+
 def chose_random_sg_origin(positions_sg):
     """
     Choose a random origin for the simulation grid from a list of possible positions and update the list.
@@ -131,6 +134,7 @@ def chose_random_sg_origin(positions_sg):
 
     positions_sg = np.delete(positions_sg, rd_index_position_sg,axis=0)
     return c_sg, r_sg, positions_sg
+
 
 def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap):
     """
@@ -181,6 +185,7 @@ def chose_random_overlap_area(c_overlap_list, c_sg, r_sg, cc_sg, rr_sg, pct_ti_s
     )
     
     return cc_overlap, rr_overlap, c_overlap_list, positions_overlap
+
 
 def compute_row(col, c_sg, r_sg, cc_sg, rr_sg, pct_ti_sg_overlap):
     """
@@ -238,6 +243,7 @@ def chose_random_overlap_origin(positions_overlap):
     positions_overlap = np.delete(positions_overlap, rd_index_c_overlap_def,axis=0)
     
     return c_overlap, r_overlap, positions_overlap
+
 
 def get_ti_orign(cc_dg, rr_dg, 
                 c_sg, r_sg, 
@@ -335,6 +341,7 @@ def get_ti_orign(cc_dg, rr_dg,
     print(ValueError(f"Error while trying to find the origin of the TI: \n Values : c_sg={c_sg}, cc_sg={cc_sg}, r_sg={r_sg},rr_dg={rr_sg}, c_overlap={c_overlap}, cc_overlap={cc_overlap}, r_overlap={r_overlap}, rr_overlap={rr_overlap}, cc_ti={cc_ti}, rr_ti={rr_ti} "))
     return None
 
+
 def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_sg, c_overlap, r_overlap, cc_overlap, rr_overlap, pos):
     """
     Check if the position and dimensions of a training image (TI) are valid given the constraints of the data grid (DG), simulation grid (SG), and overlap area.
@@ -417,9 +424,11 @@ def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_s
             return False
     return True
 
+
 ############################################################################
 ############################################################################
 ############################################################################
+
     
 def get_ti_sg(cc_dg, rr_dg, 
               cc_sg=None, rr_sg=None, pct_sg=10, 
@@ -562,8 +571,6 @@ def get_ti_sg(cc_dg, rr_dg,
     
     print("No position matched with the given paramaters to create the simulation grid and the TI, please change the parameters.")
     exit()
-    
-    
 
 
 if __name__ == "__main__":

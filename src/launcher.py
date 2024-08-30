@@ -4,15 +4,6 @@ __nom_fichier__ = "launcher"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
-"""
-Script for processing and visualization of geospatial data.
-
-This script imports necessary modules and initializes parameters for data processing
-and visualization. It also loads pre-processed data from a pickle file.
-
-Author: Guillaume Pirot
-Date: Fri Jul 28 11:12:36 2023
-"""
 from ti_mask_generation import *
 from data_treatment import get_unique_names_and_types
 from sg_mask_generation import *

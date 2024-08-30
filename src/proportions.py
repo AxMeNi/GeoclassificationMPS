@@ -4,6 +4,23 @@ __nom_fichier__ = "proportions"
 __author__ = "MENGELLE Axel"
 __date__ = "aout 2024"
 
+import numpy as np
+import pqndqs as pd
+
+def get_geocodes_proportions(ngeocodes, grid_geo, grid_mask, geocodes )
+    prop_ti = np.zeros(ngeocodes)
+    prop_ref = np.zeros(ngeocodes)
+    for i in range(ngeocodes):
+        prop_ref[i] = np.sum(grid_geo == geocodes[i]) / np.prod(grid_msk.shape) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo) 
+        prop_ti[i] = np.sum((grid_geo * grid_msk) == geocodes[i]) / np.sum(grid_msk) * 100 #computing the proportions (percentages) of cells corresponding to specific geocodes within a reference grid (grid_geo but masked)
+    
+    stats_check = pd.DataFrame(columns=['geocodes', 'prop_ref', 'prop_ti'])
+    stats_check['geocodes'] = geocodes
+    stats_check['prop_ref'] = prop_ref
+    stats_check['prop_ti'] = prop_ti
+    
+    return stats_check
+
 def get_vec_bins(grid_msk, bintype='reg'):
     """
     Calculate bin vectors for variables based on grid mask.

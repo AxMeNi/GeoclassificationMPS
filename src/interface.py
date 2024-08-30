@@ -130,7 +130,6 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
     return
 
 
-
 def launch_simulation(seed, 
                     ti_methods, 
                     ti_pct_area, ti_nshapes,
@@ -153,6 +152,7 @@ def launch_simulation(seed,
                 cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                 nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
                 nr, nc)
+
 
 def run_simulation():
     seed, \

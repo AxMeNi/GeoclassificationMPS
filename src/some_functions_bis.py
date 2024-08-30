@@ -434,12 +434,8 @@ def get_prop(hist_count_mx):
 
     return total_mx, prop_mx
 
-
-import matplotlib.pyplot as plt
-import numpy as np
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from sklearn import manifold
-import pandas as pd
+#############################################################################
+#############################################################################
 
 
 def plot_marginals(marg_mag, marg_grv, marg_lmp, suptitle):
@@ -991,8 +987,10 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
                        'COUNT BASED ON REGULARLY SPACED BINS')
         plot_marginals(class_hist_count_pct_marg_mag, class_hist_count_pct_marg_grv, class_hist_count_pct_marg_lmp,
                        'COUNT BASED ON PERCENTILES')
-
+    
+    ##########################
     # COMPUTE ENTROPY
+    ##########################
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - ENTROPY BASED ON REGULARLY SPACED BINS")
     shannon_entropy_joint_dist = shannon_entropy(class_hist_prop_joint_dist)
     shannon_entropy_marg_mag = shannon_entropy(class_hist_prop_marg_mag)
@@ -1023,7 +1021,9 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
                                        shannon_entropy_pct_joint_mag_grv)
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - ENTROPY BASED ON PERCENTILES - DONE")
 
+    ##########################
     # COMPUTE HISTOGRAM DISSIMILARITY BETWEEN CLASSES FOR MARGINALS AND JOINT DISTRIBUTIONS
+    ##########################
     print((datetime.now()).strftime(
         '%d-%b-%Y (%H:%M:%S)') + " - COMPUTE JENSEN SHANNON DIVERGENCE BETWEEEN DISTRIBUTIONS")
     [jsdist_joint_dist,
@@ -1045,8 +1045,10 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
         plot_jsdivmx_mds_hist(geocodes, jsdist_marg_lmp, '1vd', class_hist_count_marg_lmp)
         plot_jsdivmx_mds_hist(geocodes, jsdist_joint_dist, 'Joint-all')  # ,class_hist_count_joint_dist
         plot_jsdivmx_mds_hist(geocodes, jsdist_joint_mag_grv, 'Mag-Grv')  # ,class_hist_count_joint_mag_grv
-
+        
+    ##########################
     # TAKING INTO ACCOUNT TOPOLOGICAL DIFFERENCES BETWEEN CLASSES
+    ##########################
     adj_mx = topological_adjacency(grid_geo, geocodes)
     tpl_dist = np.zeros((ngeocodes, ngeocodes))
     for i in range(ngeocodes):
@@ -1066,7 +1068,9 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
         fig = plt.figure(figsize=(15, 5), dpi=300)
         dn = dendrogram(lnk, labels=geocodes)
         plt.show()
-
+    
+    
+    #--------------------------------------#
     # %% RUN DEESSE
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - RUN DEESSE")
     deesse_output = run_deesse(tiMissingGeol, mps_nreal, nneighboringNode,
@@ -1100,7 +1104,8 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
     # error across all lithocode
     for r in range(mps_nreal):
         error[:, :, -1] += 1 * ((grid_geo - realizations[:, :, r]) != 0) / mps_nreal
-
+    
+    
     # confusion matrix, TP/FP/TN/FN and related indicators
     reference = grid_geo
     mask = 1 - grid_msk
@@ -1126,7 +1131,7 @@ def main(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads, geolcd=True, xy
     datafilepath = path2ind + 'data' + suffix + '-ndisks-' + str(ti_ndisks) + '-areapct-' + str(
         ti_pct_area) + '-r-' + str(ti_realid) + '.pickle'
     with open(datafilepath, 'wb') as f:
-        pickle.dump([class_hist_count_marg_mag, class_hist_count_marg_grv, class_hist_count_marg_lmp,
+#        pickle.dump([class_hist_count_marg_mag, class_hist_count_marg_grv, class_hist_count_marg_lmp,
                      class_hist_count_pct_marg_mag, class_hist_count_pct_marg_grv, class_hist_count_pct_marg_lmp,
                      shannon_entropy_joint_dist, shannon_entropy_marg, shannon_entropy_joint_mag_grv,
                      shannon_entropy_pct_joint_dist, shannon_entropy_pct_marg, shannon_entropy_pct_joint_mag_grv,

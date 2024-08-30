@@ -7,6 +7,8 @@ __date__ = "juillet 2024"
 import numpy as np
 import pandas as pd
 
+
+
 def check_ti_methods(ti_methods):
     """
     Validates that the input list `ti_methods` contains at least one of the four required methods: 
@@ -38,6 +40,7 @@ def check_ti_methods(ti_methods):
     if ("ReducedTiSg" in ti_methods) and (len(ti_methods) > 1):
         raise ValueError("Cannot chose ReducedTiSg with other methods, ReducedTiSg must be chosen solo.")
     return
+
 
 def create_variables(csv_file_path):
     """
@@ -174,7 +177,6 @@ def create_variables(csv_file_path):
                         
     return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var
  
-   
 
 def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999):
     """
@@ -377,7 +379,6 @@ def count_variables(names_var):
     return len(unique_variables)
 
 
-
 def get_sim_grid_dimensions(auxTI_var):
     ar  = auxTI_var[next(iter(auxTI_var))]
     if ar is not None:
@@ -386,6 +387,7 @@ def get_sim_grid_dimensions(auxTI_var):
         raise ValueError(f"No auxiliary variable was provided, please provide at least one auxiliary variable to constrain the shape of the simulation grid")
     print(f"Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
     return nc, nr
+
 
 def get_unique_names_and_types(names_var, types_var):
     """
@@ -416,8 +418,7 @@ def get_unique_names_and_types(names_var, types_var):
 
     return unique_names, unique_types
 
-    
-    
+      
 def create_directories(path2ti,path2cd,path2real, path2log, path2ind):
     """
     Create directories if they do not exist
