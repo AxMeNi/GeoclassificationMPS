@@ -7,6 +7,8 @@ __date__ = "août 2024"
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
 def create_sg_mask(auxTI_var, auxSG_var, nr, nc):
     """
     Generate a simulation grid mask based on the presence of missing values across different variable types.
@@ -43,6 +45,7 @@ def create_sg_mask(auxTI_var, auxSG_var, nr, nc):
     for var_name, var_value in auxSG_var.items():
         sim_mask = np.where(np.isnan(var_value), 0, sim_mask)
     return sim_mask
+
 
 def merge_masks(mask1, mask2):
     """

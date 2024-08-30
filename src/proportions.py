@@ -5,7 +5,9 @@ __author__ = "MENGELLE Axel"
 __date__ = "aout 2024"
 
 import numpy as np
-import pqndqs as pd
+import pandas as pd
+
+
 
 def get_geocodes_proportions(ngeocodes, grid_geo, grid_mask, geocodes )
     prop_ti = np.zeros(ngeocodes)
@@ -21,7 +23,8 @@ def get_geocodes_proportions(ngeocodes, grid_geo, grid_mask, geocodes )
     
     return stats_check
 
-def get_vec_bins(grid_msk, bintype='reg'):
+
+def get_vec_bins(grid_msk, grid_mag, grid_grv, grid_lmp, bintype='reg'):
     """
     Calculate bin vectors for variables based on grid mask.
 
@@ -63,7 +66,6 @@ def get_vec_bins(grid_msk, bintype='reg'):
     return vec_mag, vec_grv, vec_lmp
 
 
-@jit(nopython=True)
 def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
     """
     Count joint distributions of variables and geological codes.
