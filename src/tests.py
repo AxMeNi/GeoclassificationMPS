@@ -668,11 +668,11 @@ def test_get_bins():
     }
 
     print("Testing 'reg' binning...")
-    bins_aux_reg = get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg')
+    bins_aux_reg = get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='reg')
     print("Bins (regular):", bins_aux_reg)
 
     print("\nTesting 'pct' binning...")
-    bins_aux_pct = get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='pct')
+    bins_aux_pct = get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='pct')
     print("Bins (percentile):", bins_aux_pct)
 
     print("\nTesting edge cases...")
@@ -683,7 +683,7 @@ def test_get_bins():
     auxTI_var_nan = {
         'var1': np.array([[np.nan, 2, 3], [4, np.nan, 6], [7, 8, np.nan]])
     }
-    nan_test = get_bins(nbins, auxTI_var_nan, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg')
+    nan_test = get_bins(nbins, auxTI_var_nan, auxSG_var, sim_var, simgrid_mask, eps, bintype='reg')
     print("NaN values test:", nan_test)
     
     small_data_test = get_bins(nbins, {'var1': np.array([1, 2])}, {}, {}, np.array([1,1]), eps, bintype='reg')

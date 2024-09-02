@@ -24,7 +24,7 @@ import pandas as pd
     # return stats_check
 
 
-def get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg'):
+def get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='reg'):
     
     bins_aux = {}
     for var_name, var_value in auxTI_var.items():
@@ -35,7 +35,7 @@ def get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype
             bins_pctile = np.linspace(0, 100, nbins + 1)
             bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
     
-    for var_name, var_value in condIm_var.items():
+    for var_name, var_value in sim_var.items():
         if bintype == 'reg':
             bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
                                              np.nanmax(var_value[simgrid_mask == 1]), nbins + 1)
@@ -43,13 +43,14 @@ def get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype
             bins_pctile = np.linspace(0, 100, nbins + 1)
             bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
     
+    
     for var_name, var_value in bins_aux.items():
         bins_aux[var_name] = var_value - eps
         
     return bins_aux
     
     
-def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
+def count_joint_dist(, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
     ngeocodes = len(geocodes)
     class_hist_count_joint_dist = np.zeros((nbins, nbins, nbins, ngeocodes))
 
@@ -72,6 +73,7 @@ def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, 
 
     return class_hist_count_joint_dist
 
+def 
 
 def count_joint_marginals(joint_dist):
     """

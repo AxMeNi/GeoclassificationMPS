@@ -248,10 +248,10 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
     
     # Check sim_var and aux_var exists
     if len(sim_var) == 0:
-        raise KeyError(f"No simulated variable was provided. Please chose at least one simulated variable.")
+        raise KeyError(f"No simulated variable was provided. Please select at least one simulated variable.")
     
     if len(auxSG_var) == 0:
-        raise KeyError(f"No auxiliary variable was provided. Please chose at least one auxiliary variable.")
+        raise KeyError(f"No auxiliary variable was provided. Please select at least one auxiliary variable.")
     
     # Check types
     for var_i in range(len(names_var[0])):
