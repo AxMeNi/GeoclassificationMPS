@@ -24,22 +24,31 @@ import pandas as pd
     # return stats_check
 
 
-def get_vec_bins(auxTI_var, auxSG_var, condIm_var, simgrid_mask, bintype='reg'):
+def get_vec_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg'):
     
-    bins_aux = 
+    bins_aux = {}
     for var_name, var_value in auxTI_var.items():
         if bintype == 'reg':
-            bins_aux = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()),
+            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()),
                                   np.nanmax(var_value[simgrid_mask == 1].flatten()), nbins + 1)
         elif bintype == 'pct':
-            pctile_vec = np.linspace(0, 100, nbins + 1)
-            vec_mag = np.nanpercentile(grid_mag.flatten(), pctile_vec)
-
-    vec_mag[0] = vec_mag[0] - eps
-
-
-
-    return vec_mag
+            bins_pctile = np.linspace(0, 100, nbins + 1)
+            bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
+    
+    for var_name, var_value in condIm_var.items():
+                if bintype == 'reg':
+            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()),
+                                  np.nanmax(var_value[simgrid_mask == 1].flatten()), nbins + 1)
+        elif bintype == 'pct':
+            bins_pctile = np.linspace(0, 100, nbins + 1)
+            bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
+    
+    for i in len(bins_aux):
+        bins_aux[i] = bins_aux[i] - eps
+        
+    return bins_aux
+    
+    
 def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
     """
     Count joint distributions of variables and geological codes.
