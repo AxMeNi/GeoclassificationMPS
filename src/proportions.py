@@ -29,16 +29,16 @@ def get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype
     bins_aux = {}
     for var_name, var_value in auxTI_var.items():
         if bintype == 'reg':
-            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()), 
-                                             np.nanmax(var_value[simgrid_mask == 1].flatten()), nbins + 1)
+            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
+                                             np.nanmax(var_value[simgrid_mask == 1]), nbins + 1)
         elif bintype == 'pct':
             bins_pctile = np.linspace(0, 100, nbins + 1)
             bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
     
     for var_name, var_value in condIm_var.items():
         if bintype == 'reg':
-            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1].flatten()), 
-                                             np.nanmax(var_value[simgrid_mask == 1].flatten()), nbins + 1)
+            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
+                                             np.nanmax(var_value[simgrid_mask == 1]), nbins + 1)
         elif bintype == 'pct':
             bins_pctile = np.linspace(0, 100, nbins + 1)
             bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
@@ -50,33 +50,6 @@ def get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype
     
     
 def count_joint_dist(ti_mag, ti_grv, ti_lmp, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
-    """
-    Count joint distributions of variables and geological codes.
-
-    Parameters:
-    ----------
-    ti_mag : ndarray
-        Array of magnetism values.
-    ti_grv : ndarray
-        Array of gravity values.
-    ti_lmp : ndarray
-        Array of lmp values.
-    ti_geo : ndarray
-        Array of geological codes.
-    vec_mag : ndarray
-        Vector of bins for magnetism variable.
-    vec_grv : ndarray
-        Vector of bins for gravity variable.
-    vec_lmp : ndarray
-        Vector of bins for lmp variable.
-    geocodes : ndarray
-        Unique geological codes.
-
-    Returns:
-    -------
-    class_hist_count_joint_dist : ndarray
-        4D array containing counts of joint distributions.
-    """
     ngeocodes = len(geocodes)
     class_hist_count_joint_dist = np.zeros((nbins, nbins, nbins, ngeocodes))
 

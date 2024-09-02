@@ -649,7 +649,7 @@ def test_gen_n_random_ti_cd():
 ##################################### TEST PROPORTIONS.PY
 
 def test_get_bins():
-    nbins = 5
+    nbins = 9
     eps = 0.01
     simgrid_mask = np.array([[1, 0, 1], [1, 1, 0], [0, 1, 1]])
     
