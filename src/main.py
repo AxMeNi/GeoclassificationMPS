@@ -41,7 +41,9 @@ def run_tests():
     t_GenTiFrameCdMask =            False
     
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
-    t_GenNRandomTiCd =              True
+    t_GenNRandomTiCd =              False
+    
+    t_GetBins =                     True
     
     #----------------------------------------------------------------------------------------#
     
@@ -65,7 +67,7 @@ def run_tests():
     if t_BuildTiCd : test_build_ti_cd()
     if t_GenNRandomTiCd : test_gen_n_random_ti_cd()
 
-   
+    if t_GetBins : test_get_bins()
     
 if __name__ == '__main__':
     arg = sys.argv[1]

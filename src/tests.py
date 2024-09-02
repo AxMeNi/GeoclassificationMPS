@@ -10,6 +10,8 @@ from interface import get_simulation_info
 from ti_mask_generation import *
 from sg_mask_generation import *
 from build_ti_cd import *
+from proportions import *
+
 from matplotlib.colors import *
 
 import matplotlib.pyplot as plt
@@ -516,14 +518,12 @@ def test_build_ti_cd():
     for idx, cd in enumerate(cd_list):
         print(f"CD {idx + 1} shape: {cd.val.shape}")
     
-    # Visualize the Training Images (TIs)
     for idx, ti in enumerate(ti_list):
         assert isinstance(ti, gn.img.Img), "TI is not of type Img."
         # print(f"Training Image {idx + 1}")
         # imgplt.drawImage2D(ti, iv=0, title=f"TI {idx + 1}", vmin=0)
         # plt.show()
 
-    # Visualize the Conditioning Data (CDs)
     for idx, cd in enumerate(cd_list):
         assert isinstance(cd, gn.img.Img), "CD is not of type Img."
         # print(f"Conditioning Data {idx + 1}")
@@ -543,8 +543,6 @@ def test_build_ti_cd():
     ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 90, 5, seed)
     ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
 
-                
-    # Check TI list length
     assert len(ti_list2) == len(ti_frame2), "TI list length mismatch."
 
     print(f"Number of TI : {len(ti_list2)}, number of CD : {len(cd_list2)}")
@@ -578,7 +576,6 @@ def test_build_ti_cd():
         # plt.show()
         # imgplt.drawImage2D(cd, iv=2, title=f"CD {idx + 1},{ti.varname[2]}")
         # plt.show()
-    
     
     print(">>>>> Test completed successfully with separated TI frames.\n**************************")
 
@@ -614,28 +611,19 @@ def test_gen_n_random_ti_cd():
     
     simgrid_mask = np.ones((nr, nc)) 
 
-    cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(
-                                                        n=n,
-                                                        nc=nc,
-                                                        nr=nr,
+    cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(n=n, nc=nc,bnr=nr,
                                                         sim_var=sim_var,
-                                                        auxTI_var=auxTI_var,
-                                                        auxSG_var=auxSG_var,
+                                                        auxTI_var=auxTI_var, auxSG_var=auxSG_var,
                                                         names_var=names_var,
                                                         simgrid_mask=simgrid_mask,
                                                         condIm_var=condIm_var,
                                                         method="ReducedTiSg",  
-                                                        ti_pct_area=90,
-                                                        ti_nshapes=10,
+                                                        ti_pct_area=90, ti_nshapes=10,
                                                         pct_ti_sg_overlap=10,
-                                                        pct_sg=10,
-                                                        pct_ti=30,
-                                                        cc_sg=None,
-                                                        rr_sg=None,
-                                                        cc_ti=None,
-                                                        rr_ti=None,
-                                                        givenseed=seed 
-                                                    )
+                                                        pct_sg=10,pct_ti=30,
+                                                        cc_sg=None,rr_sg=None,
+                                                        cc_ti=None,rr_ti=None,
+                                                        givenseed=seed)
     for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
         print(f"\n\n\n----- Testing the set number {i}: -----")
         for cd, i in zip(cd_list, range(1, len(cd_list)+1)):
@@ -656,3 +644,47 @@ def test_gen_n_random_ti_cd():
                     print(f">>>> Min TI : {np.nanmin(ti_values)}, Max CD : {np.nanmax(ti_values)}")
 
     print("Test passed!")
+
+
+##################################### TEST PROPORTIONS.PY
+
+def test_get_bins():
+    nbins = 5
+    eps = 0.01
+    simgrid_mask = np.array([[1, 0, 1], [1, 1, 0], [0, 1, 1]])
+    
+    auxTI_var = {
+        'var1': np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+        'var2': np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]])
+    }
+    
+    auxSG_var = {
+        'var1': np.array([[10, 11, 12], [13, 14, 15], [16, 17, 18]])
+    }
+    
+    condIm_var = {
+        'varc1': np.array([[2, 2, 3], [3, 4, 5], [6, 6, 7]]),
+        'varc2': np.array([[0.5, 0.6, 0.7], [0.8, 0.9, 1.0], [1.1, 1.2, 1.3]])
+    }
+
+    print("Testing 'reg' binning...")
+    bins_aux_reg = get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg')
+    print("Bins (regular):", bins_aux_reg)
+
+    print("\nTesting 'pct' binning...")
+    bins_aux_pct = get_bins(nbins, auxTI_var, auxSG_var, condIm_var, simgrid_mask, eps, bintype='pct')
+    print("Bins (percentile):", bins_aux_pct)
+
+    print("\nTesting edge cases...")
+
+    empty_test = get_bins(nbins, {}, {}, {}, simgrid_mask, eps, bintype='reg')
+    print("Empty input test:", empty_test)
+
+    auxTI_var_nan = {
+        'var1': np.array([[np.nan, 2, 3], [4, np.nan, 6], [7, 8, np.nan]])
+    }
+    nan_test = get_bins(nbins, auxTI_var_nan, auxSG_var, condIm_var, simgrid_mask, eps, bintype='reg')
+    print("NaN values test:", nan_test)
+    
+    small_data_test = get_bins(nbins, {'var1': np.array([1, 2])}, {}, {}, np.array([1,1]), eps, bintype='reg')
+    print("Small data test:", small_data_test)
