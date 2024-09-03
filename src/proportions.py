@@ -26,54 +26,40 @@ import pandas as pd
 
 def get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='reg'):
     
-    bins_aux = {}
+    bins = {}
     for var_name, var_value in auxTI_var.items():
         if bintype == 'reg':
-            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
+            bins[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
                                              np.nanmax(var_value[simgrid_mask == 1]), nbins + 1)
         elif bintype == 'pct':
             bins_pctile = np.linspace(0, 100, nbins + 1)
-            bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
+            bins[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
     
     for var_name, var_value in sim_var.items():
         if bintype == 'reg':
-            bins_aux[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
+            bins[var_name] = np.linspace(np.nanmin(var_value[simgrid_mask == 1]), 
                                              np.nanmax(var_value[simgrid_mask == 1]), nbins + 1)
         elif bintype == 'pct':
             bins_pctile = np.linspace(0, 100, nbins + 1)
-            bins_aux[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
+            bins[var_name] = np.nanpercentile(var_value.flatten(), bins_pctile)
     
     
-    for var_name, var_value in bins_aux.items():
-        bins_aux[var_name] = var_value - eps
-        
-    return bins_aux
-    
-    
-def count_joint_dist(, ti_geo, vec_mag, vec_grv, vec_lmp, geocodes):
-    ngeocodes = len(geocodes)
-    class_hist_count_joint_dist = np.zeros((nbins, nbins, nbins, ngeocodes))
+    for var_name, var_value in bins.items():
+        bins[var_name] = var_value - eps
 
-    for c in prange(ngeocodes):
-        for i in prange(nbins):
-            mag_lb = vec_mag[i]
-            mag_ub = vec_mag[i + 1]
-            for j in prange(nbins):
-                grv_lb = vec_grv[j]
-                grv_ub = vec_grv[j + 1]
-                for k in prange(nbins):
-                    lmp_lb = vec_lmp[k]
-                    lmp_ub = vec_lmp[k + 1]
-                    tmp_cnt = np.sum(1 * ((ti_mag > mag_lb) & (ti_mag <= mag_ub) &
-                                          (ti_grv > grv_lb) & (ti_grv <= grv_ub) &
-                                          (ti_lmp > lmp_lb) & (ti_lmp <= lmp_ub) &
-                                          (ti_geo == geocodes[c])
-                                          ))
-                    class_hist_count_joint_dist[i, j, k, c] = tmp_cnt
+    return bins
+    
 
+def get_joint_dist(auxTI_var, sim_var, bins, nbins):
+    
+    #Number of categorical values for the simulated_variables which is considered to be categorical
+    n_values_categ = len(np.unique(sim_var[next(iter(sim_var))])) 
+
+    #Initialize array of shape (nbins, nbins, ..., nbins, n_values_categ)
+    joint_dist = np.zeros(tuple([nbins for _ in range(len(auxTI_var))]+[n_values_categ])) 
+    
     return class_hist_count_joint_dist
 
-def 
 
 def count_joint_marginals(joint_dist):
     """
