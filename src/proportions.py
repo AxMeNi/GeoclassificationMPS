@@ -73,8 +73,15 @@ def get_joint_dist(auxTI_var, sim_var, bins, nbins):
     
     for categi in range(n_values_categ):
         conditions = []
-        for combinations in cartesian_product
-            conditions
+        for combination in combinations:
+            for i, (cont_var_name, cont_var_val) in enumerate(auxTI_var.items()):
+                lower_bin = bins[cont_var_name][combination[i]]
+                upper_bin = bins[cont_var_name][combination[i]+1]
+                conditions.append((cont_var_value > lower_bin) & (cont_var_value <= lower_bin))
+            
+            for categ_var_name, categ_var_val in sim_var.items()
+                combined_condition = np.logical_and.reduce(conditions+[(sim_var == categi])])
+                
     # return class_hist_count_joint_dist
 
 
