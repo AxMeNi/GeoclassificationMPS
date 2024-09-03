@@ -11,6 +11,7 @@ from ti_mask_generation import *
 from sg_mask_generation import *
 from build_ti_cd import *
 from proportions import *
+from utils import *
 
 from matplotlib.colors import *
 
@@ -688,3 +689,13 @@ def test_get_bins():
     
     small_data_test = get_bins(nbins, {'var1': np.array([1, 2])}, {}, {}, np.array([1,1]), eps, bintype='reg')
     print("Small data test:", small_data_test)
+
+
+##################################### TESTS UTILS.PY
+
+def test_cartesian_product():
+    a = [1, 2]
+    b = [3, 4]
+    c = [5, 6]
+    combinations = cartesian_product(a, b, c)
+    print(combinations)

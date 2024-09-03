@@ -43,7 +43,9 @@ def run_tests():
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
     t_GenNRandomTiCd =              False
     
-    t_GetBins =                     True
+    t_GetBins =                     False
+    
+    tCartesianProduct =             True
     
     #----------------------------------------------------------------------------------------#
     
@@ -68,6 +70,8 @@ def run_tests():
     if t_GenNRandomTiCd : test_gen_n_random_ti_cd()
 
     if t_GetBins : test_get_bins()
+    
+    if tCartesianProduct : test_cartesian_product()
     
 if __name__ == '__main__':
     arg = sys.argv[1]

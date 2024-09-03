@@ -56,8 +56,13 @@ def get_joint_dist(auxTI_var, sim_var, bins, nbins):
     n_values_categ = len(np.unique(sim_var[next(iter(sim_var))])) 
 
     #Initialize array of shape (nbins, nbins, ..., nbins, n_values_categ)
-    joint_dist = np.zeros(tuple([nbins for _ in range(len(auxTI_var))]+[n_values_categ])) 
+    joint_dist = np.zeros(tuple([nbins for _ in range(len(auxTI_var))] + [n_values_categ])) 
     
+    # combi_bins = [
+    
+    # for categi in range(n_values_categ):
+        
+            
     return class_hist_count_joint_dist
 
 
