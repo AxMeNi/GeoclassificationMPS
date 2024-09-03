@@ -4,6 +4,8 @@ __nom_fichier__ = "proportions"
 __author__ = "MENGELLE Axel"
 __date__ = "aout 2024"
 
+from utils import cartesian_product
+
 import numpy as np
 import pandas as pd
 
@@ -51,19 +53,29 @@ def get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='r
     
 
 def get_joint_dist(auxTI_var, sim_var, bins, nbins):
+    #Number of continuous variables
+    n_conti_var = len(auxTI_var)
     
-    #Number of categorical values for the simulated_variables which is considered to be categorical
+    #Number of categorical values for the simulated_variables which are considered to be categorical
     n_values_categ = len(np.unique(sim_var[next(iter(sim_var))])) 
 
     #Initialize array of shape (nbins, nbins, ..., nbins, n_values_categ)
-    joint_dist = np.zeros(tuple([nbins for _ in range(len(auxTI_var))] + [n_values_categ])) 
+    joint_dist = np.zeros(tuple([nbins for _ in range(n_conti_var)] + [n_values_categ])) 
     
-    # combi_bins = [
+    #Create a list of values from 1 to nbins
+    values = [i for i in range(1, nbins + 1)) 
     
-    # for categi in range(n_values_categ):
-        
-            
-    return class_hist_count_joint_dist
+    #For each continous variables, we will iterate on its bins
+    #We create all the possible combinations of bins with each continuous variables by using a cartesian product
+    #For example, if there are 3 bins and 4 variables, the combinations list will look like this:
+    #[(1,1,1,1),(1,1,1,2),(1,1,1,3),(1,1,2,1),(1,1,2,2),...,(3,3,2,3),(3,3,3,3)]
+    combinations = cartesian_product(*([values]*n_conti_var))
+    
+    for categi in range(n_values_categ):
+        conditions = []
+        for combinations in cartesian_product
+            conditions
+    # return class_hist_count_joint_dist
 
 
 def count_joint_marginals(joint_dist):

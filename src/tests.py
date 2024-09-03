@@ -699,3 +699,8 @@ def test_cartesian_product():
     c = [5, 6]
     combinations = cartesian_product(a, b, c)
     print(combinations)
+    
+    nbins = 8
+    values = list(range(1, nbins + 1))
+    combinations = cartesian_product(*([values]*3))
+    print(combinations)
