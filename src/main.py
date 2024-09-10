@@ -35,7 +35,7 @@ def run_tests():
     t_CreateSGMask =                False
     t_MergeMasks =                  False
     
-    t_GenTiFrameCircles =           False
+    t_GenTiFrameCircles =           True
     t_GenTiFrameSquares =           False
     t_GenTiFrameSeparatedSquares =  False
     t_GenTiFrameCdMask =            False
@@ -45,7 +45,7 @@ def run_tests():
     
     t_GetBins =                     False
     
-    tCartesianProduct =             True
+    tCartesianProduct =             False
     
     #----------------------------------------------------------------------------------------#
     

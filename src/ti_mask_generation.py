@@ -40,7 +40,7 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area = 90, ti_ndisks = 10, seed = None):
         True if the simulated_var will be needed to be cut within the ti_frame shape to create a smaller TI.
     """
     if seed is None:
-        seed = int(rd.randint(1,2**32-1))
+        seed = int(rd.randint(1, 2**32 - 1))
         print(f"Seed used to generate the TI : {seed}")
     rng = np.random.default_rng(seed=seed)
     rndr = rng.integers(low=0, high=nr, size=ti_ndisks)
@@ -52,13 +52,15 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area = 90, ti_ndisks = 10, seed = None):
         frame[rr, cc] = 1
     check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
     while check_pct < ti_pct_area:
-        frame = binary_dilation(frame)
+        for i in range(ti_ndisks):
+            rr, cc = disk((rndr[i], rndc[i]), radius + 1, shape=(nr, nc))
+            frame[rr, cc] = 1
         check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
-    ti_frame = []
-    ti_frame.append(frame)
-    
+        radius += 1 
+
+    ti_frame = [frame]
     need_to_cut = [False]
-    
+
     return ti_frame, need_to_cut
     
     

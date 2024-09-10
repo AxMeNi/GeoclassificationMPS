@@ -10,7 +10,7 @@ from interface import get_simulation_info
 from ti_mask_generation import *
 from sg_mask_generation import *
 from build_ti_cd import *
-from proportions import *
+# from proportions import *
 from utils import *
 
 from matplotlib.colors import *
