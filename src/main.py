@@ -35,9 +35,9 @@ def run_tests():
     t_CreateSGMask =                False
     t_MergeMasks =                  False
     
-    t_GenTiFrameCircles =           True
-    t_GenTiFrameSquares =           True
-    t_GenTiFrameSeparatedSquares =  False
+    t_GenTiFrameCircles =           False
+    t_GenTiFrameSquares =           False
+    t_GenTiFrameSeparatedSquares =  True
     t_GenTiFrameCdMask =            False
     
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...

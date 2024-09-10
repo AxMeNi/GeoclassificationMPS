@@ -404,7 +404,6 @@ def test_gen_ti_frame_squares():
                plt.Line2D([0], [0], color='white', lw=4)]
     plt.legend(handles, ['Hidden (value = 0)', 'Used for Simulation (value = 1)'], loc='upper right', fontsize='medium', frameon=True, shadow=False)
     
-    
     plt.show()
   
   
@@ -413,24 +412,25 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
     print("\t\tTESTING GEN TI FRAME SEPARATED SQUARES")
     print("##################################################################\n")
 
-    nc = 337
-    nr = 529
-    ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 5  # nombre de carrés
+    nc = 3000
+    nr = 1000
+    ti_pct_area = 50
+    ti_nsquares = 10
     seed = 854 
     plot_size = nc
     
-    squares, need_to_cut = gen_ti_frame_separatedSquares(nc, nr, ti_pct_area, ti_nsquares, seed)
+    squares, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nsquares, seed)
     
     num_plots = len(squares)
-    cols = 5  # Number of columns
-    rows = (num_plots + cols - 1) // cols  # Calculate the required number of rows
-    fig, axs = plt.subplots(nrows=rows, ncols=cols, figsize=(cols * 4, rows * 4))
+    cols = 5
+    rows = (num_plots + cols - 1) // cols
+    fig, axs = plt.subplots(nrows=rows, ncols=cols, figsize=(cols * 1.5, rows * 1.5))
     
     if showCoord:
         for i, square in enumerate(squares):
-            print(f"Square {i}: {square} \t")
-
+            print(f"Square {i+1}: {square} \t")
+    
+    fig.suptitle(f'{ti_nsquares} squares covering {ti_pct_area}% of a grid of size {nc} x {nr}. \n Each square is used as a template to cut the data grid', fontsize=12)
     
     for i in range(rows * cols):
         ax = axs.flat[i] if rows * cols > 1 else axs
@@ -439,11 +439,15 @@ def test_gen_ti_frame_separated_squares(showCoord=True):
             square = squares[i]
             square_plot = np.where((square == 1), 1, 0)
             ax.imshow(square_plot, cmap='gray', origin='lower')
-            ax.set_title(f"Square {i}")
+            ax.set_title(f"Square {i+1}", fontsize = 10)
         else:
             ax.axis('off')
     
-    plt.tight_layout()
+    handles = [plt.Line2D([0], [0], color='black', lw=4),
+               plt.Line2D([0], [0], color='white', lw=4, markeredgewidth=2, markeredgecolor='black')]
+    fig.legend(handles, ['Cut area (value = 0)', 'Kept area (value = 1)'], loc='lower center', fontsize='medium', frameon=True, shadow=False, ncol=2)
+    
+    plt.tight_layout(rect=[0, 0.05, 1, 0.95])
     plt.show()
 
 
@@ -452,7 +456,7 @@ def test_gen_ti_frame_sg_mask():
     print("\t\tTESTING GEN TI FRAME SINGLE RECTANGLE")
     print("##################################################################\n")
     
-    nc, nr = 1000, 1000
+    nc, nr = 3000, 1000
     seed = 4
    
     ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
