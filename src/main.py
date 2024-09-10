@@ -36,7 +36,7 @@ def run_tests():
     t_MergeMasks =                  False
     
     t_GenTiFrameCircles =           True
-    t_GenTiFrameSquares =           False
+    t_GenTiFrameSquares =           True
     t_GenTiFrameSeparatedSquares =  False
     t_GenTiFrameCdMask =            False
     

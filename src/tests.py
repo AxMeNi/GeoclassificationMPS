@@ -365,31 +365,46 @@ def test_merge_masks():
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
-    nc = 1000 
-    nr = 1000 
+    nc = 3000 
+    nr = 1000
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
     ti_ndisks = 10 
     seed = 852 
 
-    mask = gen_ti_frame_circles(nc, nr, ti_pct_area, ti_ndisks, seed)[0][0]
-    plt.figure(figsize=(8, 8))
+    mask = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed)[0][0]
+    plt.figure(figsize=(10, 10))
     plt.imshow(mask, cmap='gray', origin='lower')
-    plt.title(f'Binary Mask Generated with {ti_ndisks} Disks')
-    plt.xlabel('columns')
-    plt.ylabel('rows')
+    plt.title(f'TI mask generated with {ti_ndisks} disks covering {ti_pct_area}% of a grid of size {nc} x {nr}')
+    plt.xlabel('Columns')
+    plt.ylabel('Rows')
+    
+    handles = [plt.Line2D([0], [0], color='black', lw=4),
+               plt.Line2D([0], [0], color='white', lw=4)]
+    plt.legend(handles, ['Hidden (value = 0)', 'Used for Simulation (value = 1)'], loc='upper right', fontsize='medium', frameon=True, shadow=False)
+    
     plt.show()
 
 
 def test_gen_ti_frame_squares():
-    nc = 337  
-    nr = 529  
-    ti_pct_area = 90  # pourcentage de l'aire de la grille à couvrir
-    ti_nsquares = 5  # nombre de carrés
+    nc = 3000
+    nr = 1000
+    ti_pct_area = 50
+    ti_nsquares = 10 
     seed = 854
     
-    mask_list, need_to_cut = gen_ti_frame_squares(nc, nr, ti_pct_area, ti_nsquares, seed)
+    mask_list, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nsquares, seed)
+    plt.figure(figsize=(10, 10))
     mask = mask_list[0]
-    plt.imshow(mask, cmap='gray')
+    plt.imshow(mask, cmap='gray', origin = "lower")
+    plt.title(f'TI mask generated with {ti_nsquares} squares covering {ti_pct_area}% of a grid of size {nc} x {nr}')
+    plt.xlabel('Columns')
+    plt.ylabel('Rows')
+    
+    handles = [plt.Line2D([0], [0], color='black', lw=4),
+               plt.Line2D([0], [0], color='white', lw=4)]
+    plt.legend(handles, ['Hidden (value = 0)', 'Used for Simulation (value = 1)'], loc='upper right', fontsize='medium', frameon=True, shadow=False)
+    
+    
     plt.show()
   
   

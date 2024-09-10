@@ -89,13 +89,14 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None
         True if the simulated_var will be needed to be cut within the ti_frame shape to create a smaller TI.
     """
     if seed is None:
-        seed = int(rd.randint(1,2**32-1))
+        seed = int(rd.randint(1, 2**32 - 1))
         print(f"Seed used to generate the TI : {seed}")
     rng = np.random.default_rng(seed=seed)
     rndr = rng.integers(low=0, high=nr, size=ti_nsquares)
     rndc = rng.integers(low=0, high=nc, size=ti_nsquares)
     side_length = int(np.sqrt((nc * nr * ti_pct_area / 100) / ti_nsquares))
     frame = np.zeros((nr, nc))
+
     for i in range(ti_nsquares):
         rr_start = max(0, rndr[i] - side_length // 2)
         cc_start = max(0, rndc[i] - side_length // 2)
@@ -103,19 +104,26 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None
         cc_end = min(nc - 1, cc_start + side_length - 1)
         rr, cc = rectangle(start=(rr_start, cc_start), end=(rr_end, cc_end))
         frame[rr, cc] = 1
-    check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
-    while check_pct < ti_pct_area:
-        frame = np.pad(frame, 1, mode='constant', constant_values=0)
-        frame = binary_dilation(frame)
-        frame = frame[1:-1, 1:-1]
-        check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
 
-    ti_frame = []
-    ti_frame.append(frame)
-    
+    check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
+
+    while check_pct < ti_pct_area:
+        for i in range(ti_nsquares):
+            rr_start = max(0, rndr[i] - (side_length // 2 + 1))
+            cc_start = max(0, rndc[i] - (side_length // 2 + 1))
+            rr_end = min(nr - 1, rr_start + side_length)
+            cc_end = min(nc - 1, cc_start + side_length)
+            rr, cc = rectangle(start=(rr_start, cc_start), end=(rr_end, cc_end))
+            frame[rr, cc] = 1
+        
+        check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
+        side_length += 1
+
+    ti_frame = [frame]
     need_to_cut = [False]
-    
+
     return ti_frame, need_to_cut
+
     
     
 def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None):
