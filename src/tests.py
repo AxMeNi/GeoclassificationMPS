@@ -456,7 +456,7 @@ def test_gen_ti_frame_sg_mask():
     print("\t\tTESTING GEN TI FRAME SINGLE RECTANGLE")
     print("##################################################################\n")
     
-    nc, nr = 3000, 1000
+    nc, nr = 600, 200
     seed = 4
    
     ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)

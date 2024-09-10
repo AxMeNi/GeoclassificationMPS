@@ -37,8 +37,8 @@ def run_tests():
     
     t_GenTiFrameCircles =           False
     t_GenTiFrameSquares =           False
-    t_GenTiFrameSeparatedSquares =  True
-    t_GenTiFrameCdMask =            False
+    t_GenTiFrameSeparatedSquares =  False
+    t_GenTiFrameCdMask =            True
     
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
     t_GenNRandomTiCd =              False
@@ -64,7 +64,7 @@ def run_tests():
     if t_GenTiFrameCircles : test_gen_ti_frame_circles()
     if t_GenTiFrameSquares : test_gen_ti_frame_squares()
     if t_GenTiFrameSeparatedSquares : test_gen_ti_frame_separated_squares(showCoord=False)
-    if t_GenTiFrameCdMask : test_gen_ti_frame_cd_mask()
+    if t_GenTiFrameCdMask : test_gen_ti_frame_sg_mask()
     
     if t_BuildTiCd : test_build_ti_cd()
     if t_GenNRandomTiCd : test_gen_n_random_ti_cd()

@@ -431,9 +431,9 @@ def check_ti_pos(c_ti, r_ti, cc_ti, rr_ti, cc_dg, rr_dg, c_sg, r_sg, cc_sg, rr_s
 
     
 def get_ti_sg(cc_dg, rr_dg, 
-              cc_sg=None, rr_sg=None, pct_sg=10, 
-              cc_ti=None, rr_ti=None, pct_ti=30, 
-              pct_ti_sg_overlap=0, seed=None):
+              cc_sg, rr_sg, pct_sg, 
+              cc_ti, rr_ti, pct_ti, 
+              pct_ti_sg_overlap, seed):
     """
     Generate the position and dimensions of a training image (TI) and a simulation grid (SG) based on the dimensions of the data grid (DG) and specified overlap area.
 
@@ -491,6 +491,11 @@ def get_ti_sg(cc_dg, rr_dg,
     - The overlap area between the training image and simulation grid is optional and controlled by `pct_ti_sg_overlap`.
     - If no valid position is found, the function will exit with an error message.
     """
+    if (cc_ti is None and rr_ti is None and pct_ti is None):
+        pct_ti = 30
+    if (cc_sg is None and rr_sg is None and pct_sg is None):
+        pct_sg = 10
+        
     if (cc_sg is None and rr_sg is not None) or (cc_sg is not None and rr_sg is None) or (cc_ti is None and rr_ti is not None) or (cc_ti is not None and rr_ti is None):
         print(ValueError(f"TI size and SG size must be precised : please consider chosing a size (columns AND rows) or a percentage of the Simulation Grid."))
         exit()

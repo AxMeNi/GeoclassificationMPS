@@ -191,7 +191,7 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, se
     return ti_frames_list, need_to_cut
 
 
-def gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap=10, pct_sg=10, pct_ti=30, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
+def gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap=10, pct_sg=None, pct_ti=None, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):
     """
     Generate a binary frame representing a single rectangle within a grid and a simulation grid mask.
 
