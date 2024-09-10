@@ -495,6 +495,7 @@ def get_ti_sg(cc_dg, rr_dg,
         pct_ti = 30
     if (cc_sg is None and rr_sg is None and pct_sg is None):
         pct_sg = 10
+
         
     if (cc_sg is None and rr_sg is not None) or (cc_sg is not None and rr_sg is None) or (cc_ti is None and rr_ti is not None) or (cc_ti is not None and rr_ti is None):
         print(ValueError(f"TI size and SG size must be precised : please consider chosing a size (columns AND rows) or a percentage of the Simulation Grid."))

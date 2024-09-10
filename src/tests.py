@@ -457,50 +457,48 @@ def test_gen_ti_frame_sg_mask():
     print("##################################################################\n")
     
     nc, nr = 600, 200
-    seed = 4
-   
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50,seed=seed)
-    ti_frame = ti_frame_list[0]
+    seed = 852
     
-    plt.figure(figsize=(8, 8))
-    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5)
-    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("pct_ti_sg_overlap = 10, cc_sg = 35, rr_sg = 80, cc_ti = 100, rr_ti = 50")
-    plt.colorbar(label="Presence")
-    plt.axis('on')
-    plt.show()
+    configurations = [
+        {'pct_ti_sg_overlap': 10, 'cc_sg': 35, 'rr_sg': 80, 'cc_ti': 100, 'rr_ti': 50},
+        {'pct_ti_sg_overlap': 25, 'pct_sg': 4, 'pct_ti': 5},
+        {'pct_ti_sg_overlap': 25, 'cc_sg': 300, 'rr_sg': 80, 'pct_ti': 25},
+        {'pct_ti_sg_overlap': 25, 'pct_sg': 10, 'cc_ti': 100, 'rr_ti': 50}
+    ]
     
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5, seed=seed)
-    ti_frame = ti_frame_list[0]
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16, 16))
+    axs = axs.flatten()
+
+    for ax, config in zip(axs, configurations):
+        ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(
+            nr, nc, 
+            pct_ti_sg_overlap=config.get('pct_ti_sg_overlap', 0),
+            cc_sg=config.get('cc_sg'),
+            rr_sg=config.get('rr_sg'),
+            pct_sg=config.get('pct_sg'),
+            pct_ti=config.get('pct_ti'),
+            cc_ti=config.get('cc_ti'),
+            rr_ti=config.get('rr_ti'),
+            seed=seed
+        )
+        ti_frame = ti_frame_list[0]
+        
+        ax.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5)
+        ax.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
+        
+        title = f"pct_ti_sg_overlap = {config.get('pct_ti_sg_overlap')}, "
+        title += f"cc_sg = {config.get('cc_sg')}, rr_sg = {config.get('rr_sg')}, "
+        title += f"pct_sg = {config.get('pct_sg')}, pct_ti = {config.get('pct_ti')}, "
+        title += f"cc_ti = {config.get('cc_ti')}, rr_ti = {config.get('rr_ti')}"
+        
+        ax.set_title(title, fontsize=10)
+        ax.axis('on')
     
-    plt.figure(figsize=(8, 8))
-    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
-    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("pct_ti_sg_overlap = 25, pct_sg = 4, pct_ti = 5")
-    plt.colorbar(label="Presence")
-    plt.axis('on')
-    plt.show()
-    
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25, seed = seed)
-    ti_frame = ti_frame_list[0]
-    
-    plt.figure(figsize=(8, 8))
-    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
-    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("pct_ti_sg_overlap = 25, cc_sg = 300, rr_sg = 80, pct_ti = 25")
-    plt.colorbar(label="Presence")
-    plt.axis('on')
-    plt.show()
-    
-    ti_frame_list, need_to_cut, simgrid_mask, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50, seed = seed)
-    ti_frame = ti_frame_list[0]
-    
-    plt.figure(figsize=(8, 8))
-    plt.imshow(ti_frame, cmap='Blues', origin='lower', alpha=0.5, label='ti')
-    plt.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
-    plt.title("pct_ti_sg_overlap = 25, pct_sg = 10, cc_ti = 100, rr_ti = 50")
-    plt.colorbar(label="Presence")
-    plt.axis('on')
+    fig.suptitle("Configurations of TI Frames and SG Masks", fontsize=14)
+    handles = [plt.Line2D([0], [0], color='lightblue', lw=4),
+               plt.Line2D([0], [0], color='brown', lw=4, markeredgewidth=2, markeredgecolor='black')]
+    fig.legend(handles, ['TI', 'SG'], loc='lower center', fontsize='medium', frameon=True, shadow=False, ncol=2)
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.show()
     
 
