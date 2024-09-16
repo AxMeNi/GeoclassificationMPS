@@ -145,8 +145,6 @@ def launcher(seed,
         plt.show()
         ###############################################################################
         
-        print(entropy(all_sim.val))
-        
         plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
         
         gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')

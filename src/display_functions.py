@@ -6,4 +6,5 @@ __date__ = "aout 2024"
 
 
 
-def plot_entropy()
+def plot_entropy():
+    
