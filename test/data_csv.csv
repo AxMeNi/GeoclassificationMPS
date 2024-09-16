@@ -2,3 +2,5 @@ var_name;categ_conti;nature;path;grid
 grid_geo;categorical;sim;C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy;TI
 grid_grv;continuous;auxTI;C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_grv.npy;TI
 grid_grv;continuous;auxSG;C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_grv.npy;SG
+grid_mag;continuous;auxSG;C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_mag.npy;SG
+grid_mag;continuous;auxTI;C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_mag.npy;TI

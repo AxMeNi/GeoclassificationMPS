@@ -31,7 +31,7 @@ def launcher(seed,
             pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
             nn, dt, ms, numberofmpsrealizations, nthreads,
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
-            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
             nr, nc
             ):
     """
@@ -103,6 +103,10 @@ def launcher(seed,
         nTI = len(ti_list)
         names, distance_types = get_unique_names_and_types(names_var, types_var)
         
+        outputFlag = []
+        for name in names:
+            outputFlag.append(outputVarFlag[name])
+        
         deesse_input = gn.deesseinterface.DeesseInput(
             nx=cc_sg, ny=rr_sg, nz=1,
             sx=1, sy=1, sz=1,
@@ -116,6 +120,7 @@ def launcher(seed,
             nneighboringNode=nvar*[nn],
             distanceThreshold=nvar*[dt],
             maxScanFraction=nTI*[ms],
+            outputVarFlag=outputFlag,
             npostProcessingPathMax=1,
             seed=seed,
             nrealization=numberofmpsrealizations
@@ -127,7 +132,6 @@ def launcher(seed,
         
         ###############################################################################
         all_sim = gn.img.gatherImages(sim)
-
         categ_val = [1,2,3,4,5,6,7]
         all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
         prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
@@ -167,6 +171,10 @@ def launcher(seed,
             nTI = len(ti_list)
             names, distance_types = get_unique_names_and_types(names_var, types_var)
             
+            outputFlag = []
+            for name in names:
+                outputFlag.append(outputVarFlag[name])
+            
             deesse_input = gn.deesseinterface.DeesseInput(
                 nx=nc_sg, ny=nr_sg, nz=1,
                 sx=1, sy=1, sz=1,
@@ -180,6 +188,7 @@ def launcher(seed,
                 nneighboringNode=nvar*[nn],
                 distanceThreshold=nvar*[dt],
                 maxScanFraction=nTI*[ms],
+                outputVarFlag=outputFlag,
                 npostProcessingPathMax=1,
                 seed=seed,
                 nrealization=numberofmpsrealizations

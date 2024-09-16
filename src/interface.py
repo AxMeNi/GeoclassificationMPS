@@ -104,7 +104,7 @@ def get_simulation_info():
     
     check_ti_methods(ti_methods)
     
-    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
     nvar = count_variables(names_var)
     
@@ -117,7 +117,7 @@ def get_simulation_info():
             nn, dt, ms, numberofmpsrealizations, nthreads, \
             cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
             shorten, \
-            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+            nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
             nr, nc 
             
 
@@ -137,20 +137,20 @@ def launch_simulation(seed,
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,
-                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                     nr, nc):
     
     
     if shorten :
         execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads)
     else :
-        all_sim = launcher(seed, 
+        launcher(seed, 
                 ti_methods, 
                 ti_pct_area, ti_nshapes,
                 pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
                 nn, dt, ms, numberofmpsrealizations, nthreads,
                 cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
-                nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                 nr, nc)
 
 
@@ -162,7 +162,7 @@ def run_simulation():
     nn, dt, ms, numberofmpsrealizations, nthreads, \
     cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
     shorten, \
-    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, \
+    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
     nr, nc = get_simulation_info()
     
     launch_simulation(seed, 
@@ -172,5 +172,5 @@ def run_simulation():
                     nn, dt, ms, numberofmpsrealizations, nthreads,
                     cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
                     shorten,
-                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var,
+                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                     nr, nc)
