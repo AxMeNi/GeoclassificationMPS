@@ -12,6 +12,7 @@ from build_ti_cd import *
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 from datetime import datetime 
+from loopui import entropy
 
 
 #### COLORS PARAMETERS
@@ -131,7 +132,7 @@ def launcher(seed,
         sim = deesse_output['sim']
         
         ###############################################################################
-        all_sim = gn.img.gatherImages(sim)
+        all_sim = gn.img.gatherImages(sim)      
         categ_val = [1,2,3,4,5,6,7]
         all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
         prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
@@ -143,6 +144,8 @@ def launcher(seed,
                                    title=f'Prop. of categ. {i}')
         plt.show()
         ###############################################################################
+        
+        print(entropy(all_sim.val))
         
         plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
         
@@ -200,7 +203,6 @@ def launcher(seed,
             
             ###############################################################################
             all_sim = gn.img.gatherImages(sim)
-            
             categ_val = [1,2,3,4,5,6,7]
             all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
             prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
