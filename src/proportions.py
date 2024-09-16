@@ -53,7 +53,6 @@ def get_bins(nbins, auxTI_var, auxSG_var, sim_var, simgrid_mask, eps, bintype='r
     
 
 def get_joint_dist(auxTI_var, sim_var, bins, nbins):
-    #Number of continuous variables
     n_conti_var = len(auxTI_var)
     
     #Number of categorical values for the simulated_variables which are considered to be categorical

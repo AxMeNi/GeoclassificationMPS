@@ -39,13 +39,13 @@ def launcher(seed,
     """
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
     
-    #Initialization of variables
+    #variables initialization
     ti_list = []
     cd_list = []
     
     #Create a simulation grid mask based on no values of the auxiliary variables
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
-    
+
     if nRandomTICDsets == 1 :
     
         #Creation of the TI and of the SG
@@ -127,6 +127,7 @@ def launcher(seed,
         
         ###############################################################################
         all_sim = gn.img.gatherImages(sim)
+
         categ_val = [1,2,3,4,5,6,7]
         all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
         prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
@@ -190,6 +191,7 @@ def launcher(seed,
             
             ###############################################################################
             all_sim = gn.img.gatherImages(sim)
+            
             categ_val = [1,2,3,4,5,6,7]
             all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
             prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
@@ -200,4 +202,5 @@ def launcher(seed,
                 gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
                                        title=f'Prop. of categ. {i}')
             plt.show()
+            
     return

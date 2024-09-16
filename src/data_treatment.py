@@ -68,6 +68,8 @@ def create_variables(csv_file_path):
         Dictionary with auxiliary SG variables, where each key is the variable name and each value is the corresponding NumPy array.
     condIm_var : dict
         Dictionary with conditioning image variables, where each key is the variable name and each value is the corresponding NumPy array.
+    outputFlag : dict
+        dictionary with boolean, where each key is the varaible name and each value is the boolean precising if the varaible should be retrieved in the output.
 
     names_var : list of lists
         A list of four sublists, where each sublist contains the names of the variables for each category:
@@ -108,9 +110,11 @@ def create_variables(csv_file_path):
     auxTI_var = {}
     auxSG_var = {}
     condIm_var = {}
+    outputFlag = {} #To precise which variables will be retrieved in the output
 
     names_var = [[], [], [], []]
     types_var = [[], [], [], []]
+    
 
     for i, row in data_df.iterrows():
         var_name = str(row['var_name'])
@@ -127,6 +131,7 @@ def create_variables(csv_file_path):
                     names_var[0].append(var_name)
                     sim_var[var_name] = array_data
                     types_var[0].append(categ_conti)
+                    outputFlag[var_name] = True
                 else:
                     raise NameError(f"Line {i+1} of the CSV file : Two simulated variables have the same name, please consider naming all of your variables with different names.")
             else:
@@ -139,6 +144,7 @@ def create_variables(csv_file_path):
                     names_var[1].append(var_name)
                     auxTI_var[var_name] = array_data
                     types_var[1].append(categ_conti)
+                    outputFlag[var_name] = False
                 else:
                     raise NameError(f"Line {i+1} of the CSV file : Two auxiliary TI variables have the same name, please consider naming all of your variables with different names.")
             else:
@@ -175,7 +181,7 @@ def create_variables(csv_file_path):
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
                         
-    return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var
+    return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag
  
 
 def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999):
@@ -226,7 +232,7 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         A dictionary containing the validated and processed auxiliary TI variables.
     auxSG_var : dict
         A dictionary containing the validated and processed auxiliary SG variables.
-    cond_var : dict
+    condIm_var : dict
         A dictionary containing the validated and processed conditioning image variables.
 
     Raises:

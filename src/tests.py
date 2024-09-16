@@ -122,7 +122,7 @@ def test_create_variables():
     csv_file_path = f'{temp_dir}/test_data.csv'
     df.to_csv(csv_file_path, sep=';', index=False)
     
-    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag = create_variables(csv_file_path)
     
     assert len(sim_var) == 1, "Expected 1 simulated variable."
     assert len(auxTI_var) == 1, "Expected 1 auxiliary TI variable."
@@ -139,6 +139,8 @@ def test_create_variables():
     
     assert names_var == expected_names_var, f"Unexpected names_var: {names_var}"
     assert types_var == expected_types_var, f"Unexpected types_var: {types_var}"
+    
+    assert outputFlag == {'sim_var1' : True, 'auxTI_var1' : False}, f"Invalid bool for outputFlag: {outputFlag}"
     
     os.remove(f'{temp_dir}/array_sim1.npy')
     os.remove(f'{temp_dir}/array_auxTI1.npy')
@@ -247,7 +249,7 @@ def test_check_variables():
 
 def test_get_sim_grid_dimensions():
     csv_file_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv"
-    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag = create_variables(csv_file_path)
     nr, nc = get_sim_grid_dimensions(sim_var)
     print(nr,nc)
     
@@ -466,7 +468,7 @@ def test_gen_ti_frame_sg_mask():
         {'pct_ti_sg_overlap': 25, 'pct_sg': 10, 'cc_ti': 100, 'rr_ti': 50}
     ]
     
-    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16, 16))
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16 * 0.5, 16 * 0.4))
     axs = axs.flatten()
 
     for ax, config in zip(axs, configurations):
@@ -487,14 +489,14 @@ def test_gen_ti_frame_sg_mask():
         ax.imshow(simgrid_mask, cmap='Reds', origin='lower', alpha=0.5)
         
         title = f"pct_ti_sg_overlap = {config.get('pct_ti_sg_overlap')}, "
-        title += f"cc_sg = {config.get('cc_sg')}, rr_sg = {config.get('rr_sg')}, "
-        title += f"pct_sg = {config.get('pct_sg')}, pct_ti = {config.get('pct_ti')}, "
+        title += f"cc_sg = {config.get('cc_sg')},\n rr_sg = {config.get('rr_sg')}, "
+        title += f"pct_sg = {config.get('pct_sg')}, pct_ti = {config.get('pct_ti')},\n "
         title += f"cc_ti = {config.get('cc_ti')}, rr_ti = {config.get('rr_ti')}"
         
-        ax.set_title(title, fontsize=10)
+        ax.set_title(title, fontsize=12)
         ax.axis('on')
     
-    fig.suptitle("Configurations of TI Frames and SG Masks", fontsize=14)
+    fig.suptitle("Configurations of TI Frames and SG Masks", fontsize=16)
     handles = [plt.Line2D([0], [0], color='lightblue', lw=4),
                plt.Line2D([0], [0], color='brown', lw=4, markeredgewidth=2, markeredgecolor='black')]
     fig.legend(handles, ['TI', 'SG'], loc='lower center', fontsize='medium', frameon=True, shadow=False, ncol=2)

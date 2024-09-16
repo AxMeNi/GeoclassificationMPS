@@ -104,7 +104,7 @@ def get_simulation_info():
     
     check_ti_methods(ti_methods)
     
-    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var = create_variables(csv_file_path)
+    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag = create_variables(csv_file_path)
     sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
     nvar = count_variables(names_var)
     
@@ -144,7 +144,7 @@ def launch_simulation(seed,
     if shorten :
         execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads)
     else :
-        launcher(seed, 
+        all_sim = launcher(seed, 
                 ti_methods, 
                 ti_pct_area, ti_nshapes,
                 pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,

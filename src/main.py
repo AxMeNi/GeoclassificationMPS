@@ -15,7 +15,7 @@ def run_tests():
     t_GetSimulationInfo =           False
     
     t_CheckTiMethods =              False
-    t_CreateVariables =             False
+    t_CreateVariables =             True
     t_CountVariables =              False
     t_CheckVariables =              False
     t_GetSimGridDimensions =        False
@@ -38,7 +38,7 @@ def run_tests():
     t_GenTiFrameCircles =           False
     t_GenTiFrameSquares =           False
     t_GenTiFrameSeparatedSquares =  False
-    t_GenTiFrameCdMask =            True
+    t_GenTiFrameCdMask =            False
     
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
     t_GenNRandomTiCd =              False
