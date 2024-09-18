@@ -8,6 +8,7 @@ from ti_mask_generation import *
 from data_treatment import get_unique_names_and_types
 from sg_mask_generation import *
 from build_ti_cd import *
+from variability import calculate_indicators
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
@@ -128,28 +129,30 @@ def launcher(seed,
         ) 
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
+        
+        print(calculate_indicators(deesse_output))
 
         sim = deesse_output['sim']
         
         ###############################################################################
-        all_sim = gn.img.gatherImages(sim)      
-        categ_val = [1,2,3,4,5,6,7]
-        all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
-        prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
-        cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
-        plt.subplots(1, 7, figsize=(17,5), sharey=True)
-        for i in range(7):
-            plt.subplot(1, 7, i+1) # select next sub-plot
-            gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
-                                   title=f'Prop. of categ. {i}')
-        plt.show()
+        # all_sim = gn.img.gatherImages(sim)  
+        # categ_val = [1,2,3,4,5,6,7]
+        # all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+        # prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
+        # cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
+        # plt.subplots(1, 7, figsize=(17,5), sharey=True)
+        # for i in range(7):
+            # plt.subplot(1, 7, i+1) # select next sub-plot
+            # gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
+                                   # title=f'Prop. of categ. {i}')
+        # plt.show()
         ###############################################################################
         
-        plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
+        # plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
         
-        gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
+        # gn.imgplot.drawImage2D(sim[0], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
         
-        plt.show()
+        # plt.show()
     
     else:
         if len(ti_methods) > 1:
@@ -200,16 +203,16 @@ def launcher(seed,
             sim = deesse_output['sim']
             
             ###############################################################################
-            all_sim = gn.img.gatherImages(sim)
-            categ_val = [1,2,3,4,5,6,7]
-            all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
-            prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
-            cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
-            plt.subplots(1, 7, figsize=(17,5), sharey=True)
-            for i in range(7):
-                plt.subplot(1, 7, i+1) # select next sub-plot
-                gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
-                                       title=f'Prop. of categ. {i}')
-            plt.show()
+            # all_sim = gn.img.gatherImages(sim)
+            # categ_val = [1,2,3,4,5,6,7]
+            # all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+            # prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
+            # cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
+            # plt.subplots(1, 7, figsize=(17,5), sharey=True)
+            # for i in range(7):
+                # plt.subplot(1, 7, i+1) # select next sub-plot
+                # gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
+                                       # title=f'Prop. of categ. {i}')
+            # plt.show()
             
     return
