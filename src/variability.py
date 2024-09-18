@@ -4,9 +4,13 @@ __nom_fichier__ = "variability"
 __author__ = "MENGELLE Axel"
 __date__ = "sept 2024"
 
+from sklearn import manifold
 from loopui import *
 import geone as gn
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
 
 def jsdist2_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
     # nbins >1 : for continuous variables
@@ -105,6 +109,44 @@ def calculate_indicators(deesse_output):
         for idx2_real in range(idx1_real):
             dist_hist[idx1_real, idx2_real] = jsdist2_hist(all_sim[:,:,:,idx1_real],all_sim[:,:,:,idx2_real],-1,base=np.e)
             dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+    
+    # 3. Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
+    mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=852, dissimilarity="precomputed", n_jobs=1)
+
+    # Apply MDS to the Jensen-Shannon divergence matrices
+    mdspos_lc = mds.fit_transform(dist_hist)  # MDS for lithocode histograms
+    
+    # Create a colormap for plotting
+    colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
+    colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
+    colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
+    colors = np.vstack((colors1, colors2, colors3))
+    mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    
+    s_id = np.arange(nsim)  # Sample IDs for color coding in scatter plots
+    
+    # Calculate limits for plotting
+    lcMDSxmin = np.min(mdspos_lc[:, 0])
+    lcMDSxmax = np.max(mdspos_lc[:, 0])
+    lcMDSymin = np.min(mdspos_lc[:, 1])
+    lcMDSymax = np.max(mdspos_lc[:, 1])
+    
+    # Plot results
+    s = 100  # Marker size
+    fig = plt.figure()
+
+    plt.subplot(231)
+    plt.title('2D MDS Representation of hist. dissimilarities')
+    plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
+    plt.xlim(lcMDSxmin, lcMDSxmax)
+    plt.ylim(lcMDSymin, lcMDSymax)
+    plt.legend(scatterpoints=1, loc='best', shadow=False)
+    cbar = plt.colorbar()
+    cbar.set_label('sample #')
+
+    # Adjust layout and display the plot
+    fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=1.6, wspace=0.3, hspace=0.25)
+    plt.show()
     
     return dist_hist
     
