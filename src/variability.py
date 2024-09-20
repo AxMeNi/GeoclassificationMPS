@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def jsdist2_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
+def custom_jsdist_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
     # nbins >1 : for continuous variables
     # otherwise for discrete variables
     tmp_min = np.min([np.nanmin(img1.flatten()), np.nanmin(img2.flatten())])
@@ -86,9 +86,75 @@ def jsdist2_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab
         fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=.65, wspace=0.1, hspace=0.2)
         plt.show()
 
-    # Return Jensen-Shannon divergence
     return kldiv(p1, p2, base, 'js')
 
+
+def custom_topological_adjacency2D(img2D, categval, verb):
+    [ny, nx] = img2D.shape
+    topo_adjacency = np.zeros((len(categval), len(categval)))
+    
+    # Find boundaries of categorical geobodies in img2D
+    img2DdxP = np.append(np.reshape(img2D[:, 0], [ny, 1]), img2D[:, :-1], axis=1) - img2D
+    img2DdxN = img2D - np.append(img2D[:, 1:], np.reshape(img2D[:, -1], [ny, 1]), axis=1)
+    img2DdyP = np.append(np.reshape(img2D[0, :], [1, nx]), img2D[:-1, :], axis=0) - img2D
+    img2DdyN = img2D - np.append(img2D[1:, :], np.reshape(img2D[-1, :], [1, nx]), axis=0)
+    img2Dbdy = ( (img2DdxN != 0) | (img2DdxP != 0) | (img2DdyN != 0) | (img2DdyP != 0) )
+    
+    for v in range(len(categval)):
+        tmpiy, tmpix = np.where((1 * img2Dbdy) * (img2D == categval[v]))
+        tmpiyNeighbors = np.concatenate((tmpiy, tmpiy, np.maximum(0, tmpiy - 1), np.minimum(tmpiy + 1, ny - 1)))  # xprev, xnext, yprev, ynext
+        tmpixNeighbors = np.concatenate((np.maximum(0, tmpix - 1), np.minimum(tmpix + 1, nx - 1), tmpix, tmpix))  # xprev, xnext, yprev, ynext
+        tmpNgbVal = np.unique(img2D[tmpiyNeighbors, tmpixNeighbors])
+        
+        tmpidNgbVal = np.ones(len(tmpNgbVal)) * np.nan
+        for n in range(len(tmpNgbVal)):
+            # Ensure the value is scalar, not a sequence
+            custom_tmpidNgbValn = np.asarray(np.where(categval==tmpNgbVal[n]))  # Corrected to return a scalar value
+            print(custom_tmpidNgbValn)
+            tmpidNgbVal[n] = custom_tmpidNgbValn.flatten()
+            
+        tmpidNgbVal = tmpidNgbVal.astype(int)
+        topo_adjacency[v, tmpidNgbVal] = 1
+        topo_adjacency[tmpidNgbVal, v] = 1
+        topo_adjacency[v, v] = 0
+    
+    if verb:
+        print('Unique values in boundaries: ' + str(np.unique(img2D[img2Dbdy])))
+        print('Adjacency matrix: \n' + str(topo_adjacency))
+    
+    return topo_adjacency
+ 
+
+def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
+    if npctiles > 0:
+        if verb:
+            print('discretize')
+        categ1, categ2 = discretize_img_pair(img1, img2, npctiles)
+    else:
+        categ1 = img1
+        categ2 = img2
+
+    categval = np.unique(np.append(categ1, categ2))
+
+    topo1adjacency = custom_topological_adjacency2D(categ1, categval, verb)
+    topo2adjacency = custom_topological_adjacency2D(categ2, categval, verb)
+
+    shd = structural_hamming_distance(topo1adjacency, topo2adjacency)
+    lsgd = laplacian_spectral_graph_distance(topo1adjacency, topo2adjacency)
+
+    if verb:
+        print(leg + ' structural Hamming distance: ' + str(shd))
+        print(leg + ' Laplacian spectral graph distance: ' + str(lsgd))
+
+    if plot:
+        if npctiles > 0:
+            plot_topology_adjacency(categ1, categ2, topo1adjacency, topo2adjacency, leg, shd, lsgd, img1, img2)
+        else:
+            plot_topology_adjacency(categ1, categ2, topo1adjacency, topo2adjacency, leg, shd, lsgd)
+
+    return shd, lsgd
+    
+    
 def calculate_indicators(deesse_output):
     """
 
@@ -104,20 +170,37 @@ def calculate_indicators(deesse_output):
     
     # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
     # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
-    # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS
+    # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
+    # RK: FOR TOPOLOGICAL ADJACENCY, 
+    #  - BECAUSE ALL THE DATA ARE IN 2D
+    #  - BECAUSE GEONE STORE A 2D ARRAY AS BEING A 3D 
+    #    ARRAY WITH THE Z DIMENSION BEING EQUAL TO ONE
+    #  - BECAUSE LOOP UI IS MORE EFFICIENT ON 2D ARRAYS
+    # IT HAS BEEN DECIDED TO REMOVE ALL DIMENSIONS EQUAL TO ONE 
+    # USING NP.SQUEEZE
     
     dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
     dist_topo = np.zeros((nsim, nsim)) # To store topological adjacency indicators
     
     for idx1_real in range(nsim):
         for idx2_real in range(idx1_real):
+            
             #2 JENSEN SHANNON DIVERGENCE
-            dist_hist[idx1_real, idx2_real] = jsdist2_hist(all_sim[:,:,:,idx1_real],all_sim[:,:,:,idx2_real],-1,base=np.e)
+            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(all_sim[:,:,:,idx1_real],all_sim[:,:,:,idx2_real],-1,base=np.e)
             dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+            
             #3 TOPOLOGICAL ADJACENCY
-            dist_topo[idx1_real, idx2_real] = topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
+            # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
+            dist_topo[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
             dist_topo[idx2_real, idx1_real] = dist_topo[idx2_real, idx1_real]
-    
+            # ERROR :
+            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1836, in topo_dist
+            # topo1adjacency = topological_adjacency(categ1,categval,verb)
+            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1721, in topological_adjacency
+            # topo_adjacency = topological_adjacency2D(img,categval,verb)
+            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1675, in topological_adjacency2D
+            # tmpidNgbVal[n] = (np.asarray(np.where(categval==tmpNgbVal[n])).flatten())          
+            # ValueError: setting an array element with a sequence.
     
     
     return ent, dist_hist, dist_topo
