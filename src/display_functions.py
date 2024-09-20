@@ -63,8 +63,6 @@ def plot_histogram_disimilarity(dist_hist, seed):
     
     s = 100  # Marker size
     fig = plt.figure()
-    
-    #Plot
     plt.subplot(231)
     plt.title('2D MDS Representation of hist. dissimilarities')
     plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
@@ -74,6 +72,8 @@ def plot_histogram_disimilarity(dist_hist, seed):
     cbar = plt.colorbar()
     cbar.set_label('sample #')
 
-    # Adjust layout and display the plot
     fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=1.6, wspace=0.3, hspace=0.25)
     plt.show()
+    
+
+def plot_topological_adjacency

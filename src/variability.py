@@ -10,6 +10,8 @@ import geone as gn
 import numpy as np
 import matplotlib.pyplot as plt
 
+import matplotlib.colors as mcolors
+
 
 def custom_jsdist_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
     # nbins >1 : for continuous variables
@@ -105,12 +107,15 @@ def custom_topological_adjacency2D(img2D, categval, verb):
         tmpiyNeighbors = np.concatenate((tmpiy, tmpiy, np.maximum(0, tmpiy - 1), np.minimum(tmpiy + 1, ny - 1)))  # xprev, xnext, yprev, ynext
         tmpixNeighbors = np.concatenate((np.maximum(0, tmpix - 1), np.minimum(tmpix + 1, nx - 1), tmpix, tmpix))  # xprev, xnext, yprev, ynext
         tmpNgbVal = np.unique(img2D[tmpiyNeighbors, tmpixNeighbors])
+        # CHANGE
+        tmpNgbVal =  tmpNgbVal[~np.isnan(tmpNgbVal)]
         
         tmpidNgbVal = np.ones(len(tmpNgbVal)) * np.nan
+
         for n in range(len(tmpNgbVal)):
+            # CHANGE
             # Ensure the value is scalar, not a sequence
             custom_tmpidNgbValn = np.asarray(np.where(categval==tmpNgbVal[n]))  # Corrected to return a scalar value
-            print(custom_tmpidNgbValn)
             tmpidNgbVal[n] = custom_tmpidNgbValn.flatten()
             
         tmpidNgbVal = tmpidNgbVal.astype(int)
@@ -180,7 +185,8 @@ def calculate_indicators(deesse_output):
     # USING NP.SQUEEZE
     
     dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
-    dist_topo = np.zeros((nsim, nsim)) # To store topological adjacency indicators
+    dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
+    dist_topo_lapl_spec = np.zeros((nsim, nsim))
     
     for idx1_real in range(nsim):
         for idx2_real in range(idx1_real):
@@ -191,19 +197,16 @@ def calculate_indicators(deesse_output):
             
             #3 TOPOLOGICAL ADJACENCY
             # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
-            dist_topo[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
-            dist_topo[idx2_real, idx1_real] = dist_topo[idx2_real, idx1_real]
-            # ERROR :
-            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1836, in topo_dist
-            # topo1adjacency = topological_adjacency(categ1,categval,verb)
-            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1721, in topological_adjacency
-            # topo_adjacency = topological_adjacency2D(img,categval,verb)
-            # File "C:\Users\00115212\Anaconda3\envs\PythonEnvGeoclassifMPS\lib\site-packages\loopui\main.py", line 1675, in topological_adjacency2D
-            # tmpidNgbVal[n] = (np.asarray(np.where(categval==tmpNgbVal[n])).flatten())          
-            # ValueError: setting an array element with a sequence.
+            dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
+            dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx2_real, idx1_real]
+            dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]
+    
+
+
+
     
     
-    return ent, dist_hist, dist_topo
+    return ent, dist_hist, dist_topo_hamming
 
 
     

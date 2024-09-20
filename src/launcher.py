@@ -129,7 +129,7 @@ def launcher(seed,
         ) 
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
-
+        calculate_indicators(deesse_output)
         sim = deesse_output['sim']
         
         ###############################################################################
