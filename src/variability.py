@@ -173,6 +173,7 @@ def calculate_indicators(deesse_output):
     #1 ENTROPY   
     ent = entropy(all_sim)
     
+    
     plt.figure(figsize=(10, 8))
     
     # If 2D, just plot the entropy matrix

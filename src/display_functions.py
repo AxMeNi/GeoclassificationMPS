@@ -10,8 +10,37 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_entropy():
+def plot_entropy(entropy):
+    """
+    Plot the 2D entropy visualization from a given entropy array.
+
+    Parameters:
+    -----------
+    entropy : np.ndarray
+        Input entropy array, which can be 2D or higher-dimensional. If higher-dimensional,
+        it will be squeezed to 2D using `np.squeeze()`.
+
+    Returns:
+    --------
+    None
+        The function displays a plot of the entropy without returning any values.
+
+    Notes:
+    ------
+    - The function uses the 'viridis' colormap for better contrast and readability.
+    - The color bar on the side shows the range of entropy values across the 2D plot.
+    - The input entropy array is expected to have been calculated in advance using an appropriate method.
+    - Higher-dimensional input will be reduced to 2D using `np.squeeze()`, removing any singleton dimensions.
+    """
+    ent = np.squeeze(entropy)
+    plt.figure(figsize=(10, 8))
     
+    plt.title("Entropy 2D Visualization")
+    plt.imshow(ent, cmap='viridis', interpolation='nearest')
+    plt.colorbar(label='Entropy')
+    
+    plt.tight_layout()
+    plt.show()
 
 
 def plot_histogram_disimilarity(dist_hist, seed):

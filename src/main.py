@@ -12,15 +12,18 @@ def run_tests():
     """
     to run the tests
     """
+#INTERFACE.PY
     t_GetSimulationInfo =           False
-    
+
+#DATA_TREATMENT.PY
     t_CheckTiMethods =              False
     t_CreateVariables =             True
     t_CountVariables =              False
     t_CheckVariables =              False
     t_GetSimGridDimensions =        False
     t_GetUniqueNamesAndTypes =      False
-    
+
+#REDUCED_TI_SG.PY
     t_generate_random_dimensions =  False #TODO
     t_chose_random_dimensions =     False #TODO
     t_generate_random_sg_origin =   False #TODO
@@ -31,20 +34,35 @@ def run_tests():
     t_get_ti_orign =                False #TODO
     t_check_ti_pos =                False #TODO
     t_get_ti_sg =                   False #TODO
-    
+
+#SG_MASK_GENERATION.PY
     t_CreateSGMask =                False
     t_MergeMasks =                  False
-    
+
+#TI_MASK_GENERATION.PY
     t_GenTiFrameCircles =           False
     t_GenTiFrameSquares =           False
     t_GenTiFrameSeparatedSquares =  False
     t_GenTiFrameCdMask =            False
-    
+
+#BUILD_TI_CD.PY
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
     t_GenNRandomTiCd =              False
-    
+
+#VARIABILITY.PY
+    t_CustJsdistHist =              False #TODO
+    t_CustTopologicalAdjacency2D =  False #TODO
+    t_CustomTopoDist =              False #TODO
+    t_CalculateIndicators =         False #TODO
+
+#DISPLAY_FUNCTIONS.PY
+    t_PlotEntropy
+    t_PlotHistogramDisimilarity
+
+#PROPORTIONS.PY
     t_GetBins =                     False
-    
+
+#UTILS.PY
     tCartesianProduct =             False
     
     #----------------------------------------------------------------------------------------#

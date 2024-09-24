@@ -666,6 +666,31 @@ def test_gen_n_random_ti_cd():
     print("Test passed!")
 
 
+##################################### TEST VARIABILITY.PY
+
+def test_custom_jsdist_hist():
+
+
+def test_custom_topological_adjacency2D():
+
+
+def test_custom_topo_dist():
+    
+    
+def test_calculate_indicators():
+    
+    
+##################################### TEST DISPLAY_FUNCTIONS.PY
+  
+def test_plot_entropy():
+    
+    
+def test_plot_histogram_disimilarity():
+
+
+def test_plot_topological_adjacency():
+    
+
 ##################################### TEST PROPORTIONS.PY
 
 def test_get_bins():
