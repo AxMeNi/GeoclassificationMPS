@@ -65,6 +65,10 @@ def run_tests():
 
 #UTILS.PY
     tCartesianProduct =             False
+
+#SAVING.PY
+    tSaveDeesseOutput =             False #TODO
+    tSaveSimulation =               False #TODO
     
     #----------------------------------------------------------------------------------------#
     
@@ -87,10 +91,22 @@ def run_tests():
     
     if t_BuildTiCd : test_build_ti_cd()
     if t_GenNRandomTiCd : test_gen_n_random_ti_cd()
+    
+    if t_CustJsdistHist : test_custom_jsdist_hist()
+    if t_CustTopologicalAdjacency2D : test_custom_topological_adjacency2D()
+    if t_CustomTopoDist : test_custom_topo_dist()
+    if t_CalculateIndicators : test_calculate_indicators()
+    
+    if t_PlotEntropy : test_plot_entropy()
+    if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
+    if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
 
     if t_GetBins : test_get_bins()
     
     if tCartesianProduct : test_cartesian_product()
+    
+    if tSaveDeesseOutput : test_save_deesse_output()
+    if tSaveSimulation : test_save_simulation()
     
 if __name__ == '__main__':
     arg = sys.argv[1]

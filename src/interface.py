@@ -89,12 +89,12 @@ def get_simulation_info():
 
     ##################### COLORMAP PARAMETERS #####################
 
-    cm = plt.get_cmap('tab20')
-    myclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
-    n_bin = 11
-    cmap_name = 'my_tab20'
-    mycmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
-    ticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
+    # cm = plt.get_cmap('tab20')
+    # myclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
+    # n_bin = 11
+    # cmap_name = 'my_tab20'
+    # mycmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
+    # ticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
 
     ##################### SHORTEN THE SIMULATION #####################
 
@@ -109,13 +109,30 @@ def get_simulation_info():
     nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
-       
-    return seed, \
-            ti_methods, \
-            ti_pct_area, ti_nshapes, \
-            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets, \
-            nn, dt, ms, numberofmpsrealizations, nthreads, \
-            cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
+
+    params = {
+        'seed': seed,
+        'csv_file_path': csv_file_path,
+        'novalue': novalue,
+        'ti_methods': ti_methods,
+        'ti_pct_area': ti_pct_area,
+        'ti_nshapes': ti_nshapes,
+        'pct_ti_sg_overlap': pct_ti_sg_overlap,
+        'pct_sg': pct_sg,
+        'pct_ti': pct_ti,
+        'cc_sg': cc_sg,
+        'rr_sg': rr_sg,
+        'cc_ti': cc_ti,
+        'rr_ti': rr_ti,
+        'nRandomTICDsets': nRandomTICDsets,
+        'n_neighbouring_nodes': nn,
+        'distance_threshold': dt,
+        'max_scan_fraction': ms,
+        'n_mps_realizations': numberofmpsrealizations,
+        'n_threads': nthreads,
+        }
+    
+    return params, \
             shorten, \
             nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
             nr, nc 
@@ -130,47 +147,27 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
     return
 
 
-def launch_simulation(seed, 
-                    ti_methods, 
-                    ti_pct_area, ti_nshapes,
-                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
-                    nn, dt, ms, numberofmpsrealizations, nthreads,
-                    cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+def launch_simulation(params,
                     shorten,
                     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                     nr, nc):
     
     
     if shorten :
-        execute_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthreads)
+        execute_shorter_program()
     else :
-        launcher(seed, 
-                ti_methods, 
-                ti_pct_area, ti_nshapes,
-                pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
-                nn, dt, ms, numberofmpsrealizations, nthreads,
-                cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+        launcher(params,
                 nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                 nr, nc)
 
 
 def run_simulation():
-    seed, \
-    ti_methods, \
-    ti_pct_area, ti_nshapes, \
-    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets, \
-    nn, dt, ms, numberofmpsrealizations, nthreads, \
-    cm, myclrs, n_bin, cmap_name, mycmap, ticmap, \
+    params, \
     shorten, \
     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
     nr, nc = get_simulation_info()
     
-    launch_simulation(seed, 
-                    ti_methods, 
-                    ti_pct_area, ti_nshapes,
-                    pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
-                    nn, dt, ms, numberofmpsrealizations, nthreads,
-                    cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
-                    shorten,
-                    nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
-                    nr, nc)
+    launch_simulation(params,
+                        shorten,
+                        nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
+                        nr, nc)

@@ -669,6 +669,8 @@ def test_gen_n_random_ti_cd():
 ##################################### TEST VARIABILITY.PY
 
 def test_custom_jsdist_hist():
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\output\deesse_output_20240924_135749.pkl")
+    
     return
 
 
@@ -740,6 +742,7 @@ def test_get_bins():
     
     small_data_test = get_bins(nbins, {'var1': np.array([1, 2])}, {}, {}, np.array([1,1]), eps, bintype='reg')
     print("Small data test:", small_data_test)
+    return
 
 
 ##################################### TESTS UTILS.PY
@@ -755,3 +758,14 @@ def test_cartesian_product():
     values = list(range(1, nbins + 1))
     combinations = cartesian_product(*([values]*3))
     print(combinations)
+    return
+
+
+##################################### TEST SAVING.PY
+
+def test_save_deesse_output():
+    return
+
+
+def test_save_simulation():
+    return

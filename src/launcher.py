@@ -27,19 +27,31 @@ from loopui import entropy
 
 
 
-
-def launcher(seed, 
-            ti_methods, 
-            ti_pct_area, ti_nshapes,
-            pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, nRandomTICDsets,
-            nn, dt, ms, numberofmpsrealizations, nthreads,
-            cm, myclrs, n_bin, cmap_name, mycmap, ticmap,
+def launcher(params,
             nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
             nr, nc
             ):
     """
 
     """
+    seed = params['seed'] 
+    ti_methods = params['ti_methods']
+    ti_pct_area = params['ti_pct_area']
+    ti_nshapes = params['ti_nshapes']
+    pct_ti_sg_overlap = params['pct_ti_sg_overlap']
+    pct_sg = params['pct_sg']
+    pct_ti = params['pct_ti'] 
+    cc_sg = params['cc_sg']
+    rr_sg = params['rr_sg']
+    cc_ti = params['cc_ti']
+    rr_ti = params['rr_ti']
+    nRandomTICDsets = params['nRandomTICDsets']
+    nn = params['n_neighbouring_nodes']
+    dt = params['distance_threshold']
+    ms = params['max_scan_fraction']
+    numberofmpsrealizations = params['n_mps_realizations']
+    nthreads = params['n_threads']
+    
     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
     
     #variables initialization
@@ -129,33 +141,7 @@ def launcher(seed,
             nrealization=numberofmpsrealizations
         ) 
         
-        deesse_output = gn.deesseinterface.deesseRun(deesse_input)
-        
-        params = {
-                'seed': 852,
-                'novalue': -9999999,
-                'csv_file_path': r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv",
-                'ti_methods': 'DependentSquares, DependentCircles',
-                'ti_pct_area': 90,
-                'ti_nshapes': 2,
-                'pct_ti_sg_overlap': 50,
-                'pct_sg': 30,
-                'pct_ti': 70,
-                'cc_sg': None,
-                'rr_sg': None,
-                'cc_ti': None,
-                'rr_ti': None,
-                'nRandomTICDsets': 1,
-                'n_neighbouring_nodes': 24,
-                'distance_threshold': 0.1,
-                'max_scan_fraction': 0.25,
-                'n_mps_realizations': 10,
-                'n_threads': 1,
-                'jules' : 8112008
-                }
-        
-        save_simulation(deesse_output, params, comments="", output_directory=r"C:\Users\00115212\Documents\GeoclassificationMPS\output")
-        
+        deesse_output = gn.deesseinterface.deesseRun(deesse_input)        
         calculate_indicators(deesse_output)
         sim = deesse_output['sim']
         

@@ -95,3 +95,22 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
 
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
     df_updated.to_excel(excel_file_path, index=False)
+
+
+def load_pickle_file(file_path):
+    """
+    Load data from a pickle file.
+
+    Parameters:
+    ----------
+    file_path : str
+        The path to the pickle file to be loaded.
+
+    Returns:
+    -------
+    data : object
+        The data loaded from the pickle file.
+    """
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+    return data
