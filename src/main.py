@@ -17,7 +17,7 @@ def run_tests():
 
 #DATA_TREATMENT.PY
     t_CheckTiMethods =              False
-    t_CreateVariables =             True
+    t_CreateVariables =             False
     t_CountVariables =              False
     t_CheckVariables =              False
     t_GetSimGridDimensions =        False
@@ -53,7 +53,7 @@ def run_tests():
     t_CustJsdistHist =              False #TODO
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
-    t_CalculateIndicators =         False #TODO
+    t_CalculateIndicators =         True
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotEntropy =                 False #TODO

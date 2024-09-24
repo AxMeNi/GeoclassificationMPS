@@ -43,7 +43,7 @@ def plot_entropy(entropy):
     plt.show()
 
 
-def plot_histogram_disimilarity(dist_hist, seed):
+def plot_histogram_disimilarity(dist_hist, seed, nsim):
     """
     Plots a 2D Multi-Dimensional Scaling (MDS) representation of histogram dissimilarities.
 
@@ -83,7 +83,7 @@ def plot_histogram_disimilarity(dist_hist, seed):
     colors = np.vstack((colors1, colors2, colors3))
     mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
     
-    s_id = np.arange(nsim)  #Sample IDs for color coding in scatter plots
+    s_id = np.arange(nsim)
     
     #Calculate limits for plotting
     lcMDSxmin = np.min(mdspos_lc[:, 0])
@@ -107,7 +107,7 @@ def plot_histogram_disimilarity(dist_hist, seed):
     
 
 def plot_topological_adjacency():
-        # MDS Visualization
+    # MDS Visualization
     
     # Manual MDS implementation (simplified for 2D)
     nbsamples = nsim

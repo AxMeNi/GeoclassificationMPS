@@ -12,6 +12,9 @@ from sg_mask_generation import *
 from build_ti_cd import *
 # from proportions import *
 from utils import *
+from saving import *
+from variability import *
+from display_functions import *
 
 from matplotlib.colors import *
 
@@ -683,6 +686,11 @@ def test_custom_topo_dist():
     
     
 def test_calculate_indicators():
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
+    sim = deesse_output['sim']
+    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output)
+    nsim = len(sim)
+    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)
     return
     
     
