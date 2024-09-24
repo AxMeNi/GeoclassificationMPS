@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_entropy():
+    
 
 
 def plot_histogram_disimilarity(dist_hist, seed):
@@ -76,4 +77,76 @@ def plot_histogram_disimilarity(dist_hist, seed):
     plt.show()
     
 
-def plot_topological_adjacency
+def plot_topological_adjacency():
+        # MDS Visualization
+    
+    # Manual MDS implementation (simplified for 2D)
+    nbsamples = nsim
+    np.random.seed(852)
+    mdspos_lc = np.random.rand(nsim, 2)  # Simulated MDS positions for lithocodes
+    mdspos_sf = np.random.rand(nsim, 2)  # Simulated MDS positions for scalar fields
+
+    # Prepare for plotting
+    s_id = np.arange(nbsamples)
+    colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
+    colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
+    colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
+    colors = np.vstack((colors1, colors2, colors3))
+    mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+
+    ix = np.tril_indices(nsim, k=-1)
+    dist_hist_vals = dist_hist[ix]
+    dist_topo_hamming_vals = dist_topo_hamming[ix]
+
+    # Limits for the plots
+    lcmin, lcmax = np.min(dist_hist_vals), np.max(dist_hist_vals)
+    sfmin, sfmax = np.min(dist_topo_hamming_vals), np.max(dist_topo_hamming_vals)
+    lcMDSxmin, lcMDSxmax = np.min(mdspos_lc[:, 0]), np.max(mdspos_lc[:, 0])
+    lcMDSymin, lcMDSymax = np.min(mdspos_lc[:, 1]), np.max(mdspos_lc[:, 1])
+    sfMDSxmin, sfMDSxmax = np.min(mdspos_sf[:, 0]), np.max(mdspos_sf[:, 0])
+    sfMDSymin, sfMDSymax = np.min(mdspos_sf[:, 1]), np.max(mdspos_sf[:, 1])
+
+    # Plot the results
+    # s = 100
+    # fig = plt.figure(figsize=(15, 10))
+    
+    # plt.subplot(231)
+    # plt.title('2D MDS Representation of Jensen-Shannon Divergence')
+    # plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='Lithocode JS divergence', marker='+')
+    # plt.xlim(lcMDSxmin, lcMDSxmax)
+    # plt.ylim(lcMDSymin, lcMDSymax)
+    # plt.legend(scatterpoints=1, loc='best', shadow=False)
+    # cbar = plt.colorbar()
+    # cbar.set_label('Sample #')
+    
+    # plt.subplot(234)
+    # plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
+    # plt.scatter(mdspos_sf[:, 0], mdspos_sf[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
+    # plt.xlim(sfMDSxmin, sfMDSxmax)
+    # plt.ylim(sfMDSymin, sfMDSymax)
+    # plt.legend(scatterpoints=1, loc='best', shadow=False)
+    # cbar = plt.colorbar()
+    # cbar.set_label('Sample #')
+    
+    # plt.subplot(232)
+    # plt.hist(dist_hist_vals, bins=20, color='blue')
+    # plt.title('Jensen-Shannon Distribution')
+
+    # plt.subplot(233)
+    # plt.scatter(dist_hist_vals, dist_topo_hamming_vals, color='green')
+    # plt.xlim(lcmin, lcmax)
+    # plt.ylim(sfmin, sfmax)
+    # plt.title('JS Divergence vs Topological Adjacency')
+
+    # plt.subplot(235)
+    # plt.hexbin(dist_hist_vals, dist_topo_hamming_vals, gridsize=30, cmap='Greens')
+    # plt.xlim(lcmin, lcmax)
+    # plt.ylim(sfmin, sfmax)
+    # plt.title('Hexbin of JS Divergence vs Adjacency')
+
+    # plt.subplot(236)
+    # plt.hist(dist_topo_hamming_vals, bins=20, color='red')
+    # plt.title('Topological Adjacency (Hamming) Distribution')
+
+    # fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=1.6, wspace=0.3, hspace=0.25)
+    # plt.show()

@@ -173,6 +173,16 @@ def calculate_indicators(deesse_output):
     #1 ENTROPY   
     ent = entropy(all_sim)
     
+    plt.figure(figsize=(10, 8))
+    
+    # If 2D, just plot the entropy matrix
+    plt.title("Entropy 2D Visualization")
+    plt.imshow(ent, cmap='viridis', interpolation='nearest')
+    plt.colorbar(label='Entropy')
+    
+    plt.tight_layout()
+    plt.show()
+    
     # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
     # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
     # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
@@ -192,19 +202,14 @@ def calculate_indicators(deesse_output):
         for idx2_real in range(idx1_real):
             
             #2 JENSEN SHANNON DIVERGENCE
-            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(all_sim[:,:,:,idx1_real],all_sim[:,:,:,idx2_real],-1,base=np.e)
+            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
             dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
             
             #3 TOPOLOGICAL ADJACENCY
             # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
             dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
             dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx2_real, idx1_real]
-            dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]
-    
-
-
-
-    
+            dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
     
     return ent, dist_hist, dist_topo_hamming
 
