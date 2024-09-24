@@ -173,17 +173,6 @@ def calculate_indicators(deesse_output):
     #1 ENTROPY   
     ent = entropy(all_sim)
     
-    
-    plt.figure(figsize=(10, 8))
-    
-    # If 2D, just plot the entropy matrix
-    plt.title("Entropy 2D Visualization")
-    plt.imshow(ent, cmap='viridis', interpolation='nearest')
-    plt.colorbar(label='Entropy')
-    
-    plt.tight_layout()
-    plt.show()
-    
     # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
     # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
     # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.

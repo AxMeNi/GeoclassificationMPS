@@ -669,26 +669,33 @@ def test_gen_n_random_ti_cd():
 ##################################### TEST VARIABILITY.PY
 
 def test_custom_jsdist_hist():
+    return
 
 
 def test_custom_topological_adjacency2D():
+    return
 
 
 def test_custom_topo_dist():
+    return
     
     
 def test_calculate_indicators():
+    return
     
     
 ##################################### TEST DISPLAY_FUNCTIONS.PY
   
 def test_plot_entropy():
+    return
     
     
 def test_plot_histogram_disimilarity():
-
+    return
+    
 
 def test_plot_topological_adjacency():
+    return
     
 
 ##################################### TEST PROPORTIONS.PY

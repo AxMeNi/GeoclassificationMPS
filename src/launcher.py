@@ -129,6 +129,9 @@ def launcher(seed,
         ) 
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
+        
+        save_deesse_output(deesse_output, "C:/Users/00115212/Documents/GeoclassificationMPS/test", "deesse_ouput0")
+        
         calculate_indicators(deesse_output)
         sim = deesse_output['sim']
         
@@ -214,3 +217,38 @@ def launcher(seed,
             # plt.show()
             
     return
+    
+def save_deesse_output(deesse_output, output_dir, file_name):
+    """
+    Save the deesse_output to a specified folder.
+
+    Parameters:
+    -----------
+    deesse_output : dict
+        The output from the Deesse simulation that you want to save.
+    
+    output_dir : str
+        The directory where you want to save the output.
+    
+    file_name : str
+        The name of the file (without extension) to save the output as.
+
+    Returns:
+    --------
+    None
+    """
+    import os
+    import pickle
+    # Ensure the output directory exists, if not create it
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    # Full path to the file
+    file_path = os.path.join(output_dir, file_name + '.pkl')
+    
+    # Save the deesse_output to the file using pickle
+    with open(file_path, 'wb') as file:
+        pickle.dump(deesse_output, file)
+    
+    print(f"Deesse output successfully saved to {file_path}")
+
