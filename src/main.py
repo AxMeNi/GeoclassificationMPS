@@ -56,8 +56,9 @@ def run_tests():
     t_CalculateIndicators =         False #TODO
 
 #DISPLAY_FUNCTIONS.PY
-    t_PlotEntropy
-    t_PlotHistogramDisimilarity
+    t_PlotEntropy =                 False #TODO
+    t_PlotHistogramDisimilarity =   False #TODO
+    t_PlotTopologicalAdjacency =    False #TODO
 
 #PROPORTIONS.PY
     t_GetBins =                     False

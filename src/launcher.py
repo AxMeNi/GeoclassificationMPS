@@ -8,6 +8,7 @@ from ti_mask_generation import *
 from data_treatment import get_unique_names_and_types
 from sg_mask_generation import *
 from build_ti_cd import *
+from saving import *
 from variability import calculate_indicators
 
 import matplotlib.pyplot as plt
@@ -130,7 +131,30 @@ def launcher(seed,
         
         deesse_output = gn.deesseinterface.deesseRun(deesse_input)
         
-        save_deesse_output(deesse_output, "C:/Users/00115212/Documents/GeoclassificationMPS/test", "deesse_ouput0")
+        params = {
+                'seed': 852,
+                'novalue': -9999999,
+                'csv_file_path': r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv",
+                'ti_methods': 'DependentSquares, DependentCircles',
+                'ti_pct_area': 90,
+                'ti_nshapes': 2,
+                'pct_ti_sg_overlap': 50,
+                'pct_sg': 30,
+                'pct_ti': 70,
+                'cc_sg': None,
+                'rr_sg': None,
+                'cc_ti': None,
+                'rr_ti': None,
+                'nRandomTICDsets': 1,
+                'n_neighbouring_nodes': 24,
+                'distance_threshold': 0.1,
+                'max_scan_fraction': 0.25,
+                'n_mps_realizations': 10,
+                'n_threads': 1,
+                'jules' : 8112008
+                }
+        
+        save_simulation(deesse_output, params, comments="", output_directory=r"C:\Users\00115212\Documents\GeoclassificationMPS\output")
         
         calculate_indicators(deesse_output)
         sim = deesse_output['sim']
@@ -218,37 +242,4 @@ def launcher(seed,
             
     return
     
-def save_deesse_output(deesse_output, output_dir, file_name):
-    """
-    Save the deesse_output to a specified folder.
-
-    Parameters:
-    -----------
-    deesse_output : dict
-        The output from the Deesse simulation that you want to save.
-    
-    output_dir : str
-        The directory where you want to save the output.
-    
-    file_name : str
-        The name of the file (without extension) to save the output as.
-
-    Returns:
-    --------
-    None
-    """
-    import os
-    import pickle
-    # Ensure the output directory exists, if not create it
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
-    # Full path to the file
-    file_path = os.path.join(output_dir, file_name + '.pkl')
-    
-    # Save the deesse_output to the file using pickle
-    with open(file_path, 'wb') as file:
-        pickle.dump(deesse_output, file)
-    
-    print(f"Deesse output successfully saved to {file_path}")
 
