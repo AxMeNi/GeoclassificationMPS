@@ -85,7 +85,6 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
 
     excel_file_path = os.path.join(output_directory, 'simulation_log.xlsx')
 
-    # Check if the Excel file exists
     if os.path.exists(excel_file_path):
         df_existing = pd.read_excel(excel_file_path)
     else:

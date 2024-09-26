@@ -690,7 +690,17 @@ def test_calculate_indicators():
     sim = deesse_output['sim']
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output)
     nsim = len(sim)
+    
     plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)
+    
+    plot_entropy(ent)
+    
+    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim)
+    
+    all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
+    all_sim = all_sim_img.val
+    all_sim = np.transpose(all_sim,(1,2,3,0))
+    plot_pairwise_histograms(all_sim, nsim)
     return
     
     
@@ -706,7 +716,11 @@ def test_plot_histogram_disimilarity():
 
 def test_plot_topological_adjacency():
     return
-    
+
+
+def test_plot_pairwise_histogram():
+    return
+
 
 ##################################### TEST PROPORTIONS.PY
 

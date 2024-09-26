@@ -59,6 +59,7 @@ def run_tests():
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
+    t_plotPairWiseHistogram =       False #TODO
 
 #PROPORTIONS.PY
     t_GetBins =                     False
@@ -109,7 +110,13 @@ def run_tests():
     if tSaveSimulation : test_save_simulation()
     
 if __name__ == '__main__':
-    arg = sys.argv[1]
+    try: 
+        arg = sys.argv[1]
+    except IndexError:
+        print("To use the program you must type \"python main.py\" followed by one of the following command:\n\
+            >> -t to launch the test program for debugging \n\
+            >> -s to launch the simulation")
+        exit()
     
     if arg == "-s" : run_simulation()
     if arg == "-t" : run_tests()

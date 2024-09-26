@@ -5,9 +5,11 @@ __author__ = "MENGELLE Axel"
 __date__ = "aout 2024"
 
 from sklearn import manifold
+
 import matplotlib.colors as mcolors
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def plot_entropy(entropy):
@@ -33,7 +35,7 @@ def plot_entropy(entropy):
     - Higher-dimensional input will be reduced to 2D using `np.squeeze()`, removing any singleton dimensions.
     """
     ent = np.squeeze(entropy)
-    plt.figure(figsize=(10, 8))
+    plt.figure()
     
     plt.title("Entropy 2D Visualization")
     plt.imshow(ent, cmap='viridis', interpolation='nearest')
@@ -74,9 +76,8 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim):
     mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
 
     #Apply MDS to the Jensen-Shannon divergence matrices
-    mdspos_lc = mds.fit_transform(dist_hist)  # MDS for lithocode histograms
+    mdspos_lc = mds.fit_transform(dist_hist)
     
-    #Create a colormap for plotting
     colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
     colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
     colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
@@ -85,7 +86,6 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim):
     
     s_id = np.arange(nsim)
     
-    #Calculate limits for plotting
     lcMDSxmin = np.min(mdspos_lc[:, 0])
     lcMDSxmax = np.max(mdspos_lc[:, 0])
     lcMDSymin = np.min(mdspos_lc[:, 1])
@@ -93,7 +93,6 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim):
     
     s = 100  # Marker size
     fig = plt.figure()
-    plt.subplot(231)
     plt.title('2D MDS Representation of hist. dissimilarities')
     plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
     plt.xlim(lcMDSxmin, lcMDSxmax)
@@ -102,11 +101,56 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim):
     cbar = plt.colorbar()
     cbar.set_label('sample #')
 
-    fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=1.6, wspace=0.3, hspace=0.25)
+    plt.show()
+
+
+
+def plot_pairwise_histograms(lithocode_all, nsim):
+    """
+    Plots a matrix of histograms showing pairwise comparisons of lithocode histograms.
+
+    Parameters:
+    -----------
+    lithocode_all : ndarray
+        4D array where each entry [:,:,:,i] corresponds to a simulation's lithocode data.
+    nsim : int
+        The number of simulations.
+
+    Returns:
+    --------
+    None. Displays a matrix of pairwise histograms.
+    """
+    fig, axs = plt.subplots(nsim, nsim, figsize=(12, 12), constrained_layout=True)
+    fig.suptitle('Matrix of Pairwise Histograms', fontsize=16)
+
+    for i in range(nsim):
+        for j in range(nsim):
+            ax = axs[i, j]
+            # Filter out NaN values
+            lithocode_i = lithocode_all[:, :, :, i].flatten()
+            lithocode_j = lithocode_all[:, :, :, j].flatten()
+            
+            lithocode_i = lithocode_i[~np.isnan(lithocode_i)]
+            lithocode_j = lithocode_j[~np.isnan(lithocode_j)]
+            
+            if i == j:
+                hist_lc, bins_lc = np.histogram(lithocode_i, bins='auto')
+                ax.bar(bins_lc[:-1], hist_lc, width=np.diff(bins_lc), color='blue', label=f'Sim {i}')
+            else:
+                hist_lc_i, bins_lc_i = np.histogram(lithocode_i, bins='auto')
+                hist_lc_j, bins_lc_j = np.histogram(lithocode_j, bins=bins_lc_i)
+                
+                bar_width = np.diff(bins_lc_i) / 3
+                ax.bar(bins_lc_i[:-1], hist_lc_i, width=bar_width, color='blue', label=f'Sim {i}', align='edge')
+                ax.bar(bins_lc_i[:-1] + bar_width, hist_lc_j, width=bar_width, color='green', label=f'Sim {j}', align='edge')
+            
+            ax.set_title(f'Sim {i} vs Sim {j}', fontsize=8)
+            ax.tick_params(axis='both', which='major', labelsize=6)
+
     plt.show()
     
 
-def plot_topological_adjacency():
+def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim):
     # MDS Visualization
     
     # Manual MDS implementation (simplified for 2D)
@@ -136,7 +180,7 @@ def plot_topological_adjacency():
     sfMDSymin, sfMDSymax = np.min(mdspos_sf[:, 1]), np.max(mdspos_sf[:, 1])
 
     # Plot the results
-    # s = 100
+    s = 100
     # fig = plt.figure(figsize=(15, 10))
     
     # plt.subplot(231)
@@ -149,13 +193,13 @@ def plot_topological_adjacency():
     # cbar.set_label('Sample #')
     
     # plt.subplot(234)
-    # plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
-    # plt.scatter(mdspos_sf[:, 0], mdspos_sf[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
-    # plt.xlim(sfMDSxmin, sfMDSxmax)
-    # plt.ylim(sfMDSymin, sfMDSymax)
-    # plt.legend(scatterpoints=1, loc='best', shadow=False)
-    # cbar = plt.colorbar()
-    # cbar.set_label('Sample #')
+    plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
+    plt.scatter(mdspos_sf[:, 0], mdspos_sf[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
+    plt.xlim(sfMDSxmin, sfMDSxmax)
+    plt.ylim(sfMDSymin, sfMDSymax)
+    plt.legend(scatterpoints=1, loc='best', shadow=False)
+    cbar = plt.colorbar()
+    cbar.set_label('Sample #')
     
     # plt.subplot(232)
     # plt.hist(dist_hist_vals, bins=20, color='blue')
@@ -178,4 +222,4 @@ def plot_topological_adjacency():
     # plt.title('Topological Adjacency (Hamming) Distribution')
 
     # fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=1.6, wspace=0.3, hspace=0.25)
-    # plt.show()
+    plt.show()
