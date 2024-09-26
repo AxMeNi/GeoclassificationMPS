@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_entropy(entropy):
+
+def plot_entropy(entropy, background_image=None):
     """
     Plot the 2D entropy visualization from a given entropy array.
 
@@ -21,28 +22,54 @@ def plot_entropy(entropy):
     entropy : np.ndarray
         Input entropy array, which can be 2D or higher-dimensional. If higher-dimensional,
         it will be squeezed to 2D using `np.squeeze()`.
+    background_image : np.ndarray (optional)
+        2D array representing the background, which is treated as a categorical variable.
+        Each unique value will have its own color, and the color legend will reflect those values.
 
     Returns:
     --------
     None
-        The function displays a plot of the entropy without returning any values.
-
-    Notes:
-    ------
-    - The function uses the 'viridis' colormap for better contrast and readability.
-    - The color bar on the side shows the range of entropy values across the 2D plot.
-    - The input entropy array is expected to have been calculated in advance using an appropriate method.
-    - Higher-dimensional input will be reduced to 2D using `np.squeeze()`, removing any singleton dimensions.
+        The function displays a plot of the entropy, with background image and contour if provided.
     """
+    
     ent = np.squeeze(entropy)
-    plt.figure()
     
-    plt.title("Entropy 2D Visualization")
-    plt.imshow(ent, cmap='viridis', interpolation='nearest')
-    plt.colorbar(label='Entropy')
+    if background_image is not None:
+        unique_values = np.unique(background_image)
+        num_unique = len(unique_values)
+        
+        cmap = plt.get_cmap('tab20', num_unique)
+        
+        norm = mcolors.BoundaryNorm(boundaries=np.arange(num_unique+1)-0.5, ncolors=num_unique)
+        
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+        
+        ent_img = ax1.imshow(ent, cmap='gray', interpolation='nearest')
+        ax1.set_title('Entropy with Background Image Contours')
+        
+        contour_levels = np.arange(num_unique)
+        ax1.contour(background_image, levels=contour_levels, colors='white', linewidths=1)
+        
+        cbar_entropy = plt.colorbar(ent_img, ax=ax1)
+        cbar_entropy.set_label('Entropy')
+        
+        bg_img = ax2.imshow(background_image, cmap=cmap, norm=norm)
+        ax2.set_title('Background Image (Categories)')
+        
+        cbar_bg = plt.colorbar(bg_img, ax=ax2, ticks=np.arange(num_unique))
+        cbar_bg.ax.set_yticklabels([str(val) for val in unique_values])
+        cbar_bg.set_label('Lithology')
+
+        plt.tight_layout()
+        plt.show()
     
-    plt.tight_layout()
-    plt.show()
+    else:
+        plt.figure()
+        plt.imshow(ent, cmap='gray', interpolation='nearest')
+        plt.colorbar(label='Entropy')
+        plt.title("Entropy 2D Visualization")
+        plt.tight_layout()
+        plt.show()
 
 
 def plot_histogram_disimilarity(dist_hist, seed, nsim):
@@ -102,7 +129,6 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim):
     cbar.set_label('sample #')
 
     plt.show()
-
 
 
 def plot_pairwise_histograms(lithocode_all, nsim):
