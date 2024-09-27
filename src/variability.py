@@ -159,48 +159,52 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     return shd, lsgd
     
     
-def calculate_indicators(deesse_output, reference = None):
+def calculate_indicators(deesse_output, n_variables):
     """
 
     """
-    sim = deesse_output['sim']
-    all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
-    all_sim = all_sim_img.val
-    all_sim = np.transpose(all_sim,(1,2,3,0)) #Transposing the dimensions of the array to make it work with loop-ui...
-    nsim = len(sim)
-    
-    #1 ENTROPY   
-    ent = entropy(all_sim)
-    
-    # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
-    # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
-    # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
-    # RK: FOR TOPOLOGICAL ADJACENCY, 
-    #  - BECAUSE ALL THE DATA ARE IN 2D
-    #  - BECAUSE GEONE STORE A 2D ARRAY AS BEING A 3D 
-    #    ARRAY WITH THE Z DIMENSION BEING EQUAL TO ONE
-    #  - BECAUSE LOOP UI IS MORE EFFICIENT ON 2D ARRAYS
-    # IT HAS BEEN DECIDED TO REMOVE ALL DIMENSIONS EQUAL TO ONE 
-    # USING NP.SQUEEZE
-    
-    dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
-    dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
-    dist_topo_lapl_spec = np.zeros((nsim, nsim))
-    
-    for idx1_real in range(nsim):
-        for idx2_real in range(idx1_real):
-            
-            #2 JENSEN SHANNON DIVERGENCE
-            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
-            dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
-            
-            #3 TOPOLOGICAL ADJACENCY
-            # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
-            dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
-            dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx2_real, idx1_real]
-            dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
-    
-    return ent, dist_hist, dist_topo_hamming
+    if n_variables > 1: 
+        raise ValueError (f"The simulation was made for {n_variables} variables, cannot compute indicators with more than 1 variable.")
+        return None
+    else: 
+        sim = deesse_output['sim']
+        all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
+        all_sim = all_sim_img.val
+        all_sim = np.transpose(all_sim,(1,2,3,0)) #Transposing the dimensions of the array to make it work with loop-ui...
+        nsim = len(sim)
+        
+        #1 ENTROPY   
+        ent = entropy(all_sim)
+        
+        # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
+        # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
+        # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
+        # RK: FOR TOPOLOGICAL ADJACENCY, 
+        #  - BECAUSE ALL THE DATA ARE IN 2D
+        #  - BECAUSE GEONE STORE A 2D ARRAY AS BEING A 3D 
+        #    ARRAY WITH THE Z DIMENSION BEING EQUAL TO ONE
+        #  - BECAUSE LOOP UI IS MORE EFFICIENT ON 2D ARRAYS
+        # IT HAS BEEN DECIDED TO REMOVE ALL DIMENSIONS EQUAL TO ONE 
+        # USING NP.SQUEEZE
+        
+        dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
+        dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
+        dist_topo_lapl_spec = np.zeros((nsim, nsim))
+        
+        for idx1_real in range(nsim):
+            for idx2_real in range(idx1_real):
+                
+                #2 JENSEN SHANNON DIVERGENCE
+                dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
+                dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+                
+                #3 TOPOLOGICAL ADJACENCY
+                # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
+                dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
+                dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx2_real, idx1_real]
+                dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
+        
+        return ent, dist_hist, dist_topo_hamming
 
 
     

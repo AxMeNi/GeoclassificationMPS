@@ -686,17 +686,17 @@ def test_custom_topo_dist():
     
     
 def test_calculate_indicators():
-    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test2.pkl")
     sim = deesse_output['sim']
-    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output)
+    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 2)
     nsim = len(sim)
-    
+
     plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)
-    
+
     plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies')
-    
+
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim)
-    
+
     all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
     all_sim = all_sim_img.val
     all_sim = np.transpose(all_sim,(1,2,3,0))
