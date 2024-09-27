@@ -693,7 +693,7 @@ def test_calculate_indicators():
     
     plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)
     
-    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
+    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies')
     
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim)
     

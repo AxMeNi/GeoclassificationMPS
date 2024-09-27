@@ -13,7 +13,7 @@ import pandas as pd
 
 
 
-def plot_entropy(entropy, background_image=None):
+def plot_entropy(entropy, background_image=None, categ_var_name=None):
     """
     Plot the 2D entropy visualization from a given entropy array.
 
@@ -45,7 +45,8 @@ def plot_entropy(entropy, background_image=None):
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
         
         ent_img = ax1.imshow(ent, cmap='gray', interpolation='nearest')
-        ax1.set_title('Entropy with Background Image Contours')
+        if categ_var_name is not None :
+            ax1.set_title(f"Entropy with {categ_var_name} contours")
         
         contour_levels = np.arange(num_unique)
         ax1.contour(background_image, levels=contour_levels, colors='white', linewidths=1)
@@ -54,12 +55,13 @@ def plot_entropy(entropy, background_image=None):
         cbar_entropy.set_label('Entropy')
         
         bg_img = ax2.imshow(background_image, cmap=cmap, norm=norm)
-        ax2.set_title('Background Image (Categories)')
+        ax2.set_title(f'{categ_var_name}')
         
         cbar_bg = plt.colorbar(bg_img, ax=ax2, ticks=np.arange(num_unique))
         cbar_bg.ax.set_yticklabels([str(val) for val in unique_values])
-        cbar_bg.set_label('Lithology')
-
+        cbar_bg.set_label(f'{categ_var_name}')
+        
+        plt.suptitle(f'Superposition of entropy with {categ_var_name}') 
         plt.tight_layout()
         plt.show()
     
