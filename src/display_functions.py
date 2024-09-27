@@ -82,7 +82,7 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
         plt.figure()
         plt.imshow(ent, cmap='gray', interpolation='nearest')
         plt.colorbar(label='Entropy')
-        plt.title("Entropy 2D Visualization")
+        plt.title("Entropy 2D visualization")
         plt.tight_layout()
         plt.show()
 

@@ -114,6 +114,10 @@ def get_simulation_info():
         'seed': seed,
         'csv_file_path': csv_file_path,
         'novalue': novalue,
+        'sim_var': list(sim_var.keys()),
+        'auxTI_var': list(auxTI_var.keys()),
+        'auxSG_var': list(auxSG_var.keys()),
+        'condIm_var':list(condIm_var.keys()),
         'ti_methods': ti_methods,
         'ti_pct_area': ti_pct_area,
         'ti_nshapes': ti_nshapes,
@@ -129,7 +133,7 @@ def get_simulation_info():
         'distance_threshold': dt,
         'max_scan_fraction': ms,
         'n_mps_realizations': numberofmpsrealizations,
-        'n_threads': nthreads,
+        'n_threads': nthreads
         }
     
     return params, \

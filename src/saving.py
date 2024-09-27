@@ -40,7 +40,10 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     """
     Save the Deesse output and log simulation parameters into an Excel file.
 
-    This function saves the output of a Deesse simulation to a specified file and updates an Excel log with the parameters used for the simulation, along with a timestamp, the output file name, and any additional comments. It dynamically creates new columns in the Excel file based on the keys in the provided parameters dictionary.
+    This function saves the output of a Deesse simulation to a specified file and updates an Excel 
+    log with the parameters used for the simulation, along with a timestamp, the output file name, 
+    and any additional comments. It dynamically creates new columns in the Excel file based on the 
+    keys in the provided parameters dictionary.
 
     Parameters:
     ----------

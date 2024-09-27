@@ -159,7 +159,7 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     return shd, lsgd
     
     
-def calculate_indicators(deesse_output):
+def calculate_indicators(deesse_output, reference = None):
     """
 
     """
