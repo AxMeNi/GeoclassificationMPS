@@ -25,6 +25,8 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
     background_image : np.ndarray (optional)
         2D array representing the background, which is treated as a categorical variable.
         Each unique value will have its own color, and the color legend will reflect those values.
+    categ_var_name : string (optional)
+        Name of the categorical variable superposed to the entropy
 
     Returns:
     --------
@@ -47,6 +49,8 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
         ent_img = ax1.imshow(ent, cmap='gray', interpolation='nearest')
         if categ_var_name is not None :
             ax1.set_title(f"Entropy with {categ_var_name} contours")
+        else :
+            ax1.set_title("Entropy with categorical variable contours")
         
         contour_levels = np.arange(num_unique)
         ax1.contour(background_image, levels=contour_levels, colors='white', linewidths=1)
@@ -55,13 +59,22 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
         cbar_entropy.set_label('Entropy')
         
         bg_img = ax2.imshow(background_image, cmap=cmap, norm=norm)
-        ax2.set_title(f'{categ_var_name}')
+        if categ_var_name is not None :
+            ax2.set_title(f'{categ_var_name}')
+        else :
+            ax2.set_title("Categorical variable")
         
         cbar_bg = plt.colorbar(bg_img, ax=ax2, ticks=np.arange(num_unique))
         cbar_bg.ax.set_yticklabels([str(val) for val in unique_values])
-        cbar_bg.set_label(f'{categ_var_name}')
+        if categ_var_name is not None :
+            cbar_bg.set_label(f'{categ_var_name}')
+        else :
+            cbar_bg.set_label("Categories")
         
-        plt.suptitle(f'Superposition of entropy with {categ_var_name}') 
+        if categ_var_name is not None :
+            plt.suptitle(f'Superposition of entropy with {categ_var_name}')
+        else :
+            plt.suptitle('Superposition of entropy with categorical variable')
         plt.tight_layout()
         plt.show()
     
