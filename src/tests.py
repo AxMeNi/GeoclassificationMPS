@@ -686,9 +686,9 @@ def test_custom_topo_dist():
     
     
 def test_calculate_indicators():
-    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test2.pkl")
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
     sim = deesse_output['sim']
-    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 2)
+    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1)
     nsim = len(sim)
 
     plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)

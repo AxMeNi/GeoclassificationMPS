@@ -132,7 +132,6 @@ def custom_topological_adjacency2D(img2D, categval, verb):
 def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     if npctiles > 0:
         if verb:
-            print('discretize')
         categ1, categ2 = discretize_img_pair(img1, img2, npctiles)
     else:
         categ1 = img1
@@ -159,12 +158,12 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     return shd, lsgd
     
     
-def calculate_indicators(deesse_output, n_variables):
+def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
     """
 
     """
-    if n_variables > 1: 
-        raise ValueError (f"The simulation was made for {n_variables} variables, cannot compute indicators with more than 1 variable.")
+    if n_sim_variables > 1: 
+        raise ValueError (f"The simulation was made for {n_sim_variables} variables, cannot compute indicators with more than 1 variable.")
         return None
     else: 
         sim = deesse_output['sim']
@@ -187,23 +186,54 @@ def calculate_indicators(deesse_output, n_variables):
         # IT HAS BEEN DECIDED TO REMOVE ALL DIMENSIONS EQUAL TO ONE 
         # USING NP.SQUEEZE
         
-        dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
-        dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
-        dist_topo_lapl_spec = np.zeros((nsim, nsim))
+        #Case without reference
+        if reference_var is None :
         
-        for idx1_real in range(nsim):
-            for idx2_real in range(idx1_real):
+            dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
+            dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
+            dist_topo_lapl_spec = np.zeros((nsim, nsim))
+            
+            for idx1_real in range(nsim):
+                for idx2_real in range(idx1_real):
+                    
+                    #2 JENSEN SHANNON DIVERGENCE
+                    dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
+                    dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+                    
+                    #3 TOPOLOGICAL ADJACENCY
+                    dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
+                    dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx1_real, idx2_real]
+                    dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
+        
+        #Case for which a reference is provided 
+        else :
+            dist_hist = np.zeros((nsim + 1, nsim + 1)) # To store Jensen Shannon indicators
+            dist_topo_hamming = np.zeros((nsim + 1, nsim + 1)) # To store topological adjacency indicators
+            dist_topo_lapl_spec = np.zeros((nsim + 1, nsim + 1))
+            
+            for idx1_real in range(nsim):
                 
+                #Comparison of the simulations' indicators with the reference's indicators
+                #This comparison will be stored in the end of the result arrays (index -1)
                 #2 JENSEN SHANNON DIVERGENCE
-                dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
-                dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+                dist_hist[idx1_real, -1] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,-1,base=np.e)
+                dist_hist[-1, idx1_real] = dist_hist[idx1_real, -1]
                 
-                #3 TOPOLOGICAL ADJACENCY
-                # NOTE: the use of np.squeeze is to tranform fake 3D data into 2D data
-                dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
-                dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx2_real, idx1_real]
-                dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
-        
+                dist_topo_hamming[idx1_real, -1], dist_topo_lapl_spec[idx1_real, -1] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,npctiles=-1,)
+                dist_topo_hamming[-1, idx1_real] = dist_topo_hamming[idx1_real, -1]
+                dist_topo_lapl_spec[-1, idx1_real] = dist_topo_lapl_spec[idx1_real, -1]   
+                
+                for idx2_real in range(idx1_real):
+                    
+                    #2 JENSEN SHANNON DIVERGENCE
+                    dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
+                    dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+                    
+                    #3 TOPOLOGICAL ADJACENCY
+                    dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
+                    dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx1_real, idx2_real]
+                    dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]      
+            
         return ent, dist_hist, dist_topo_hamming
 
 
