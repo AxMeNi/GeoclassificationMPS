@@ -132,7 +132,7 @@ def custom_topological_adjacency2D(img2D, categval, verb):
 def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     if npctiles > 0:
         if verb:
-        categ1, categ2 = discretize_img_pair(img1, img2, npctiles)
+            categ1, categ2 = discretize_img_pair(img1, img2, npctiles)
     else:
         categ1 = img1
         categ2 = img2
