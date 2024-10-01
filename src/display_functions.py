@@ -102,6 +102,11 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
         This matrix represents pairwise dissimilarities between histograms.
     seed : int
         A seed for the random state in the MDS algorithm to ensure reproducibility.
+    nsim : int
+        Number of simulations. Equivalent to number of points to represent minus the reference.
+    referenceIsPresent : bool, optional
+        Whether to display a reference point separately.
+
 
     Returns:
     --------
@@ -119,11 +124,12 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
 
     mdspos_lc = mds.fit_transform(dist_hist)
 
-    colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
-    colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
-    colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
-    colors = np.vstack((colors1, colors2, colors3))
-    mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    # colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
+    # colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
+    # colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
+    # colors = np.vstack((colors1, colors2, colors3))
+    # mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    mycmap = plt.get_cmap('tab20', nsim)
     
     s_id = np.arange(nsim)
     
@@ -136,7 +142,8 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     fig, ax = plt.subplots()
     plt.title('2D MDS Representation of hist. dissimilarities')
    
-    norm = plt.Normalize(vmin=0, vmax=nsim-1)
+    #norm = plt.Normalize(vmin=0, vmax=nsim-1)
+    norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim+1)-0.5, ncolors=nsim)
     if referenceIsPresent:  
         scatter = ax.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
         plt.scatter(mdspos_lc[-1, 0], mdspos_lc[-1, 1], c='red', s=50, label='reference hist', marker='o')
@@ -147,8 +154,12 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     plt.ylim(lcMDSymin, lcMDSymax)
     plt.legend(scatterpoints=1, loc='best', shadow=False)
     
-    cbar = plt.colorbar(scatter, ax=ax)
+    #cbar = plt.colorbar(scatter, ax=ax)
+    cbar = plt.colorbar(scatter, ax=ax, ticks=np.arange(nsim))
+    cbar.ax.set_yticklabels([str(val) for val in s_id])
+    
     cbar.set_label('sample #')
+    
 
     plt.show()
 
