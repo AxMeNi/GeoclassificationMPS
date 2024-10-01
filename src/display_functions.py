@@ -114,69 +114,43 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     - Colors are assigned to points based on their sample ID, using a custom colormap that blends blue, green, and red.
     - The function displays the plot but does not return any value.
     """
-    if referenceIsPresent:
-        
-        #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
-        mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
-        mdspos_lc = mds.fit_transform(dist_hist)
-        
-        colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
-        colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
-        colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
-        colors = np.vstack((colors1, colors2, colors3))
-        mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
+    mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
 
-        s_id = np.arange(nsim)
-        
-        lcMDSxmin = np.min(mdspos_lc[:, 0])
-        lcMDSxmax = np.max(mdspos_lc[:, 0])
-        lcMDSymin = np.min(mdspos_lc[:, 1])
-        lcMDSymax = np.max(mdspos_lc[:, 1])
+    mdspos_lc = mds.fit_transform(dist_hist)
 
-        s = 100 
-        fig = plt.figure()
-        plt.title('2D MDS Representation of hist. dissimilarities')
-        plt.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
+    colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
+    colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
+    colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
+    colors = np.vstack((colors1, colors2, colors3))
+    mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    
+    s_id = np.arange(nsim)
+    
+    lcMDSxmin = np.min(mdspos_lc[:, 0])
+    lcMDSxmax = np.max(mdspos_lc[:, 0])
+    lcMDSymin = np.min(mdspos_lc[:, 1])
+    lcMDSymax = np.max(mdspos_lc[:, 1])
+    
+    s = 100 
+    fig, ax = plt.subplots()
+    plt.title('2D MDS Representation of hist. dissimilarities')
+   
+    norm = plt.Normalize(vmin=0, vmax=nsim-1)
+    if referenceIsPresent:  
+        scatter = ax.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
         plt.scatter(mdspos_lc[-1, 0], mdspos_lc[-1, 1], c='red', s=50, label='reference hist', marker='o')
-        plt.xlim(lcMDSxmin, lcMDSxmax)
-        plt.ylim(lcMDSymin, lcMDSymax)
-        plt.legend(scatterpoints=1, loc='best', shadow=False)
-        cbar = plt.colorbar()
-        cbar.set_label('sample #')
-
-        plt.show()
+    else:
+        scatter = ax.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
         
-    else :
+    plt.xlim(lcMDSxmin, lcMDSxmax)
+    plt.ylim(lcMDSymin, lcMDSymax)
+    plt.legend(scatterpoints=1, loc='best', shadow=False)
+    
+    cbar = plt.colorbar(scatter, ax=ax)
+    cbar.set_label('sample #')
 
-        #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
-        mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
-
-        mdspos_lc = mds.fit_transform(dist_hist)
-
-        colors1 = plt.cm.Blues(np.linspace(0., 1, 512))
-        colors2 = np.flipud(plt.cm.Greens(np.linspace(0, 1, 512)))
-        colors3 = plt.cm.Reds(np.linspace(0, 1, 512))
-        colors = np.vstack((colors1, colors2, colors3))
-        mycmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
-        
-        s_id = np.arange(nsim)
-        
-        lcMDSxmin = np.min(mdspos_lc[:, 0])
-        lcMDSxmax = np.max(mdspos_lc[:, 0])
-        lcMDSymin = np.min(mdspos_lc[:, 1])
-        lcMDSymax = np.max(mdspos_lc[:, 1])
-        
-        s = 100 
-        fig = plt.figure()
-        plt.title('2D MDS Representation of hist. dissimilarities')
-        plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
-        plt.xlim(lcMDSxmin, lcMDSxmax)
-        plt.ylim(lcMDSymin, lcMDSymax)
-        plt.legend(scatterpoints=1, loc='best', shadow=False)
-        cbar = plt.colorbar()
-        cbar.set_label('sample #')
-
-        plt.show()
+    plt.show()
 
 
 def plot_pairwise_histograms(lithocode_all, nsim):
