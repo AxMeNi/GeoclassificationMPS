@@ -611,7 +611,7 @@ def test_gen_n_random_ti_cd():
     
     seed = 852
     random.seed(seed)
-    n=5
+    n=30
     nc, nr = 500, 500
     sim_var = {
         'var1': np.random.randint(0, 25, size=(nr, nc)),
@@ -634,29 +634,33 @@ def test_gen_n_random_ti_cd():
     
     simgrid_mask = np.ones((nr, nc)) 
 
-    cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(n=n, nc=nc,bnr=nr,
+    cd_lists, ti_lists, nr, nc, mask = gen_n_random_ti_cd(n=n, nc=nc,nr=nr,
                                                         sim_var=sim_var,
                                                         auxTI_var=auxTI_var, auxSG_var=auxSG_var,
                                                         names_var=names_var,
                                                         simgrid_mask=simgrid_mask,
                                                         condIm_var=condIm_var,
-                                                        method="ReducedTiSg",  
-                                                        ti_pct_area=90, ti_nshapes=10,
-                                                        pct_ti_sg_overlap=10,
-                                                        pct_sg=10,pct_ti=30,
+                                                        method="DependentSquares",  
+                                                        ti_pct_area=55, ti_nshapes=2,
+                                                        pct_ti_sg_overlap=None,
+                                                        pct_sg=None,pct_ti=None,
                                                         cc_sg=None,rr_sg=None,
                                                         cc_ti=None,rr_ti=None,
                                                         givenseed=seed)
+                                                        
     for ti_list, cd_list, i in zip(ti_lists, cd_lists, range(1,n+1)):
         print(f"\n\n\n----- Testing the set number {i}: -----")
+        
         for cd, i in zip(cd_list, range(1, len(cd_list)+1)):
             for ti, j in zip(ti_list, range(1, len(ti_list)+1)):
+                
                 print(f"\nCD{i}, TI{j}")
                 cd_vars = cd.varname
                 ti_vars = ti.varname
                 common_vars = [var for var in cd_vars if var in ti_vars]
             
                 for var in common_vars:
+                    
                     print(f"> For the common variable {var}:")
                     cd_index = cd_vars.index(var)
                     ti_index = ti_vars.index(var)
@@ -706,6 +710,7 @@ def test_calculate_indicators():
     all_sim = all_sim_img.val
     all_sim = np.transpose(all_sim,(1,2,3,0))
     plot_pairwise_histograms(all_sim, nsim)
+
     return
     
     

@@ -7,9 +7,11 @@ __date__ = "juillet 2024"
 from launcher import *
 from data_treatment import *
 from matplotlib.colors import LinearSegmentedColormap
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
+
 
 #################################################################
 #     ##  ### ##      ##    ##    ###     ###   ####   ##    ####
@@ -61,10 +63,10 @@ def get_simulation_info():
     ##################### TRAINING IMAGE PARAMETERS #####################
     
     #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
-    ti_methods = ["DependentSquares", "DependentCircles"] #List of methods
+    ti_methods = ["DependentSquares"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
-    ti_pct_area = 90
+    ti_pct_area = 55
     ti_nshapes = 2 
     
     #Parameters for "ReducedTiSg"
@@ -84,7 +86,7 @@ def get_simulation_info():
     nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
-    numberofmpsrealizations = 10  # Number of Deesse realizations
+    numberofmpsrealizations = 30  # Number of Deesse realizations
     nthreads = 1  # Number of threads for parallel processing
 
     ##################### COLORMAP PARAMETERS #####################
@@ -154,7 +156,8 @@ def execute_shorter_program(ti_pct_area, ti_ndisks, ti_realid, mps_nreal, nthrea
 def launch_simulation(params,
                     shorten,
                     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
-                    nr, nc):
+                    nr, nc,
+                    verbose):
     
     
     if shorten :
@@ -162,16 +165,22 @@ def launch_simulation(params,
     else :
         launcher(params,
                 nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
-                nr, nc)
+                nr, nc, 
+                verbose)
 
 
-def run_simulation():
+def run_simulation(verbose):
+    if verbose :
+        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> RETRIEVING SIMULATION INFORMATION")
     params, \
     shorten, \
     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
     nr, nc = get_simulation_info()
+    if verbose :
+        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> SIMULATION INFORMATION RETRIEVED")
     
     launch_simulation(params,
                         shorten,
                         nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
-                        nr, nc)
+                        nr, nc,
+                        verbose)

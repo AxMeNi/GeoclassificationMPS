@@ -391,7 +391,6 @@ def get_sim_grid_dimensions(auxTI_var):
         nc, nr = ar.shape[0], ar.shape[1]
     else:
         raise ValueError(f"No auxiliary variable was provided, please provide at least one auxiliary variable to constrain the shape of the simulation grid")
-    print(f"Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
     return nc, nr
 
 

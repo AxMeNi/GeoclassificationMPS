@@ -29,8 +29,8 @@ from loopui import entropy
 
 def launcher(params,
             nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
-            nr, nc
-            ):
+            nr, nc,
+            verbose):
     """
 
     """
@@ -52,19 +52,22 @@ def launcher(params,
     numberofmpsrealizations = params['n_mps_realizations']
     nthreads = params['n_threads']
     
-    print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S)') + " - INIT")
-    
     #variables initialization
     ti_list = []
     cd_list = []
     
     #Create a simulation grid mask based on no values of the auxiliary variables
+    if verbose:
+        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATE CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
+        
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
 
     if nRandomTICDsets == 1 :
     
-        #Creation of the TI and of the SG
+        #Creation of the TI, the SG, the CD
         if "DependentCircles" in ti_methods :
+            if verbose:
+                print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT CIRCLES")
             ti_frame_DC, ntc_DC = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
             ti_list_DC, cd_list_DC = build_ti_cd(ti_frame_DC, ntc_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
             ti_list.extend(ti_list_DC)
@@ -73,6 +76,8 @@ def launcher(params,
             cc_sg, rr_sg = nc, nr
             
         if "DependentSquares" in ti_methods :
+            if verbose:
+                print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT SQUARES")
             ti_frame_DS, ntc_DS = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
             ti_list_DS, cd_list_DS = build_ti_cd(ti_frame_DS, ntc_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
             ti_list.extend(ti_list_DS)
@@ -81,6 +86,8 @@ def launcher(params,
             cc_sg, rr_sg = nc, nr
             
         if "IndependentSquares" in ti_methods :
+            if verbose:
+                print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD INDEPENDENT SQUARES")
             ti_frame_IS, ntc_IS = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
             ti_list_IS, cd_list_IS = build_ti_cd(ti_frame_IS, ntc_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
             ti_list.extend(ti_list_IS)
@@ -89,15 +96,19 @@ def launcher(params,
             cc_sg, rr_sg = nc, nr
             
         if "ReducedTiSg" in ti_methods :
+            if verbose:
+                print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT REDUCED TI AND SG")
             ti_frame_RTS, ntc_RTS, simgrid_mask_RTS, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
             simgrid_mask_merged = merge_masks(simgrid_mask_RTS, simgrid_mask_aux)
             ti_list_RTS, cd_list_RTS = build_ti_cd(ti_frame_RTS, ntc_RTS, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask_merged, condIm_var)
             ti_list.extend(ti_list_RTS)
             cd_list.extend(cd_list_RTS)
             simgrid_mask = None
-        
-        
             
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
+  
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
         # yy = im.yy()[0]
@@ -189,7 +200,7 @@ def launcher(params,
             outputFlag = []
             for name in names:
                 outputFlag.append(outputVarFlag[name])
-            
+
             deesse_input = gn.deesseinterface.DeesseInput(
                 nx=nc_sg, ny=nr_sg, nz=1,
                 sx=1, sy=1, sz=1,
@@ -211,9 +222,12 @@ def launcher(params,
             
             deesse_output = gn.deesseinterface.deesseRun(deesse_input)
             
-            sim = deesse_output['sim']
+            save_simulation(deesse_output, params, comments="", output_directory="output/")
+                
+                
             
             ###############################################################################
+            # sim = deesse_output['sim']
             # all_sim = gn.img.gatherImages(sim)
             # categ_val = [1,2,3,4,5,6,7]
             # all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)

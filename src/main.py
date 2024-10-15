@@ -8,7 +8,7 @@ from tests import *
 from interface import *
 import sys
 
-def run_tests():
+def run_tests(verbose):
     """
     to run the tests
     """
@@ -47,13 +47,13 @@ def run_tests():
 
 #BUILD_TI_CD.PY
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
-    t_GenNRandomTiCd =              False
+    t_GenNRandomTiCd =              True
 
 #VARIABILITY.PY
     t_CustJsdistHist =              False #TODO
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
-    t_CalculateIndicators =         True
+    t_CalculateIndicators =         False
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotEntropy =                 False #TODO
@@ -65,11 +65,11 @@ def run_tests():
     t_GetBins =                     False
 
 #UTILS.PY
-    tCartesianProduct =             False
+    t_CartesianProduct =            False
 
 #SAVING.PY
-    tSaveDeesseOutput =             False #TODO
-    tSaveSimulation =               False #TODO
+    t_SaveDeesseOutput =            False #TODO
+    t_SaveSimulation =              False #TODO
     
     #----------------------------------------------------------------------------------------#
     
@@ -104,19 +104,25 @@ def run_tests():
 
     if t_GetBins : test_get_bins()
     
-    if tCartesianProduct : test_cartesian_product()
+    if t_CartesianProduct : test_cartesian_product()
     
-    if tSaveDeesseOutput : test_save_deesse_output()
-    if tSaveSimulation : test_save_simulation()
+    if t_SaveDeesseOutput : test_save_deesse_output()
+    if t_SaveSimulation : test_save_simulation()
     
 if __name__ == '__main__':
+    verbose = False
     try: 
         arg = sys.argv[1]
     except IndexError:
         print("To use the program you must type \"python main.py\" followed by one of the following command:\n\
-            >> -t to launch the test program for debugging \n\
-            >> -s to launch the simulation")
+            >> -t to launch the test program for debugging\n\
+            >> -s to launch the simulation\n\
+            >> -v for verbose mode (optional with -t or -s)")
         exit()
     
-    if arg == "-s" : run_simulation()
-    if arg == "-t" : run_tests()
+    if "-v" in sys.argv:
+        verbose = True
+    if "-s" in sys.argv:
+        run_simulation(verbose)
+    elif "-t" in sys.argv:
+        run_tests(verbose)
