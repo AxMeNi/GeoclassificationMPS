@@ -704,12 +704,11 @@ def test_calculate_indicators():
     
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False)
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True)
-    
 
     all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
     all_sim = all_sim_img.val
     all_sim = np.transpose(all_sim,(1,2,3,0))
-    plot_pairwise_histograms(all_sim, nsim)
+    plot_lithocode_histograms(all_sim, nsim)
 
     return
     

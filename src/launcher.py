@@ -152,9 +152,11 @@ def launcher(params,
             nrealization=numberofmpsrealizations
         ) 
         
-        deesse_output = gn.deesseinterface.deesseRun(deesse_input)     
-        save_simulation(deesse_output, params, output_directory=r"C:\Users\00115212\Documents\GeoclassificationMPS\output")        
-        sim = deesse_output['sim']
+        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)    
+        
+        save_simulation(deesse_output, params, output_directory=r"\group\ses001\amengelle\GeoclassificationMPS\output")        
+        
+        calculate_indicators(deesse_output, n_sim_variables=1, reference_var = None)
         
         ###############################################################################
         # all_sim = gn.img.gatherImages(sim)  

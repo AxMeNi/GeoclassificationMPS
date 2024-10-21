@@ -163,7 +163,7 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
 
     """
     if n_sim_variables > 1: 
-        raise ValueError (f"The simulation was made for {n_sim_variables} variables, cannot compute indicators with more than 1 variable.")
+        raise ValueError (f"The simulation was computed for {n_sim_variables} variables, cannot compute indicators with more than 1 variable.")
         return None
     else: 
         sim = deesse_output['sim']
@@ -175,7 +175,7 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
         #1 ENTROPY   
         ent = entropy(all_sim)
         
-        # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY IS ONLY 
+        # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY ARE ONLY 
         # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
         # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
         # RK: FOR TOPOLOGICAL ADJACENCY, 
@@ -219,6 +219,7 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
                 dist_hist[idx1_real, -1] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,-1,base=np.e)
                 dist_hist[-1, idx1_real] = dist_hist[idx1_real, -1]
                 
+                #3 TOPOLOGICAL ADJACENCY
                 dist_topo_hamming[idx1_real, -1], dist_topo_lapl_spec[idx1_real, -1] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,npctiles=-1,)
                 dist_topo_hamming[-1, idx1_real] = dist_topo_hamming[idx1_real, -1]
                 dist_topo_lapl_spec[-1, idx1_real] = dist_topo_lapl_spec[idx1_real, -1]   

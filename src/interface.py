@@ -29,7 +29,7 @@ def get_simulation_info():
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    csv_file_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\test\data_csv.csv"
+    csv_file_path = r"\group\ses001\amengelle\GeoclassificationMPS\test\data_csv.csv"
     
     # Expected CSV File Format (Columns are separataed by ";"):
     #
@@ -87,7 +87,7 @@ def get_simulation_info():
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
     numberofmpsrealizations = 30  # Number of Deesse realizations
-    nthreads = 1  # Number of threads for parallel processing
+    nthreads = 4  # Number of threads for parallel processing
 
     ##################### COLORMAP PARAMETERS #####################
 

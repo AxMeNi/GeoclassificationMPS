@@ -157,9 +157,9 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     plt.show()
 
 
-def plot_pairwise_histograms(lithocode_all, nsim):
+def plot_lithocode_histograms(lithocode_all, nsim):
     """
-    Plots a matrix of histograms showing pairwise comparisons of lithocode histograms.
+    Display for each lithology the effectif of this lithology depending on the simulations
 
     Parameters:
     -----------
@@ -170,40 +170,46 @@ def plot_pairwise_histograms(lithocode_all, nsim):
 
     Returns:
     --------
-    None. Displays a matrix of pairwise histograms.
+    None. 
     """
-    fig, axs = plt.subplots(nsim, nsim, figsize=(12, 12), constrained_layout=True)
-    fig.suptitle('Matrix of Pairwise Histograms', fontsize=16)
+    n_subplots = len(np.unique(lithocode_all[~np.isnan(lithocode_all)]))  # Number of lithocodes
+    cols = 5  # Adjust the number of columns 
+    rows = n_subplots // cols
 
-    for i in range(nsim):
-        for j in range(nsim):
-            ax = axs[i, j]
-            # Filter out NaN values
+    if n_subplots % cols != 0:
+        rows += 1
+
+    positions = range(1, n_subplots + 1) 
+
+    fig = plt.figure(figsize=(cols * 3, rows * 3))  # Each subplot will be of size 3x3
+
+    unique_lithocodes = np.unique(lithocode_all[~np.isnan(lithocode_all)])
+    
+    # For each lithocode
+    for k, lithocode in enumerate(unique_lithocodes):
+        ax = fig.add_subplot(rows, cols, positions[k])
+        
+        lithocode_counts = []
+        
+        # For each simulation
+        for i in range(nsim):
             lithocode_i = lithocode_all[:, :, :, i].flatten()
-            lithocode_j = lithocode_all[:, :, :, j].flatten()
-            
             lithocode_i = lithocode_i[~np.isnan(lithocode_i)]
-            lithocode_j = lithocode_j[~np.isnan(lithocode_j)]
             
-            if i == j:
-                hist_lc, bins_lc = np.histogram(lithocode_i, bins='auto')
-                ax.bar(bins_lc[:-1], hist_lc, width=np.diff(bins_lc), color='blue', label=f'Sim {i}')
-            else:
-                hist_lc_i, bins_lc_i = np.histogram(lithocode_i, bins='auto')
-                hist_lc_j, bins_lc_j = np.histogram(lithocode_j, bins=bins_lc_i)
-                
-                bar_width = np.diff(bins_lc_i) / 3
-                ax.bar(bins_lc_i[:-1], hist_lc_i, width=bar_width, color='blue', label=f'Sim {i}', align='edge')
-                ax.bar(bins_lc_i[:-1] + bar_width, hist_lc_j, width=bar_width, color='green', label=f'Sim {j}', align='edge')
-            
-            ax.set_title(f'Sim {i} vs Sim {j}', fontsize=8)
-            ax.tick_params(axis='both', which='major', labelsize=6)
+            count = np.sum(lithocode_i == lithocode)
+            lithocode_counts.append(count)
+        
+        ax.bar(range(nsim), lithocode_counts, color='blue', label=f'Lithocode {lithocode}')
+        
+        ax.set_title(f'Lithocode {lithocode}')
+        ax.set_xlabel(f'Simulations')
+        ax.tick_params(axis='both', which='major', labelsize=6)
 
+    plt.tight_layout()
     plt.show()
     
 
 def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPresent = False):
-    print(dist_topo_hamming, dist_hist)
     
     # Manual MDS implementation (simplified for 2D)
     np.random.seed(852)
@@ -231,7 +237,7 @@ def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPr
     plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
     
     if referenceIsPresent:
-        scatter = plt.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
+        scatter = plt.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id[:-1], cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
         plt.scatter(mdspos_lc[-1, 0], mdspos_lc[-1, 1], c='red', s=50, label='reference Hamming', marker='o')
     else:
         scatter = plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
