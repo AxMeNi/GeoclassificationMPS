@@ -13,7 +13,7 @@ import pandas as pd
 
 
 
-def plot_entropy(entropy, background_image=None, categ_var_name=None):
+def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False):
     """
     Plot the 2D entropy visualization from a given entropy array.
 
@@ -33,7 +33,8 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
     None
         The function displays a plot of the entropy, with background image and contour if provided.
     """
-    
+    plt.close()
+    plt.clf()
     ent = np.squeeze(entropy)
     
     if background_image is not None:
@@ -76,19 +77,29 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None):
             plt.suptitle(f'Superposition of entropy with {categ_var_name}')
         else :
             plt.suptitle('Superposition of entropy with categorical variable')
-        plt.tight_layout()
-        plt.show()
+            
+        if save:
+            plt.tight_layout()
+            if fname!='' :
+                plt.savefig(fname, dpi=300, bbox_inches='tight')
+            else:
+                plt.savefig('entropy_and_reference.png', dpi=300, bbox_inches='tight')
+        if show:
+            plt.tight_layout()
+            plt.show()
     
     else:
         plt.figure()
         plt.imshow(ent, cmap='gray', interpolation='nearest')
         plt.colorbar(label='Entropy')
         plt.title("Entropy 2D visualization")
-        plt.tight_layout()
-        plt.show()
+        
+        if show:
+            plt.tight_layout()
+            plt.show()
 
 
-def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = False):
+def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False, show=False):
     """
     Plots a 2D Multi-Dimensional Scaling (MDS) representation of histogram dissimilarities.
 
@@ -120,6 +131,8 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     - Colors are assigned to points based on their simulation ID, using a custom colormap that blends blue, green, and red.
     - The function displays the plot but does not return any value.
     """
+    plt.close()
+    plt.clf()
     #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
     mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
 
@@ -154,17 +167,19 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent = Fals
     
     cbar.set_label('simulation #')
     
-    plt.show()
+    if show:
+        plt.tight_layout()
+        plt.show()
 
 
-def plot_lithocode_histograms(lithocode_all, nsim):
+def plot_simvar_histograms(simvar_all, nsim, show=False):
     """
     Display for each lithology the effectif of this lithology depending on the simulations
 
     Parameters:
     -----------
-    lithocode_all : ndarray
-        4D array where each entry [:,:,:,i] corresponds to a simulation's lithocode data.
+    simvar_all : ndarray
+        4D array where each entry [:,:,:,i] corresponds to a simulation's simvar data.
     nsim : int
         The number of simulations.
 
@@ -172,7 +187,9 @@ def plot_lithocode_histograms(lithocode_all, nsim):
     --------
     None. 
     """
-    n_subplots = len(np.unique(lithocode_all[~np.isnan(lithocode_all)]))  # Number of lithocodes
+    plt.close()
+    plt.clf()
+    n_subplots = len(np.unique(simvar_all[~np.isnan(simvar_all)]))  # Number of simvars
     cols = 5  # Adjust the number of columns 
     rows = n_subplots // cols
 
@@ -183,57 +200,81 @@ def plot_lithocode_histograms(lithocode_all, nsim):
 
     fig = plt.figure(figsize=(cols * 3, rows * 3))  # Each subplot will be of size 3x3
 
-    unique_lithocodes = np.unique(lithocode_all[~np.isnan(lithocode_all)])
+    unique_simvars = np.unique(simvar_all[~np.isnan(simvar_all)])
     
-    # For each lithocode
-    for k, lithocode in enumerate(unique_lithocodes):
+    # For each simvar
+    for k, simvar in enumerate(unique_simvars):
         ax = fig.add_subplot(rows, cols, positions[k])
         
-        lithocode_counts = []
+        simvar_counts = []
         
         # For each simulation
         for i in range(nsim):
-            lithocode_i = lithocode_all[:, :, :, i].flatten()
-            lithocode_i = lithocode_i[~np.isnan(lithocode_i)]
+            simvar_i = simvar_all[:, :, :, i].flatten()
+            simvar_i = simvar_i[~np.isnan(simvar_i)]
+            count = np.sum(simvar_i == simvar)
+            simvar_counts.append(count)
             
-            count = np.sum(lithocode_i == lithocode)
-            lithocode_counts.append(count)
-        
-        ax.bar(range(nsim), lithocode_counts, color='blue', label=f'Lithocode {lithocode}')
-        
-        ax.set_title(f'Lithocode {lithocode}')
+        ax.bar(range(nsim), simvar_counts, color='blue', label=f'simvar {simvar}')
+
+        ax.set_title(f'simvar {simvar}')
         ax.set_xlabel(f'Simulations')
         ax.tick_params(axis='both', which='major', labelsize=6)
-
-    plt.tight_layout()
-    plt.show()
     
+    if show:
+        plt.tight_layout()
+        plt.show()
 
-def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPresent = False):
+
+def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPresent=False, show=False):
+    """
+    Plot a 2D MDS representation of topological adjacency based on Hamming distance.
+
+    This function visualizes the relationships between simulations using a 2D Multi-Dimensional Scaling (MDS) representation, 
+    with distances computed based on Hamming distance between categorical variables (simvars). Optionally, it can highlight 
+    a reference simulation if present and save or display the plot.
+
+    Parameters:
+    -----------
+    dist_hist : ndarray
+        A lower triangular matrix (2D array) of distances between simulations based on histogram dissimilarity.
+    dist_topo_hamming : ndarray
+        A lower triangular matrix (2D array) of topological distances between simulations based on Hamming distance.
+    nsim : int
+        The number of simulations included in the distance matrices.
+    referenceIsPresent : bool, optional (default: False)
+        If True, highlights the reference simulation in red.
+    save : bool, optional (default: False)
+        If True, the plot will be saved to a file.
+    show : bool, optional (default: False)
+        If True, the plot will be displayed.
+    fname : str, optional (default: '')
+        The name of the file to save the plot to. If not provided and `save` is True, 
+        the plot is saved as 'topological_adjacency.png'.
+
+    Returns:
+    --------
+    None.
+    """
+    plt.close()
+    plt.clf()
     
     # Manual MDS implementation (simplified for 2D)
     np.random.seed(852)
-    mdspos_lc = np.random.rand(nsim, 2)  # Simulated MDS positions for lithocodes
-    mdspos_sf = np.random.rand(nsim, 2)  # Simulated MDS positions for scalar fields
-
+    mdspos_lc = np.random.rand(nsim, 2)  # Simulated MDS positions for simvars
     s_id = np.arange(nsim)
        
     mycmap = plt.get_cmap('tab20', nsim)
     norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim+1)-0.5, ncolors=nsim)
-
+    
     ix = np.tril_indices(nsim, k=-1)
     dist_hist_vals = dist_hist[ix]
     dist_topo_hamming_vals = dist_topo_hamming[ix]
-
+    
     lcmin, lcmax = np.min(dist_hist_vals), np.max(dist_hist_vals)
     sfmin, sfmax = np.min(dist_topo_hamming_vals), np.max(dist_topo_hamming_vals)
-    lcMDSxmin, lcMDSxmax = np.min(mdspos_lc[:, 0]), np.max(mdspos_lc[:, 0])
-    lcMDSymin, lcMDSymax = np.min(mdspos_lc[:, 1]), np.max(mdspos_lc[:, 1])
-    sfMDSxmin, sfMDSxmax = np.min(mdspos_sf[:, 0]), np.max(mdspos_sf[:, 0])
-    sfMDSymin, sfMDSymax = np.min(mdspos_sf[:, 1]), np.max(mdspos_sf[:, 1])
-
-    s = 100
     
+    s = 100
     plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
     
     if referenceIsPresent:
@@ -242,13 +283,14 @@ def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPr
     else:
         scatter = plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
         
-    
-    plt.xlim(sfMDSxmin, sfMDSxmax)
-    plt.ylim(sfMDSymin, sfMDSymax)
+    plt.xlim(np.min(mdspos_lc[:, 0]), np.max(mdspos_lc[:, 0]))
+    plt.ylim(np.min(mdspos_lc[:, 1]), np.max(mdspos_lc[:, 1]))
     plt.legend(scatterpoints=1, loc='best', shadow=False)
     
     cbar = plt.colorbar(scatter, ticks=np.arange(nsim))
     cbar.ax.set_yticklabels([str(val) for val in s_id])  # Label the ticks with sample IDs
     cbar.set_label('Simulation #')
     
-    plt.show()
+    if show:
+        plt.tight_layout()
+        plt.show()

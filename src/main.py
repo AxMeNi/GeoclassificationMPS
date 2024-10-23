@@ -54,6 +54,7 @@ def run_tests(verbose):
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
     t_CalculateIndicators =         True
+    t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotEntropy =                 False #TODO
@@ -70,6 +71,9 @@ def run_tests(verbose):
 #SAVING.PY
     t_SaveDeesseOutput =            False #TODO
     t_SaveSimulation =              False #TODO
+    t_LoadPickleFile =              False #TODO
+    t_SavePlot =                    False #TODO
+    
     
     #----------------------------------------------------------------------------------------#
     
@@ -97,6 +101,7 @@ def run_tests(verbose):
     if t_CustTopologicalAdjacency2D : test_custom_topological_adjacency2D()
     if t_CustomTopoDist : test_custom_topo_dist()
     if t_CalculateIndicators : test_calculate_indicators()
+    if t_PlotAndSaveIndicators : test_plot_and_save_indicators()
     
     if t_PlotEntropy : test_plot_entropy()
     if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
@@ -108,6 +113,8 @@ def run_tests(verbose):
     
     if t_SaveDeesseOutput : test_save_deesse_output()
     if t_SaveSimulation : test_save_simulation()
+    if t_LoadPickleFile : test_load_pickle_file()
+    if t_SavePlot: test_save_plot()
     
 if __name__ == '__main__':
     verbose = False

@@ -88,16 +88,23 @@ def get_simulation_info():
     ms = 0.25  # Maximum scan fraction
     numberofmpsrealizations = 30  # Number of Deesse realizations
     nthreads = 4  # Number of threads for parallel processing
-
-    ##################### COLORMAP PARAMETERS #####################
-
-    # cm = plt.get_cmap('tab20')
-    # myclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
-    # n_bin = 11
-    # cmap_name = 'my_tab20'
-    # mycmap = LinearSegmentedColormap.from_list(cmap_name, myclrs, N=n_bin)
-    # ticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], myclrs)), N=n_bin + 1)
-
+    
+    ##################### OUTPUT PARAMETERS #####################
+    
+    ### To turn On or Off the saving of the output
+    saveOutput = True
+    
+    output_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\output"
+    
+    deesse_output_folder = "deesse_output"
+    prefix_deesse_output = "deesse_output"
+    
+    plot_output_folder = "variability"
+    prefix_histogram_disimilarity =
+    prefix_entropy =
+    prefix_simvar_histograms =
+    prefix_topological_adjacency =
+    
     ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False

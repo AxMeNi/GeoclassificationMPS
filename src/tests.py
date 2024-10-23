@@ -695,24 +695,28 @@ def test_calculate_indicators():
     nsim = len(sim)
     
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1, reference_var = np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
-    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, referenceIsPresent=True)
+    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, referenceIsPresent=True, show=True)
     
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1)
-    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim)
+    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, show=True)
 
-    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies')
+    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', save = True)
     
-    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False)
-    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True)
+    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False, show=True)
+    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True, show=True)
 
     all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
     all_sim = all_sim_img.val
     all_sim = np.transpose(all_sim,(1,2,3,0))
-    plot_lithocode_histograms(all_sim, nsim)
+    plot_simvar_histograms(all_sim, nsim, save=True, show=True)
 
     return
+
+
+def test_plot_and_save_indicators():
     
-    
+    return 
+
 ##################################### TEST DISPLAY_FUNCTIONS.PY
   
 def test_plot_entropy():
@@ -799,4 +803,12 @@ def test_save_deesse_output():
 
 
 def test_save_simulation():
+    return
+    
+    
+def test_load_pickle_file():
+    return
+
+
+def test_save_plot():
     return

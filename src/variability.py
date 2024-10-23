@@ -158,7 +158,7 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     return shd, lsgd
     
     
-def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
+def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
     """
 
     """
@@ -237,7 +237,19 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var = None):
             
         return ent, dist_hist, dist_topo_hamming
 
-
     
+def plot_and_save_indicators(entropy,dist_hist,dist_topo_hamming,
+                            nsim,simvar_all,
+                            entropy_background_image=None, 
+                            categ_var_name=None, 
+                            dist_hist, 
+                            seed=852, 
+                            referenceIsPresent=False)
+    """
+    """
+    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', save = True)
+    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, referenceIsPresent=True, save=True)
+    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False, save=True)
+    plot_simvar_histograms(all_sim, nsim, save=True, show=True)
     
-    
+    save_plot(fname='', default_name='topological_adjacency.png', output_directory='output', comments='', params={})

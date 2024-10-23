@@ -156,7 +156,7 @@ def launcher(params,
         
         save_simulation(deesse_output, params, output_directory=r"\group\ses001\amengelle\GeoclassificationMPS\output")        
         
-        calculate_indicators(deesse_output, n_sim_variables=1, reference_var = None)
+        ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=1, reference_var== np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
         
         ###############################################################################
         # all_sim = gn.img.gatherImages(sim)  
@@ -226,7 +226,9 @@ def launcher(params,
             
             save_simulation(deesse_output, params, comments="", output_directory="output/")
                 
-                
+            ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=1, reference_var = np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
+            
+            
             
             ###############################################################################
             # sim = deesse_output['sim']

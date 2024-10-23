@@ -116,3 +116,64 @@ def load_pickle_file(file_path):
     with open(file_path, 'rb') as file:
         data = pickle.load(file)
     return data
+    
+
+def save_plot(fname='', default_name='topological_adjacency.png', output_directory='output/', comments='', params={}):
+    """
+    Save the current plot to a file and log the details in an Excel file.
+
+    Parameters:
+    -----------
+    fname : str, optional (default: '')
+        The name of the file to save the plot to. If not provided, `default_name` is used.
+    default_name : str, optional (default: 'topological_adjacency.png')
+        The default file name used if `fname` is not provided.
+    output_directory : str, optional (default: 'output')
+        The directory where the plot file and log file will be saved.
+    comments : str, optional (default: '')
+        Additional comments to log in the Excel file.
+    params : dict, optional (default: {})
+        A dictionary of parameters to log in the Excel file.
+
+    Returns:
+    --------
+    None.
+
+    Notes:
+    ------
+    - The plot is saved in PNG format with a resolution of 300 DPI.
+    - The plot is saved with tight bounding box (`bbox_inches='tight'`) to avoid excess whitespace.
+    - If `fname` is not specified, the plot is saved with the default file name ('topological_adjacency.png').
+    - The function also logs the plot details, date and time, comments, and additional parameters in an Excel file.
+    """
+    
+    os.makedirs(output_directory, exist_ok=True)
+    
+    if fname == '':
+        fname = default_name
+    
+    plot_path = os.path.join(output_directory, fname)
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    data = {
+        'Date and Time': [now],
+        'File Name': [fname],
+        'Comments': [comments]
+    }
+
+    for key, value in params.items():
+        data[key] = [value]
+
+    excel_file_path = os.path.join(output_directory, 'plot_log.xlsx')
+
+    if os.path.exists(excel_file_path):
+        df_existing = pd.read_excel(excel_file_path)
+    else:
+        df_existing = pd.DataFrame()
+
+    df_new = pd.DataFrame(data)
+
+    df_updated = pd.concat([df_existing, df_new], ignore_index=True)
+
+    df_updated.to_excel(excel_file_path, index=False)
