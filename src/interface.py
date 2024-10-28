@@ -183,8 +183,8 @@ def launch_simulation(params,
                     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                     nr, nc,
                     verbose):
-    
-    
+    """
+    """    
     if shorten :
         execute_shorter_program()
     else :
@@ -195,6 +195,8 @@ def launch_simulation(params,
 
 
 def run_simulation(verbose):
+    """
+    """
     if verbose :
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> RETRIEVING SIMULATION INFORMATION")
     params, \

@@ -18,15 +18,6 @@ from datetime import datetime
 from loopui import entropy
 
 
-#### COLORS PARAMETERS
-# cm = plt.get_cmap('tab20')
-# defaultclrs = np.asarray(cm.colors)[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11], :]
-# n_bin = 11
-# cmap_name = 'my_tab20'
-# defaultcmap = LinearSegmentedColormap.from_list(cmap_name, defaultclrs, N=n_bin)
-# defaultticmap = LinearSegmentedColormap.from_list('ticmap', np.vstack(([0, 0, 0], defaultclrs)), N=n_bin + 1)
-
-
 
 def launcher(params,
             nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
@@ -67,7 +58,7 @@ def launcher(params,
     deesse_output_folder_complete = output_directory+r"\\"+deesse_output_folder
     plot_output_folder_complete = output_directory+r"\\"+plot_output_folder
     
-    #variables initialization
+    #Variables initialization
     ti_list = []
     cd_list = []
     
@@ -77,6 +68,8 @@ def launcher(params,
         
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
 
+    #---- METHOD 1 : for 1 set of TI and CD ----#
+    
     if nRandomTICDsets == 1 :
         
         for i_mask in range(1,3):
@@ -180,7 +173,7 @@ def launcher(params,
             
             #PARAMETERS FOR RETRIEVING THE SIMULATION
             sim = deesse_output['sim']
-            all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
+            all_sim_img = gn.img.gatherImages(sim) #Using the inplace function of geone to gather images
             all_sim = all_sim_img.val
             all_sim = np.transpose(all_sim,(1,2,3,0))
             
@@ -206,9 +199,10 @@ def launcher(params,
             #5 PROPORTIONS
             plot_proportions(sim)
             save_plot(fname=prefix_proportions+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
-            
 
             # plt.show()
+    
+    #---- METHOD 2 : for multiple sets of TI and CD ----#
     
     else:
         if len(ti_methods) > 1:
@@ -259,23 +253,7 @@ def launcher(params,
             save_simulation(deesse_output, params, comments="", output_directory="output/")
                 
             ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=1, reference_var = np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
-            
-            
-            
-            ###############################################################################
-            # sim = deesse_output['sim']
-            # all_sim = gn.img.gatherImages(sim)
-            # categ_val = [1,2,3,4,5,6,7]
-            # all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
-            # prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
-            # cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
-            # plt.subplots(1, 7, figsize=(17,5), sharey=True)
-            # for i in range(7):
-                # plt.subplot(1, 7, i+1) # select next sub-plot
-                # gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
-                                       # title=f'Prop. of categ. {i}')
-            # plt.show()
-            
+           
     return
     
 
