@@ -14,16 +14,20 @@ import geone as gn
 
 
 
-def plot_realization(deesse_output, index_sim=0, show=False):
+def plot_realization(deesse_output, varname='', index_real=0, show=False):
     """
     
     """
     plt.clf()
     plt.close()
     
+    sim = deesse_output['sim']
     plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
-    gn.imgplot.drawImage2D(sim[index_sim], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
+    gn.imgplot.drawImage2D(sim[index_real], iv=0, categ=True, title=f'Real #{index_real} {varname}')
     
+    if show:
+        plt.show()
+
 
 def plot_proportions(sim, show=False):
     """

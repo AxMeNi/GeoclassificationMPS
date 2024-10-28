@@ -53,11 +53,11 @@ def run_tests(verbose):
     t_CustJsdistHist =              False #TODO
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
-    t_CalculateIndicators =         True
+    t_CalculateIndicators =         False
     t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
-    t_PlotRealization =             False #TODO
+    t_PlotRealization =             True #TODO
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO

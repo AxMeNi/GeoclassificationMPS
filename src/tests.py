@@ -716,6 +716,8 @@ def test_calculate_indicators():
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
 def test_plot_realization():
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
+    plot_realization(deesse_output, varname = 'grid_geo', index_real=0, show=True)
     return
 
 def test_plot_proportions():
