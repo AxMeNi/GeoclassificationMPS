@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 
+
 def custom_jsdist_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
     # nbins >1 : for continuous variables
     # otherwise for discrete variables

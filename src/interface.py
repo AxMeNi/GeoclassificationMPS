@@ -96,7 +96,7 @@ def get_simulation_info():
     
     ##################### OUTPUT PARAMETERS #####################
     
-    ### To turn On or Off the saving of the output
+    #---- To turn On or Off the saving of the output ----#
     saveOutput = True
     
     output_directory = r"\group\ses001\amengelle\GeoclassificationMPS\output"
