@@ -700,7 +700,7 @@ def test_calculate_indicators():
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1)
     plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, show=True)
 
-    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', save = True)
+    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', show=True)
     
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False, show=True)
     plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True, show=True)
@@ -708,17 +708,20 @@ def test_calculate_indicators():
     all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
     all_sim = all_sim_img.val
     all_sim = np.transpose(all_sim,(1,2,3,0))
-    plot_simvar_histograms(all_sim, nsim, save=True, show=True)
+    plot_simvar_histograms(all_sim, nsim, show=True)
 
     return
-
-
-def test_plot_and_save_indicators():
     
-    return 
 
 ##################################### TEST DISPLAY_FUNCTIONS.PY
-  
+
+def test_plot_realization():
+    return
+
+def test_plot_proportions():
+    return
+    
+
 def test_plot_entropy():
     return
     

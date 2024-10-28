@@ -5,9 +5,11 @@ __author__ = "MENGELLE Axel"
 __date__ = "septembre 2024"
 
 import pandas as pd
+import matplotlib.pyplot as plt
 from datetime import datetime
 import os
 import pickle
+
 
 
 def save_deesse_output(deesse_output, output_dir, file_name):
@@ -118,7 +120,7 @@ def load_pickle_file(file_path):
     return data
     
 
-def save_plot(fname='', default_name='topological_adjacency.png', output_directory='output/', comments='', params={}):
+def save_plot(fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
     """
     Save the current plot to a file and log the details in an Excel file.
 
@@ -126,7 +128,7 @@ def save_plot(fname='', default_name='topological_adjacency.png', output_directo
     -----------
     fname : str, optional (default: '')
         The name of the file to save the plot to. If not provided, `default_name` is used.
-    default_name : str, optional (default: 'topological_adjacency.png')
+    default_name : str, optional (default: 'fig.png')
         The default file name used if `fname` is not provided.
     output_directory : str, optional (default: 'output')
         The directory where the plot file and log file will be saved.
@@ -153,6 +155,7 @@ def save_plot(fname='', default_name='topological_adjacency.png', output_directo
         fname = default_name
     
     plot_path = os.path.join(output_directory, fname)
+    plt.subplots_adjust(hspace=0.2)
     plt.savefig(plot_path, dpi=300, bbox_inches='tight')
 
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

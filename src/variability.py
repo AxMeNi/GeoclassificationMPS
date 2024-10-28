@@ -172,7 +172,7 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
         all_sim = np.transpose(all_sim,(1,2,3,0)) #Transposing the dimensions of the array to make it work with loop-ui...
         nsim = len(sim)
         
-        #1 ENTROPY   
+        #1 ENTROPY 
         ent = entropy(all_sim)
         
         # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY ARE ONLY 
@@ -237,19 +237,3 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
             
         return ent, dist_hist, dist_topo_hamming
 
-    
-def plot_and_save_indicators(entropy,dist_hist,dist_topo_hamming,
-                            nsim,simvar_all,
-                            entropy_background_image=None, 
-                            categ_var_name=None, 
-                            dist_hist, 
-                            seed=852, 
-                            referenceIsPresent=False)
-    """
-    """
-    plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', save = True)
-    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, referenceIsPresent=True, save=True)
-    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False, save=True)
-    plot_simvar_histograms(all_sim, nsim, save=True, show=True)
-    
-    save_plot(fname='', default_name='topological_adjacency.png', output_directory='output', comments='', params={})

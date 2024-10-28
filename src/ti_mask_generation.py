@@ -123,8 +123,7 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None
     need_to_cut = [False]
 
     return ti_frame, need_to_cut
-
-    
+  
     
 def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None):
     """

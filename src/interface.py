@@ -21,6 +21,8 @@ import pandas as pd
 #     ## #### #### #####    ## ## ### ###### ### ###   ##    ####
 #################################################################
 
+
+
 # ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 # ║ INTERFACE FOR PROGRAMMING A COMBINED DEESSE AND LOOPUI SIMULATION                                                  ║
 # ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
@@ -29,7 +31,10 @@ def get_simulation_info():
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    csv_file_path = r"\group\ses001\amengelle\GeoclassificationMPS\test\data_csv.csv"
+    #\group\ses001\amengelle\
+    #C:\Users\00115212\Documents\
+    
+    csv_file_path = r"\group\ses001\amengelle\GeoclassificationMPS\data\data_csv.csv"
     
     # Expected CSV File Format (Columns are separataed by ";"):
     #
@@ -86,7 +91,7 @@ def get_simulation_info():
     nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
-    numberofmpsrealizations = 30  # Number of Deesse realizations
+    numberofmpsrealizations = 5  # Number of Deesse realizations
     nthreads = 4  # Number of threads for parallel processing
     
     ##################### OUTPUT PARAMETERS #####################
@@ -94,16 +99,18 @@ def get_simulation_info():
     ### To turn On or Off the saving of the output
     saveOutput = True
     
-    output_path = r"C:\Users\00115212\Documents\GeoclassificationMPS\output"
+    output_directory = r"\group\ses001\amengelle\GeoclassificationMPS\output"
     
     deesse_output_folder = "deesse_output"
-    prefix_deesse_output = "deesse_output"
+    prefix_deesse_output = "simulation"
     
     plot_output_folder = "variability"
-    prefix_histogram_disimilarity =
-    prefix_entropy =
-    prefix_simvar_histograms =
-    prefix_topological_adjacency =
+    prefix_histogram_disimilarity = "jensen_shannon_divergence"
+    prefix_entropy = "entropy"
+    prefix_simvar_histograms = "histograms"
+    prefix_topological_adjacency = "topological_adjacency"
+    prefix_proportions = "proportions"
+    reference_var = np.load(r"\group\ses001\amengelle\GeoclassificationMPS\data\grid_geo.npy")
     
     ##################### SHORTEN THE SIMULATION #####################
 
@@ -142,7 +149,18 @@ def get_simulation_info():
         'distance_threshold': dt,
         'max_scan_fraction': ms,
         'n_mps_realizations': numberofmpsrealizations,
-        'n_threads': nthreads
+        'n_threads': nthreads,
+        'saveOutput': saveOutput,
+        'output_directory': output_directory,
+        'deesse_output_folder': deesse_output_folder,
+        'prefix_deesse_output': prefix_deesse_output,
+        'plot_output_folder': plot_output_folder,
+        'prefix_histogram_disimilarity': prefix_histogram_disimilarity,
+        'prefix_entropy': prefix_entropy,
+        'prefix_simvar_histograms': prefix_simvar_histograms,
+        'prefix_topological_adjacency': prefix_topological_adjacency,
+        'prefix_proportions': prefix_proportions,
+        'reference_var': reference_var,        
         }
     
     return params, \

@@ -10,7 +10,43 @@ import matplotlib.colors as mcolors
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import geone as gn
 
+
+
+def plot_realization(deesse_output, index_sim=0, show=False):
+    """
+    
+    """
+    plt.clf()
+    plt.close()
+    
+    plt.subplots(1, 1, figsize=(17,10), sharex=True, sharey=True)
+    gn.imgplot.drawImage2D(sim[index_sim], iv=0, categ=True, title=f'Real #{0} - {deesse_input.varname[0]}')
+    
+
+def plot_proportions(sim, show=False):
+    """
+    WARNING this function is specific to the case of Mount 
+    Isa data and cannot be used for other cases.
+    """
+    plt.clf()
+    plt.close()
+    all_sim = gn.img.gatherImages(sim)  
+    categ_val = [1,2,3,4,5,6,7]
+    
+    prop_col = ['lightblue', 'blue', 'orange', 'green', 'red', 'purple', 'yellow']
+    cmap = [gn.customcolors.custom_cmap(['white', c]) for c in prop_col]
+    
+    all_sim_stats = gn.img.imageCategProp(all_sim, categ_val)
+    plt.subplots(1, 7, figsize=(17,5), sharey=True)
+    
+    for i in range(7):
+        plt.subplot(1, 7, i+1)
+        gn.imgplot.drawImage2D(all_sim_stats, iv=i, cmap=cmap[i],
+                               title=f'Prop. of categ. {i}')
+    if show:
+        plt.show()
 
 
 def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False):
@@ -33,8 +69,8 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
     None
         The function displays a plot of the entropy, with background image and contour if provided.
     """
-    plt.close()
     plt.clf()
+    plt.close()
     ent = np.squeeze(entropy)
     
     if background_image is not None:
@@ -78,12 +114,6 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
         else :
             plt.suptitle('Superposition of entropy with categorical variable')
             
-        if save:
-            plt.tight_layout()
-            if fname!='' :
-                plt.savefig(fname, dpi=300, bbox_inches='tight')
-            else:
-                plt.savefig('entropy_and_reference.png', dpi=300, bbox_inches='tight')
         if show:
             plt.tight_layout()
             plt.show()
@@ -131,8 +161,8 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False,
     - Colors are assigned to points based on their simulation ID, using a custom colormap that blends blue, green, and red.
     - The function displays the plot but does not return any value.
     """
-    plt.close()
     plt.clf()
+    plt.close()
     #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
     mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
 
@@ -187,8 +217,8 @@ def plot_simvar_histograms(simvar_all, nsim, show=False):
     --------
     None. 
     """
-    plt.close()
     plt.clf()
+    plt.close()
     n_subplots = len(np.unique(simvar_all[~np.isnan(simvar_all)]))  # Number of simvars
     cols = 5  # Adjust the number of columns 
     rows = n_subplots // cols
@@ -256,10 +286,9 @@ def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPr
     --------
     None.
     """
-    plt.close()
     plt.clf()
+    plt.close()
     
-    # Manual MDS implementation (simplified for 2D)
     np.random.seed(852)
     mdspos_lc = np.random.rand(nsim, 2)  # Simulated MDS positions for simvars
     s_id = np.arange(nsim)

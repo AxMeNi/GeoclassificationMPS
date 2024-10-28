@@ -57,6 +57,8 @@ def run_tests(verbose):
     t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
+    t_PlotRealization =             False #TODO
+    t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
@@ -103,6 +105,8 @@ def run_tests(verbose):
     if t_CalculateIndicators : test_calculate_indicators()
     if t_PlotAndSaveIndicators : test_plot_and_save_indicators()
     
+    if t_PlotRealization :test_plot_realization()
+    if t_PlotProportions : test_plot_proportions()
     if t_PlotEntropy : test_plot_entropy()
     if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
     if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
@@ -115,6 +119,8 @@ def run_tests(verbose):
     if t_SaveSimulation : test_save_simulation()
     if t_LoadPickleFile : test_load_pickle_file()
     if t_SavePlot: test_save_plot()
+    
+    
     
 if __name__ == '__main__':
     verbose = False
