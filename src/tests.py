@@ -721,6 +721,7 @@ def test_plot_realization():
     plot_realization(deesse_output, varname = 'grid_geo', index_real=0, show=True)
     return
 
+
 def test_plot_proportions():
     return
     

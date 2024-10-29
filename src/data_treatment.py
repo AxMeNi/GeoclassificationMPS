@@ -11,26 +11,29 @@ import pandas as pd
 
 def check_ti_methods(ti_methods):
     """
-    Validates that the input list `ti_methods` contains at least one of the four required methods: 
-    "DependentCircles", "DependentSquares", "IndependentSquares", or "ReducedTiCd".
+    Validate the list of TI (Training Image) methods to ensure it contains valid and compatible methods for processing.
 
-    Parameters
+    This function checks if the provided list of TI methods includes at least one of the four required methods. It also validates that if "ReducedTiSg" is chosen, it is the only method in the list, as it cannot be used in combination with other methods.
+
+    Parameters:
     ----------
     ti_methods : list of str
-        A list containing method names to be checked. The list must include at least one of the 
-        following methods: "DependentCircles", "DependentSquares", "IndependentSquares", or "ReducedTiCd".
-    
-    Raises
+        A list containing the names of the methods to be validated. The acceptable methods are:
+        - "DependentCircles": Indicates a specific method for dependent circle analysis.
+        - "DependentSquares": Indicates a specific method for dependent square analysis.
+        - "IndependentSquares": Indicates a method for independent square analysis.
+        - "ReducedTiSg": A method for reduced TI-SG analysis; this method must be used alone.
+
+    Raises:
     ------
     ValueError
-        If none of the required methods ("DependentCircles", "DependentSquares", "IndependentSquares", 
-        "ReducedTiSg") are found in the `ti_methods` list, a ValueError is raised with an appropriate 
-        error message.
-    
-    Returns
+        If `ti_methods` does not contain at least one of the required methods.
+    ValueError
+        If "ReducedTiSg" is chosen along with any other method, as it must be selected alone.
+
+    Returns:
     -------
     None
-        This function does not return any value; it either completes successfully or raises an exception.
     """
     required_methods = ["DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"]
     
@@ -424,18 +427,3 @@ def get_unique_names_and_types(names_var, types_var):
     return unique_names, unique_types
 
       
-def create_directories(path2ti,path2cd,path2real, path2log, path2ind):
-    """
-    Create directories if they do not exist
-    
-    """
-    if not os.path.exists(path2ti):
-        os.makedirs(path2ti)
-    if not os.path.exists(path2cd):
-        os.makedirs(path2cd)
-    if not os.path.exists(path2real):
-        os.makedirs(path2real)
-    if not os.path.exists(path2log):
-        os.makedirs(path2log)
-    if not os.path.exists(path2ind):
-        os.makedirs(path2ind)

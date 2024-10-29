@@ -110,8 +110,7 @@ def get_simulation_info():
     prefix_simvar_histograms = "histograms"
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
-    reference_var = np.load(r"\group\ses001\amengelle\GeoclassificationMPS\data\grid_geo.npy")
-    
+    reference_var = np.load("//group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
     ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False
