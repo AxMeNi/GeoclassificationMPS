@@ -34,7 +34,7 @@ def get_simulation_info():
     #\group\ses001\amengelle\
     #C:\Users\00115212\Documents\
     
-    csv_file_path = r"\group\ses001\amengelle\GeoclassificationMPS\data\data_csv.csv"
+    csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
     
     # Expected CSV File Format (Columns are separataed by ";"):
     #
@@ -99,7 +99,7 @@ def get_simulation_info():
     #---- To turn On or Off the saving of the output ----#
     saveOutput = True
     
-    output_directory = r"\group\ses001\amengelle\GeoclassificationMPS\output"
+    output_directory = "/group/ses001/amengelle/GeoclassificationMPS/output"
     
     deesse_output_folder = "deesse_output"
     prefix_deesse_output = "simulation"
@@ -110,8 +110,10 @@ def get_simulation_info():
     prefix_simvar_histograms = "histograms"
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
-    reference_var = np.load("//group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
-    ##################### SHORTEN THE SIMULATION #####################
+    path = "/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy"
+    reference_var = np.load(r"/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
+   
+   ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False
     

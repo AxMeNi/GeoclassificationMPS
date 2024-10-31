@@ -323,6 +323,8 @@ def plot_simvar_histograms(simvar_all, nsim, show=False):
         ax.set_title(f'simvar {simvar}')
         ax.set_xlabel(f'Simulations')
         ax.tick_params(axis='both', which='major', labelsize=6)
+        
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, hspace=0.4, wspace=0.3)
     
     if show:
         plt.tight_layout()

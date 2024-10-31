@@ -161,7 +161,46 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
     
 def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
     """
+    Computes entropy, Jensen-Shannon divergence, and topological adjacency indicators 
+    for the simulations in the Deesse output. These indicators are calculated for each 
+    possible pair of simulation realizations to assess similarities and adjacency relationships.
 
+    Parameters:
+    ----------
+    deesse_output : dict
+        The output dictionary from a Deesse simulation run containing the simulated variable(s). 
+    reference_var : numpy.ndarray, optional
+        If provided, this is the reference variable (2D array) for comparison with each simulation.
+        If None, the indicators are calculated only between simulation pairs. Default is None.
+
+    Returns:
+    -------
+    ent : float
+        The entropy value calculated across all simulations.
+    dist_hist : numpy.ndarray
+        A symmetric matrix (nsim x nsim or (nsim + 1) x (nsim + 1) if a reference is present) 
+        containing the Jensen-Shannon divergence for each pair of simulations.
+    dist_topo_hamming : numpy.ndarray
+        A symmetric matrix containing the Hamming distance of topological adjacency 
+        between each pair of simulations.
+    dist_topo_lapl_spec : numpy.ndarray
+        A symmetric matrix containing the Laplacian spectrum topological distance 
+        between each pair of simulations.
+
+    Raises:
+    ------
+    ValueError
+        If more than one simulated variable is found in the Deesse output.
+    
+    Notes:
+    -----
+    - Only single-variable simulations are supported. If `n_sim_variables` > 1, an error is raised.
+    - The `all_sim` array stores the combined simulations, reshaped to work with `loop-ui`.
+    - Jensen-Shannon divergence and topological adjacency measures are calculated for each 
+      pair of simulations, and additionally between simulations and the reference variable, 
+      if provided.
+    - The dimensions with size one are removed using `np.squeeze` to ensure compatibility 
+      with 2D-only functions.
     """
     if n_sim_variables > 1: 
         raise ValueError (f"The simulation was computed for {n_sim_variables} variables, cannot compute indicators with more than 1 variable.")
