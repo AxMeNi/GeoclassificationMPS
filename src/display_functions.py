@@ -52,6 +52,23 @@ def plot_realization(deesse_output, varname='', index_real=0, show=False):
         plt.show()
 
 
+def plot_mask(mask, background_image=None, mask_color='red', alpha=0.5, title=None):
+    
+    if background_image is not None:
+        masked_background = np.ma.masked_where(mask == 1, background_image)
+        plt.imshow(masked_background, cmap='gray', label="Background Image")
+    
+    plt.imshow(mask, cmap='gray', alpha=alpha if background_image is not None else 1, vmin=0, vmax=1, label="Mask")
+    
+    if title:
+        plt.title(title)
+    
+    background_legend = plt.Line2D([0], [0], color="gray", label="Background Image")
+    mask_legend = plt.Line2D([0], [0], color=mask_color, label="Mask", alpha=alpha)
+    plt.legend(handles=[background_legend, mask_legend], loc='upper right')
+    plt.show()
+
+
 def plot_proportions(sim, show=False):
     """
     Plot category proportions for each of the seven categories in the Mount Isa dataset.

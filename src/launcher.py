@@ -164,8 +164,8 @@ def launcher(params,
         deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)    
           
         if saveOutput:
-            save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)        
-        
+            save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
+            
         #TWO PARAMETERS USED BELOW
         nsim=numberofmpsrealizations
         n_sim_variables=1

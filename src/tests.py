@@ -722,6 +722,23 @@ def test_plot_realization():
     return
 
 
+def test_plot_mask():
+    shape = (100, 100)  # Dimensions of the image
+    radius = np.random.randint(10, 30)  # Random radius for the circle between 10 and 30 pixels
+    value_range = (0, 7)  # Range of values for the background image
+
+    background_image = np.random.randint(value_range[0], value_range[1] + 1, shape)
+
+    center = (shape[0] // 2, shape[1] // 2)
+
+    Y, X = np.ogrid[:shape[0], :shape[1]]
+    dist_from_center = np.sqrt((X - center[1]) ** 2 + (Y - center[0]) ** 2)
+    mask = (dist_from_center <= radius).astype(int)
+
+    plot_mask(mask, background_image, mask_color='white', alpha=0.5, title="Masked background image")
+    return
+    
+
 def test_plot_proportions():
     return
     
@@ -737,6 +754,10 @@ def test_plot_histogram_disimilarity():
 def test_plot_topological_adjacency():
     return
 
+
+def test_plot_simvar_histograms():
+    return
+    
 
 def test_plot_pairwise_histogram():
     return

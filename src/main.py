@@ -62,7 +62,8 @@ def run_tests(verbose):
     t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
-    t_PlotRealization =             True  
+    t_PlotRealization =             False
+    t_PlotMask =                    True
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO
@@ -111,6 +112,7 @@ def run_tests(verbose):
     if t_PlotAndSaveIndicators : test_plot_and_save_indicators()
     
     if t_PlotRealization :test_plot_realization()
+    if t_PlotMask : test_plot_mask()
     if t_PlotProportions : test_plot_proportions()
     if t_PlotEntropy : test_plot_entropy()
     if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
