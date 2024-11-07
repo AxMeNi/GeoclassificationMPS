@@ -13,6 +13,7 @@ from display_functions import *
 from variability import calculate_indicators
 
 import matplotlib.pyplot as plt
+import os
 from matplotlib.colors import LinearSegmentedColormap
 from datetime import datetime 
 from loopui import entropy
@@ -55,8 +56,8 @@ def launcher(params,
     reference_var = params['reference_var']
     prefix_proportions = params['prefix_proportions']
     
-    deesse_output_folder_complete = output_directory+r"\"+deesse_output_folder
-    plot_output_folder_complete = output_directory+r"\"+plot_output_folder
+    deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
+    plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
     
     #Variables initialization
     ti_list = []

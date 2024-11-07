@@ -717,8 +717,8 @@ def test_calculate_indicators():
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
 def test_plot_realization():
-    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
-    plot_realization(deesse_output, varname = 'grid_geo', index_real=0, show=True)
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\Kaya results\55%TI - 2shp - 3auxvar - 30 masks - 30 simpermasks\deesse_output\deesse_output_20241106_164010.pkl")
+    plot_realization(deesse_output, varname = 'grid_geo', index_real=2, show=True)
     return
 
 

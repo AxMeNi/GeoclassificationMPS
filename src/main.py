@@ -12,7 +12,10 @@ import sys
 
 def run_tests(verbose):
     """
-    to run the tests
+    This function allows selective execution of various tests defined across multiple modules in the project.
+    The function initializes a series of test flags corresponding to specific features and functionality 
+    within different modules. Each flag represents a test case, and setting a flag to True enables that 
+    particular test to be run when the main function is executed with the parameter "-t".
     """
 #INTERFACE.PY
     t_GetSimulationInfo =           False
@@ -63,8 +66,8 @@ def run_tests(verbose):
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO
+    t_PlotSimvarHistogram =         False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
-    t_plotPairWiseHistogram =       False #TODO
 
 #PROPORTIONS.PY
     t_GetBins =                     False
@@ -111,6 +114,7 @@ def run_tests(verbose):
     if t_PlotProportions : test_plot_proportions()
     if t_PlotEntropy : test_plot_entropy()
     if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
+    if t_PlotSimvarHistogram : test_plot_simvar_histograms()
     if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
 
     if t_GetBins : test_get_bins()
