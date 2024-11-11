@@ -735,7 +735,7 @@ def test_plot_mask():
     dist_from_center = np.sqrt((X - center[1]) ** 2 + (Y - center[0]) ** 2)
     mask = (dist_from_center <= radius).astype(int)
 
-    plot_mask(mask, background_image, mask_color='white', alpha=0.5, title="Masked background image")
+    plot_mask(mask, background_image, alpha=0.5, title="Masked background image")
     return
     
 

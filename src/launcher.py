@@ -65,7 +65,7 @@ def launcher(params,
     
     #Create a simulation grid mask based on no values of the auxiliary variables
     if verbose:
-        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATE CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
+        print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATED CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
         
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
 
@@ -161,11 +161,21 @@ def launcher(params,
             nrealization=numberofmpsrealizations
         ) 
         
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CREATED DEESSE INPUT, STARTING SIMULATION")        
+        
         deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)    
-          
+         
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED SIMULATION")     
+            
         if saveOutput:
             save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
-            
+        
+        #SAVING THE MASKS
+        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {seed}, show=False)
+        save_plot(fname=f"msk{seed}.png", output_directory=plot_output_folder_complete, comments=f'{seed}', params={"nsim":nsim})
+        
         #TWO PARAMETERS USED BELOW
         nsim=numberofmpsrealizations
         n_sim_variables=1
@@ -177,7 +187,11 @@ def launcher(params,
         all_sim = np.transpose(all_sim,(1,2,3,0))
         
         #CALCULATION OF THE INDICATORS
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CALCULATING INDICATORS")
         ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=n_sim_variables, reference_var=reference_var)
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS")
         
         #1 ENTROPY
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
@@ -199,7 +213,8 @@ def launcher(params,
         plot_proportions(sim)
         save_plot(fname=prefix_proportions+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
 
-        # plt.show()
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED PLOTTING AND SAVING THE INDICATORS")
     
     #---- METHOD 2 : for multiple sets of TI and CD ----#
     

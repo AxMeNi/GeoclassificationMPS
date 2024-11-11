@@ -62,8 +62,8 @@ def run_tests(verbose):
     t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
-    t_PlotRealization =             False
-    t_PlotMask =                    True
+    t_PlotRealization =             True
+    t_PlotMask =                    False
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO

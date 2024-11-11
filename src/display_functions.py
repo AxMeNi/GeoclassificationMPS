@@ -52,8 +52,39 @@ def plot_realization(deesse_output, varname='', index_real=0, show=False):
         plt.show()
 
 
-def plot_mask(mask, background_image=None, mask_color='red', alpha=0.5, title=None):
-    
+def plot_mask(mask, background_image=None, alpha=0.5, title=None, show=False):
+    """
+    Superimpose a binary mask onto a background image and display the results with optional legends and title.
+
+    This function visualizes the background image with a mask applied on top, hiding the values of the 
+    background image where the mask is active. The mask is displayed in the specified color, and a title 
+    and legends can be added. The mask can also be transparent depending on the `alpha` parameter.
+
+    Parameters:
+    ----------
+    mask : numpy array
+        A binary array representing the mask to overlay on the background image. The mask values should be 
+        either 0 or 1, where 1 indicates the presence of the mask.
+    background_image : numpy array, optional
+        The background image on which the mask will be applied. If `None`, only the mask visualization will be shown.
+    mask_color : str, optional
+        The color of the overlayed mask. The default is 'white' for the mask. This color must be a valid name 
+        in matplotlib color schemes.
+    alpha : float, optional
+        The transparency level of the overlayed mask. A value between 0 (transparent) and 1 (opaque). 
+        The default value is 0.5.
+    title : str, optional
+        The optional title to display at the top of the image.
+    show : bool, optional
+        If `True`, displays the plot immediately. Default is `False`.
+
+    Returns:
+    -------
+    None
+
+    """
+    plt.clf()
+    plt.close()
     if background_image is not None:
         masked_background = np.ma.masked_where(mask == 1, background_image)
         plt.imshow(masked_background, cmap='gray', label="Background Image")
@@ -66,7 +97,8 @@ def plot_mask(mask, background_image=None, mask_color='red', alpha=0.5, title=No
     background_legend = plt.Line2D([0], [0], color="gray", label="Background Image")
     mask_legend = plt.Line2D([0], [0], color=mask_color, label="Mask", alpha=alpha)
     plt.legend(handles=[background_legend, mask_legend], loc='upper right')
-    plt.show()
+    if show:
+        plt.show()
 
 
 def plot_proportions(sim, show=False):
