@@ -15,6 +15,7 @@ from utils import *
 from saving import *
 from variability import *
 from display_functions import *
+from time_logging import *
 
 from matplotlib.colors import *
 
@@ -840,3 +841,29 @@ def test_load_pickle_file():
 
 def test_save_plot():
     return
+    
+    
+##################################### TEST TIME_LOGGING.PY
+
+def test_timing_system():
+    log_df = pd.DataFrame(columns=['Process', 'Start_Time', 'End_Time', 'Duration'])
+    
+    process_name = "Test Process1"
+    process1t0 = start_timer(process_name)
+    time.sleep(2)
+    log_df = end_timer_and_log(process1t0, log_df)
+    
+    process_name = "Test Process2"
+    process2t0 = start_timer(process_name)
+    time.sleep(3)
+    log_df = end_timer_and_log(process2t0, log_df)
+
+    assert len(log_df) == 2, "Log DataFrame should contain exactly two entry"
+
+    save_log_to_csv(log_df, filename='test_timing_log.csv')
+    saved_log_df = pd.read_csv('test_timing_log.csv')
+
+    assert len(saved_log_df) == 2, "Saved CSV file should contain exactly one entry"
+    
+    print("All tests passed successfully!")
+    

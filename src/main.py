@@ -62,7 +62,7 @@ def run_tests(verbose):
     t_PlotAndSaveIndicators =       False #TODO
 
 #DISPLAY_FUNCTIONS.PY
-    t_PlotRealization =             True
+    t_PlotRealization =             False
     t_PlotMask =                    False
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
@@ -81,6 +81,9 @@ def run_tests(verbose):
     t_SaveSimulation =              False #TODO
     t_LoadPickleFile =              False #TODO
     t_SavePlot =                    False #TODO
+
+#TIME_LOGGING.PY  
+    t_TimingSystem =                True
     
     
     #----------------------------------------------------------------------------------------#
@@ -126,7 +129,9 @@ def run_tests(verbose):
     if t_SaveDeesseOutput : test_save_deesse_output()
     if t_SaveSimulation : test_save_simulation()
     if t_LoadPickleFile : test_load_pickle_file()
-    if t_SavePlot: test_save_plot()
+    if t_SavePlot : test_save_plot()
+    
+    if t_TimingSystem : test_timing_system()
     
     
     

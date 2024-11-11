@@ -4,6 +4,7 @@ __nom_fichier__ = "launcher"
 __author__ = "MENGELLE Axel"
 __date__ = "juillet 2024"
 
+
 from ti_mask_generation import *
 from data_treatment import get_unique_names_and_types
 from sg_mask_generation import *
@@ -173,7 +174,7 @@ def launcher(params,
             save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
         
         #SAVING THE MASKS
-        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {seed}, show=False)
+        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {seed}", show=False)
         save_plot(fname=f"msk{seed}.png", output_directory=plot_output_folder_complete, comments=f'{seed}', params={"nsim":nsim})
         
         #TWO PARAMETERS USED BELOW

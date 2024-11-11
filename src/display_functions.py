@@ -4,6 +4,7 @@ __nom_fichier__ = "display_functions"
 __author__ = "MENGELLE Axel"
 __date__ = "aout 2024"
 
+
 from sklearn import manifold
 
 import matplotlib.colors as mcolors

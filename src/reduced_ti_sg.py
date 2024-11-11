@@ -4,11 +4,11 @@ __nom_fichier__ = "reduced_ti_sg"
 __author__ = "MENGELLE Axel"
 __date__ = "août 2024"
 
+
 from math import sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 import random as rd
-
 
  
     
