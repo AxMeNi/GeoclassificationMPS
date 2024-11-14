@@ -59,7 +59,7 @@ def run_tests(verbose):
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
     t_CalculateIndicators =         False
-    t_PlotAndSaveIndicators =       False #TODO
+    t_CalculateStandardDeviation =  True
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotRealization =             False
@@ -69,6 +69,7 @@ def run_tests(verbose):
     t_PlotHistogramDisimilarity =   False #TODO
     t_PlotSimvarHistogram =         False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
+    t_PlotStandardDeviation =       True
 
 #PROPORTIONS.PY
     t_GetBins =                     False
@@ -83,7 +84,7 @@ def run_tests(verbose):
     t_SavePlot =                    False #TODO
 
 #TIME_LOGGING.PY  
-    t_TimingSystem =                True
+    t_TimingSystem =                False #TODO
     
     
     #----------------------------------------------------------------------------------------#
@@ -112,7 +113,7 @@ def run_tests(verbose):
     if t_CustTopologicalAdjacency2D : test_custom_topological_adjacency2D()
     if t_CustomTopoDist : test_custom_topo_dist()
     if t_CalculateIndicators : test_calculate_indicators()
-    if t_PlotAndSaveIndicators : test_plot_and_save_indicators()
+    if t_CalculateStandardDeviation : test_calculate_std_deviation()
     
     if t_PlotRealization :test_plot_realization()
     if t_PlotMask : test_plot_mask()
@@ -121,6 +122,7 @@ def run_tests(verbose):
     if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
     if t_PlotSimvarHistogram : test_plot_simvar_histograms()
     if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
+    if t_PlotStandardDeviation : test_plot_std_deviation()
 
     if t_GetBins : test_get_bins()
     

@@ -82,8 +82,8 @@ def custom_jsdist_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1
         ax3.set_xticklabels(X[ix])
         ax3.set_xlabel("Property Values")
         ax3.set_ylabel("Proportion")
-        ax3.set_title("histogram of " + title)
-        ax3.legend()
+        ax3.set_title,;
+        
 
         fig.subplots_adjust(left=0.0, bottom=0.0, right=2.0, top=.65, wspace=0.1, hspace=0.2)
         plt.show()
@@ -276,4 +276,17 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
                     dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]      
             
         return ent, dist_hist, dist_topo_hamming
+
+    
+def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=1):
+    std_array = []
+    
+    for n in range(min_realizations, max_realizations + 1):
+        truncated_array = indicator_map[:n, :n]
+        std_array.append(np.std(indicator_map[np.triu_indices(n, 1)]))
+    
+    realizations_range = range(min_realizations, max_realizations + 1)
+    
+    return std_array, realizations_range
+
 

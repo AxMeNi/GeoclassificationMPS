@@ -713,13 +713,34 @@ def test_calculate_indicators():
     plot_simvar_histograms(all_sim, nsim, show=True)
 
     return
+
+
+def test_calculate_std_deviation():
+    nsim = 30
+    min_realizations = 10
+    max_realizations = nsim
+
+    np.random.seed(0)
+    indicator_map = np.random.rand(nsim, nsim)
+    indicator_map = (indicator_map + indicator_map.T) / 2
+    np.fill_diagonal(indicator_map, 0)
+
+    print("Test data for indicator_map:\n", indicator_map)
+
+    try:
+        std_array, realizations_range = calculate_std_deviation(indicator_map, min_realizations, max_realizations)
+        print("Calculated standard deviations:", std_array)
+        print("Realizations range:", list(realizations_range))
+    except Exception as e:
+        print(f"An error occurred during calculate_std_deviation testing: {e}")
+    return
     
 
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
 def test_plot_realization():
     deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\Kaya results\55%TI - 2shp - 3auxvar - 30 masks - 30 simpermasks\deesse_output\deesse_output_20241106_164010.pkl")
-    plot_realization(deesse_output, varname = 'grid_geo', index_real=2, show=True)
+    plot_realization(deesse_output, varname = 'grid_geo', index_real=4, show=True)
     return
 
 
@@ -752,17 +773,29 @@ def test_plot_histogram_disimilarity():
     return
     
 
+def test_plot_simvar_histograms():
+    return
+
+
 def test_plot_topological_adjacency():
     return
 
 
-def test_plot_simvar_histograms():
+def test_plot_std_deviation():
+    realizations_range = range(10, 31)
+    std_array = np.random.rand(len(realizations_range))
+    indicator_name = "Test Indicator"
+
+    print("Test standard deviations:", std_array)
+    print("Realizations range:", list(realizations_range))
+
+    try:
+        plot_standard_deviation(std_array, realizations_range, indicator_name, show=True)
+        print("Test completed successfully without errors.")
+    except Exception as e:
+        print(f"An error occurred during plot_standard_deviation testing: {e}")
     return
     
-
-def test_plot_pairwise_histogram():
-    return
-
 
 ##################################### TEST PROPORTIONS.PY
 

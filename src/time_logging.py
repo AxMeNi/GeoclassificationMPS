@@ -2,7 +2,7 @@
 __projet__ = "GeoclassificationMPS"
 __nom_fichier__ = "interface"
 __author__ = "MENGELLE Axel"
-__date__ = "juillet 2024"
+__date__ = "novembre 2024"
 
 
 import time

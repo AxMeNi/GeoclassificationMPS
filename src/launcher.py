@@ -11,6 +11,7 @@ from sg_mask_generation import *
 from build_ti_cd import *
 from saving import *
 from display_functions import *
+from time_logging import *
 from variability import calculate_indicators
 
 import matplotlib.pyplot as plt
@@ -19,6 +20,9 @@ from matplotlib.colors import LinearSegmentedColormap
 from datetime import datetime 
 from loopui import entropy
 
+
+###
+log_df = pd.DataFrame(columns=['Process', 'Start_Time', 'End_Time', 'Duration'])
 
 
 def launcher(params,
@@ -165,7 +169,11 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CREATED DEESSE INPUT, STARTING SIMULATION")        
         
-        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)    
+        sim_t0 = start_timer(f"simulation {seed}")
+        
+        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)
+        
+        end_timer_and_log(sim_t0, log_df)
          
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED SIMULATION")     

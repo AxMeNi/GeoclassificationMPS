@@ -452,3 +452,17 @@ def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPr
     if show:
         plt.tight_layout()
         plt.show()
+
+
+def plot_standard_deviation(std_array, realizations_range, indicator_name, show=False):
+    plt.figure(figsize=(15, 5))
+    #Jensen-Shannon Divergence, Entropy, Topological Adjacency
+    plt.plot(realizations_range, std_array, marker='o', color='blue')
+    plt.title(f'Standard Deviation of {indicator_name}')
+    plt.xlabel('Number of Realizations')
+    plt.ylabel('Standard Deviation')
+        
+    plt.tight_layout()
+    if show:
+        plt.show()
+    
