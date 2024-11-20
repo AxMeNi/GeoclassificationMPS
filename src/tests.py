@@ -791,7 +791,6 @@ def test_plot_std_deviation():
 
     try:
         plot_standard_deviation(std_array, realizations_range, indicator_name, show=True)
-        print("Test completed successfully without errors.")
     except Exception as e:
         print(f"An error occurred during plot_standard_deviation testing: {e}")
     return

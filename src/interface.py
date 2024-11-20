@@ -111,6 +111,7 @@ def get_simulation_info():
     prefix_simvar_histograms = "histograms"
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
+    prefix_std_deviation = "std_deviation"
     path = "/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy"
     reference_var = np.load(r"/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
    
@@ -162,6 +163,7 @@ def get_simulation_info():
         'prefix_simvar_histograms': prefix_simvar_histograms,
         'prefix_topological_adjacency': prefix_topological_adjacency,
         'prefix_proportions': prefix_proportions,
+        'prefix_std_deviation' : prefix_std_deviation,
         'reference_var': reference_var,        
         }
     

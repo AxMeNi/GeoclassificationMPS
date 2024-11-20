@@ -54,7 +54,7 @@ def run_tests(verbose):
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
     t_GenNRandomTiCd =              False
 
-#VARIABILITY.PY
+#VARIABILITY.PY 
     t_CustJsdistHist =              False #TODO
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO

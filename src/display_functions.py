@@ -98,6 +98,7 @@ def plot_mask(mask, background_image=None, alpha=0.5, title=None, show=False):
     background_legend = plt.Line2D([0], [0], color="gray", label="Background Image")
     mask_legend = plt.Line2D([0], [0], color=mask_color, label="Mask", alpha=alpha)
     plt.legend(handles=[background_legend, mask_legend], loc='upper right')
+    
     if show:
         plt.show()
 
@@ -221,9 +222,10 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
             plt.suptitle(f'Superposition of entropy with {categ_var_name}')
         else :
             plt.suptitle('Superposition of entropy with categorical variable')
-            
+        plt.tight_layout()
+        
         if show:
-            plt.tight_layout()
+            
             plt.show()
     
     else:
@@ -231,9 +233,9 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
         plt.imshow(ent, cmap='gray', interpolation='nearest')
         plt.colorbar(label='Entropy')
         plt.title("Entropy 2D visualization")
+        plt.tight_layout()
         
         if show:
-            plt.tight_layout()
             plt.show()
 
 
@@ -307,8 +309,8 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False,
     
     cbar.set_label('simulation #')
     
+    plt.tight_layout()
     if show:
-        plt.tight_layout()
         plt.show()
 
 
@@ -376,8 +378,8 @@ def plot_simvar_histograms(simvar_all, nsim, show=False):
         
     plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1, hspace=0.4, wspace=0.3)
     
+    plt.tight_layout()
     if show:
-        plt.tight_layout()
         plt.show()
 
 
@@ -448,21 +450,23 @@ def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPr
     cbar = plt.colorbar(scatter, ticks=np.arange(nsim))
     cbar.ax.set_yticklabels([str(val) for val in s_id])  # Label the ticks with sample IDs
     cbar.set_label('Simulation #')
+    plt.tight_layout()
     
     if show:
-        plt.tight_layout()
         plt.show()
 
 
 def plot_standard_deviation(std_array, realizations_range, indicator_name, show=False):
-    plt.figure(figsize=(15, 5))
+    plt.clf()
+    plt.close()
     #Jensen-Shannon Divergence, Entropy, Topological Adjacency
+    plt.figure(figsize=(10, 5))
     plt.plot(realizations_range, std_array, marker='o', color='blue')
     plt.title(f'Standard Deviation of {indicator_name}')
     plt.xlabel('Number of Realizations')
     plt.ylabel('Standard Deviation')
-        
     plt.tight_layout()
+    
     if show:
         plt.show()
     

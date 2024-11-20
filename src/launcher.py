@@ -60,6 +60,7 @@ def launcher(params,
     prefix_topological_adjacency = params['prefix_topological_adjacency']
     reference_var = params['reference_var']
     prefix_proportions = params['prefix_proportions']
+    prefix_std_deviation = params['prefix_std_deviation']
     
     deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
     plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
@@ -200,7 +201,14 @@ def launcher(params,
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CALCULATING INDICATORS")
         ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=n_sim_variables, reference_var=reference_var)
         if verbose:
-            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS")
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS, CALCULATING THE STANDARD DEVIATION")
+        
+        #PLOT OF THE STANDARD DEVIATION
+        std_ent, realizations_range1 = calculate_std_deviation(ent, 1, 30)
+        std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, 30)
+        std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, 30)
+        if verbose:
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE STANDARD DEVIATION")
         
         #1 ENTROPY
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
@@ -221,7 +229,17 @@ def launcher(params,
         #5 PROPORTIONS
         plot_proportions(sim)
         save_plot(fname=prefix_proportions+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
-
+        
+        #6 STANDARD DEVIATON
+        plot_standard_deviation(std_ent, realizations_range1, indicator_name="Entropy")
+        save_plot(fname=prefix_std_deviation+f"_entropy_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'entropy_msk{i_mask}', params={"nsim":nsim})
+        plot_standard_deviation(std_dist_hist, realizations_range2, indicator_name="Jensen Shanon divergence")
+        save_plot(fname=prefix_std_deviation+f"_dist_histogram_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_histogram_msk{i_mask}', params={"nsim":nsim})
+        plot_standard_deviation)std_dist_hamming, realizations_range3, indicator_name="Topological adjacency")
+        save_plot(fname=prefix_std_deviation+f"_dist_topo_hamming_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_topo_hamming_msk{i_mask}', params={"nsim":nsim})
+        
+        
+        
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED PLOTTING AND SAVING THE INDICATORS")
     
