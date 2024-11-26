@@ -279,6 +279,7 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
 
     
 def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=1):
+    indicator_map = np.squeeze(indicator_map)
     std_array = []
     
     for n in range(min_realizations, max_realizations + 1):

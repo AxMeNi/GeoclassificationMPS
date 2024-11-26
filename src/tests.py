@@ -716,6 +716,7 @@ def test_calculate_indicators():
 
 
 def test_calculate_std_deviation():
+    #PART 1 : Randomized test
     nsim = 30
     min_realizations = 10
     max_realizations = nsim
@@ -733,8 +734,25 @@ def test_calculate_std_deviation():
         print("Realizations range:", list(realizations_range))
     except Exception as e:
         print(f"An error occurred during calculate_std_deviation testing: {e}")
-    return
     
+    #PART 2 : Real data test
+    deesse_output = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test.pkl")
+    sim = deesse_output['sim']
+    nsim = len(sim)
+    
+    ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1)
+    ent = np.squeeze(ent)
+    print(ent.shape)
+    
+    std_ent, realizations_range1 = calculate_std_deviation(ent, 1, 10)
+    std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, 10)
+    std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, 10)
+    
+    plot_standard_deviation(std_ent, realizations_range1, indicator_name="Entropy", show = True)
+    plot_standard_deviation(std_dist_hist, realizations_range2, indicator_name="Jensen Shanon divergence", show = True)
+    plot_standard_deviation(std_dist_hamming, realizations_range3, indicator_name="Topological adjacency", show = True)
+    
+    return
 
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
@@ -755,9 +773,11 @@ def test_plot_mask():
 
     Y, X = np.ogrid[:shape[0], :shape[1]]
     dist_from_center = np.sqrt((X - center[1]) ** 2 + (Y - center[0]) ** 2)
-    mask = (dist_from_center <= radius).astype(int)
+    mask = (dist_from_center <= radius)
+    
+    print(mask)
 
-    plot_mask(mask, background_image, alpha=0.5, title="Masked background image")
+    plot_mask(mask, background_image, alpha=0.5, title="Masked background image", show=True)
     return
     
 

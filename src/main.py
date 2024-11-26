@@ -59,17 +59,17 @@ def run_tests(verbose):
     t_CustTopologicalAdjacency2D =  False #TODO
     t_CustomTopoDist =              False #TODO
     t_CalculateIndicators =         False
-    t_CalculateStandardDeviation =  True
+    t_CalculateStandardDeviation =  False
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotRealization =             False
-    t_PlotMask =                    False
+    t_PlotMask =                    True
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
     t_PlotHistogramDisimilarity =   False #TODO
     t_PlotSimvarHistogram =         False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
-    t_PlotStandardDeviation =       True
+    t_PlotStandardDeviation =       False
 
 #PROPORTIONS.PY
     t_GetBins =                     False

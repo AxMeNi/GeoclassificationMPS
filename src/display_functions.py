@@ -88,16 +88,15 @@ def plot_mask(mask, background_image=None, alpha=0.5, title=None, show=False):
     plt.close()
     if background_image is not None:
         masked_background = np.ma.masked_where(mask == 1, background_image)
-        plt.imshow(masked_background, cmap='gray', label="Background Image")
+        plt.imshow(masked_background, cmap='gray')
     
     plt.imshow(mask, cmap='gray', alpha=alpha if background_image is not None else 1, vmin=0, vmax=1, label="Mask")
     
     if title:
         plt.title(title)
     
-    background_legend = plt.Line2D([0], [0], color="gray", label="Background Image")
-    mask_legend = plt.Line2D([0], [0], color=mask_color, label="Mask", alpha=alpha)
-    plt.legend(handles=[background_legend, mask_legend], loc='upper right')
+    mask_legend = plt.Line2D([0], [0], color="dimgray", label="Mask", alpha=alpha)
+    plt.legend(handles=[mask_legend], loc='upper right')
     
     if show:
         plt.show()

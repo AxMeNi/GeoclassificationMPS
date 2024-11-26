@@ -12,7 +12,7 @@ from build_ti_cd import *
 from saving import *
 from display_functions import *
 from time_logging import *
-from variability import calculate_indicators
+from variability import *
 
 import matplotlib.pyplot as plt
 import os
@@ -22,7 +22,7 @@ from loopui import entropy
 
 
 ###
-log_df = pd.DataFrame(columns=['Process', 'Start_Time', 'End_Time', 'Duration'])
+timelog = pd.DataFrame(columns=['Process', 'Start_Time', 'End_Time', 'Duration'])
 
 
 def launcher(params,
@@ -32,6 +32,8 @@ def launcher(params,
     """
 
     """
+    global timelog
+    
     seed = params['seed'] 
     ti_methods = params['ti_methods']
     ti_pct_area = params['ti_pct_area']
@@ -70,6 +72,7 @@ def launcher(params,
     cd_list = []
     
     #Create a simulation grid mask based on no values of the auxiliary variables
+    t0_sgticd = start_timer("Creation of SG, TI and CD")
     if verbose:
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATED CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
         
@@ -120,9 +123,12 @@ def launcher(params,
             cd_list.extend(cd_list_RTS)
             simgrid_mask = None
             
+        timelog = end_timer_and_log(t0_sgticd, timelog)
+            
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
+        
   
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -167,28 +173,29 @@ def launcher(params,
             nrealization=numberofmpsrealizations
         ) 
         
+        t0_sim = start_timer(f"simulation {seed}")
+        
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CREATED DEESSE INPUT, STARTING SIMULATION")        
         
-        sim_t0 = start_timer(f"simulation {seed}")
-        
         deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)
         
-        end_timer_and_log(sim_t0, log_df)
-         
+        timelog = end_timer_and_log(t0_sim, timelog)
+        
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED SIMULATION")     
             
         if saveOutput:
             save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
         
-        #SAVING THE MASKS
-        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {seed}", show=False)
-        save_plot(fname=f"msk{seed}.png", output_directory=plot_output_folder_complete, comments=f'{seed}', params={"nsim":nsim})
-        
-        #TWO PARAMETERS USED BELOW
+        #THREE PARAMETERS USED BELOW
+        i_mask = seed
         nsim=numberofmpsrealizations
         n_sim_variables=1
+        
+        #SAVING THE MASKS
+        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {i_mask}", show=False)
+        save_plot(fname=f"msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
         
         #PARAMETERS FOR RETRIEVING THE SIMULATION
         sim = deesse_output['sim']
@@ -197,13 +204,16 @@ def launcher(params,
         all_sim = np.transpose(all_sim,(1,2,3,0))
         
         #CALCULATION OF THE INDICATORS
+        t0_indctr = start_timer(f"indicators")
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CALCULATING INDICATORS")
         ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, n_sim_variables=n_sim_variables, reference_var=reference_var)
+        timelog = end_timer_and_log(t0_indctr, timelog)
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS, CALCULATING THE STANDARD DEVIATION")
         
         #PLOT OF THE STANDARD DEVIATION
+        t0_plot = start_timer(f"indicators")
         std_ent, realizations_range1 = calculate_std_deviation(ent, 1, 30)
         std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, 30)
         std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, 30)
@@ -235,10 +245,10 @@ def launcher(params,
         save_plot(fname=prefix_std_deviation+f"_entropy_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'entropy_msk{i_mask}', params={"nsim":nsim})
         plot_standard_deviation(std_dist_hist, realizations_range2, indicator_name="Jensen Shanon divergence")
         save_plot(fname=prefix_std_deviation+f"_dist_histogram_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_histogram_msk{i_mask}', params={"nsim":nsim})
-        plot_standard_deviation)std_dist_hamming, realizations_range3, indicator_name="Topological adjacency")
+        plot_standard_deviation(std_dist_hamming, realizations_range3, indicator_name="Topological adjacency")
         save_plot(fname=prefix_std_deviation+f"_dist_topo_hamming_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_topo_hamming_msk{i_mask}', params={"nsim":nsim})
         
-        
+        timelog = end_timer_and_log(t0_plot, timelog)
         
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED PLOTTING AND SAVING THE INDICATORS")

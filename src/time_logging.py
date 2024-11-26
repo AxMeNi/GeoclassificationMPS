@@ -59,8 +59,8 @@ def end_timer_and_log(start_tuple, log_df):
         The updated DataFrame containing the new log entry.
     """
     
-    process_name, start_time = start_tuple
     end_time = time.time()
+    process_name, start_time = start_tuple
     duration = end_time - start_time
     log_entry = pd.DataFrame([{
         'Process': process_name,

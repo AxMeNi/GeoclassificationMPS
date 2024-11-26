@@ -92,7 +92,7 @@ def get_simulation_info():
     nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
-    numberofmpsrealizations = 5  # Number of Deesse realizations
+    numberofmpsrealizations = 30  # Number of Deesse realizations
     nthreads = 4  # Number of threads for parallel processing
     
     ##################### OUTPUT PARAMETERS #####################
@@ -215,3 +215,6 @@ def run_simulation(verbose):
                         nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag,
                         nr, nc,
                         verbose)
+
+if __name__ == "__main__":
+    run_simulation(verbose=True)
