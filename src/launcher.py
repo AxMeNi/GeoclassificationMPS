@@ -213,7 +213,7 @@ def launcher(params,
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS, CALCULATING THE STANDARD DEVIATION")
         
         #PLOT OF THE STANDARD DEVIATION
-        t0_plot = start_timer(f"indicators")
+        t0_plot = start_timer(f"indicators plotting")
         std_ent, realizations_range1 = calculate_std_deviation(ent, 1, 30)
         std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, 30)
         std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, 30)
@@ -249,6 +249,12 @@ def launcher(params,
         save_plot(fname=prefix_std_deviation+f"_dist_topo_hamming_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_topo_hamming_msk{i_mask}', params={"nsim":nsim})
         
         timelog = end_timer_and_log(t0_plot, timelog)
+        
+        time_folder = os.path.join(output_directory, plot_output_folder, "time")
+        os.makedirs(time_folder, exist_ok=True)
+        timelogname = os.path.join(time_folder, f"timing_log_msk{i_mask}.csv")
+        
+        save_log_to_csv(timelog, filename=timelogname)
         
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED PLOTTING AND SAVING THE INDICATORS")

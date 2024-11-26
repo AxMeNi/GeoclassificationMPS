@@ -86,11 +86,14 @@ def plot_mask(mask, background_image=None, alpha=0.5, title=None, show=False):
     """
     plt.clf()
     plt.close()
+    
     if background_image is not None:
+        if background_image.shape != mask.shape:
+            raise ValueError(f"Error while trying to plot the mask: the shape of the mask {mask.shape} doesn't match the shape of the background_image {background_image.shape}.")
         masked_background = np.ma.masked_where(mask == 1, background_image)
         plt.imshow(masked_background, cmap='gray')
     
-    plt.imshow(mask, cmap='gray', alpha=alpha if background_image is not None else 1, vmin=0, vmax=1, label="Mask")
+    plt.imshow(mask, cmap='gray', alpha=alpha if background_image is not None else 1, label="Mask")
     
     if title:
         plt.title(title)
