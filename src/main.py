@@ -63,10 +63,10 @@ def run_tests(verbose):
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotRealization =             False
-    t_PlotMask =                    True
+    t_PlotMask =                    False
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
-    t_PlotHistogramDisimilarity =   False #TODO
+    t_PlotHistogramDissimilarity =   False #TODO
     t_PlotSimvarHistogram =         False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
     t_PlotStandardDeviation =       False
@@ -75,13 +75,14 @@ def run_tests(verbose):
     t_GetBins =                     False
 
 #UTILS.PY
-    t_CartesianProduct =            False
+    t_FindFarthestPtsFrmCentroids = False
+    t_LoadPickleFile =              True
 
 #SAVING.PY
     t_SaveDeesseOutput =            False #TODO
     t_SaveSimulation =              False #TODO
-    t_LoadPickleFile =              False #TODO
     t_SavePlot =                    False #TODO
+    t_SaveLogToCSV =                False #TODO
 
 #TIME_LOGGING.PY  
     t_TimingSystem =                False #TODO
@@ -119,19 +120,20 @@ def run_tests(verbose):
     if t_PlotMask : test_plot_mask()
     if t_PlotProportions : test_plot_proportions()
     if t_PlotEntropy : test_plot_entropy()
-    if t_PlotHistogramDisimilarity : test_plot_histogram_disimilarity()
+    if t_PlotHistogramDissimilarity : test_plot_histogram_dissimilarity()
     if t_PlotSimvarHistogram : test_plot_simvar_histograms()
     if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
     if t_PlotStandardDeviation : test_plot_std_deviation()
 
     if t_GetBins : test_get_bins()
     
-    if t_CartesianProduct : test_cartesian_product()
+    if t_FindFarthestPtsFrmCentroids : test_find_farthest_points_from_centroid()
+    if t_LoadPickleFile : test_load_pickle_file()
     
     if t_SaveDeesseOutput : test_save_deesse_output()
     if t_SaveSimulation : test_save_simulation()
-    if t_LoadPickleFile : test_load_pickle_file()
     if t_SavePlot : test_save_plot()
+    if t_SaveLogToCSV : test_save_log_to_csv()
     
     if t_TimingSystem : test_timing_system()
     

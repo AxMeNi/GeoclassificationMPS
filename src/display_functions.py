@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import geone as gn
 
+from utils import compute_MDS
+
 
 
 def plot_realization(deesse_output, varname='', index_real=0, show=False):
@@ -241,7 +243,7 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
             plt.show()
 
 
-def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False, show=False):
+def plot_histogram_dissimilarity(dist_hist, nsim, referenceIsPresent=False, show=False):
     """
     Plots a 2D Multi-Dimensional Scaling (MDS) representation of histogram dissimilarities.
 
@@ -252,10 +254,9 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False,
     Parameters:
     -----------
     dist_hist : ndarray
-        A precomputed dissimilarity matrix (e.g., Jensen-Shannon divergence) of shape (nsim, nsim).
+        A precomputed dissimilarity matrix (Jensen-Shannon divergence) of shape (nsim, nsim) or 
+        (nsim+1, nsim+1) if a reference is present.
         This matrix represents pairwise dissimilarities between histograms.
-    seed : int
-        A seed for the random state in the MDS algorithm to ensure reproducibility.
     nsim : int
         Number of simulations. Equivalent to number of points to represent minus the reference.
     referenceIsPresent : bool, optional
@@ -277,41 +278,113 @@ def plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=False,
     """
     plt.clf()
     plt.close()
-    #Perform MDS (Multi-Dimensional Scaling) to reduce dimensionality to 2D
-    mds = manifold.MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed, dissimilarity="precomputed", n_jobs=1)
-
-    mdspos_lc = mds.fit_transform(dist_hist)
-
+    
+    #Apply MDS to compute 2D positions based on histogram dissimilarities
+    mds = manifold.MDS(n_components=2,
+                        max_iter=3000, 
+                        eps=1e-9,
+                        dissimilarity='precomputed',
+                        random_state=852,
+                        n_jobs=1)
+    mds_positions = mds.fit_transform(dist_hist)
+    
     mycmap = plt.get_cmap('tab20', nsim)
-    
     s_id = np.arange(nsim)
+    norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim+1)-0.5, ncolors=nsim)
     
-    lcMDSxmin = np.min(mdspos_lc[:, 0])
-    lcMDSxmax = np.max(mdspos_lc[:, 0])
-    lcMDSymin = np.min(mdspos_lc[:, 1])
-    lcMDSymax = np.max(mdspos_lc[:, 1])
-    
-    s = 100 
-    fig, ax = plt.subplots()
     plt.title('2D MDS Representation of hist. dissimilarities')
    
-    norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim+1)-0.5, ncolors=nsim)
     if referenceIsPresent:  
-        scatter = ax.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
-        plt.scatter(mdspos_lc[-1, 0], mdspos_lc[-1, 1], c='red', s=50, label='reference hist', marker='o')
+        scatter = plt.scatter(mds_positions[:-1, 0], mds_positions[:-1, 1], c=s_id, cmap=mycmap, 
+            s=100, label='Simulations hist', marker='+')
+        plt.scatter(mds_positions[-1, 0], mds_positions[-1, 1], c='red', 
+            s=100, label='Reference hist', marker='o')
     else:
-        scatter = ax.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='lithocode hist', marker='+')
+        scatter = plt.scatter(mds_positions[:, 0], mds_positions[:, 1], c=s_id, cmap=mycmap,
+            s=100, label='Simulations hist', marker='+')
         
-    plt.xlim(lcMDSxmin, lcMDSxmax)
-    plt.ylim(lcMDSymin, lcMDSymax)
+    plt.xlim(np.min(mds_positions[:, 0]), np.max(mds_positions[:, 0]))
+    plt.ylim(np.min(mds_positions[:, 1]), np.max(mds_positions[:, 1]))
     plt.legend(scatterpoints=1, loc='best', shadow=False)
     
-    cbar = plt.colorbar(scatter, ax=ax, ticks=np.arange(nsim))
+    cbar = plt.colorbar(scatter, ticks=np.arange(nsim))
     cbar.ax.set_yticklabels([str(val) for val in s_id])
-    
     cbar.set_label('simulation #')
     
     plt.tight_layout()
+    
+    if show:
+        plt.show()
+
+
+def plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=False, show=False):
+    """
+    Plots a 2D Multi-Dimensional Scaling (MDS) representation of topological adjacency.
+
+    This function takes a precomputed dissimilarity matrix (e.g., based on Hamming distances between geobodies) 
+    and performs Multi-Dimensional Scaling (MDS) to project the data into 2D for visualization. 
+    The resulting 2D coordinates are plotted, with points color-coded based on their simulation IDs.
+
+    Parameters:
+    -----------
+    dist_topo_hamming : ndarray
+        A precomputed topological adjacency matrix (e.g., Hamming distance) of shape (nsim, nsim) or 
+        (nsim+1, nsim+1) if a reference is present.
+    nsim : int
+        Number of simulations, excluding the reference if present.
+    referenceIsPresent : bool, optional
+        If `True`, the plot includes a reference point (last row/column in matrices). Default is `False`.
+    show : bool, optional
+        If `True`, the plot is displayed immediately. Default is `False`.
+
+    Returns:
+    --------
+    None. Displays a scatter plot representing the 2D MDS positions of the simulations.
+
+    Notes:
+    ------
+    - Multi-Dimensional Scaling (MDS) is applied to reduce the dimensionality of the input matrices 
+      to 2D for visualization purposes.
+    - Simulations are color-coded by their IDs using a categorical colormap.
+    - If `referenceIsPresent` is `True`, the reference is highlighted with a distinct red marker.
+    """
+    plt.clf()
+    plt.close()
+
+    # Apply MDS to compute 2D positions based on Hamming distances
+    mds = manifold.MDS(n_components=2,
+                        max_iter=3000, 
+                        eps=1e-9,
+                        dissimilarity='precomputed',
+                        random_state=852,
+                        n_jobs=1)
+    mds_positions = mds.fit_transform(dist_topo_hamming)
+    
+    s_id = np.arange(nsim)
+    mycmap = plt.get_cmap('tab20', nsim)
+    norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim + 1) - 0.5, ncolors=nsim)
+
+    plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
+    
+    if referenceIsPresent:
+        scatter = plt.scatter(mds_positions[:-1, 0], mds_positions[:-1, 1], c=s_id[:-1], cmap=mycmap, 
+            s=100, label='Simulations Hamming', marker='x')
+        plt.scatter(mds_positions[-1, 0], mds_positions[-1, 1], c='red', 
+            s=100, label='Reference Hamming', marker='o')
+    else:
+        scatter = plt.scatter(mds_positions[:, 0], mds_positions[:, 1], c=s_id, cmap=mycmap, 
+            s=100, label='Simulations Hamming', marker='x')
+
+    plt.xlim(np.min(mds_positions[:, 0]) - 0.1, np.max(mds_positions[:, 0]) + 0.1)
+    plt.ylim(np.min(mds_positions[:, 1]) - 0.1, np.max(mds_positions[:, 1]) + 0.1)
+    plt.legend(scatterpoints=1, loc='best', shadow=False)
+
+    cbar = plt.colorbar(scatter, ticks=np.arange(nsim))
+    cbar.ax.set_yticklabels([str(val) for val in s_id])
+    cbar.set_label('Simulation #')
+
+    plt.tight_layout()
+
     if show:
         plt.show()
 
@@ -385,80 +458,30 @@ def plot_simvar_histograms(simvar_all, nsim, show=False):
         plt.show()
 
 
-def plot_topological_adjacency(dist_hist, dist_topo_hamming, nsim, referenceIsPresent=False, show=False):
+def plot_standard_deviation(std_array, realizations_range, indicator_name, show=False):
     """
-    Plot a 2D MDS (Multidimensional Scaling) representation of the topological adjacency among simulations, 
-    based on Hamming distance. 
+    Plots the standard deviation of an indicator as a function of the number of realizations.
 
-    This function visualizes the relative positions of simulations in 2D space, highlighting the relationships 
-    based on topological adjacency. If a reference simulation is present, it is represented by a red circular 
-    marker, while other simulations are represented by 'x' markers.
+    This function visualizes the variability of a specified indicator (e.g., Jensen-Shannon Divergence, 
+    Entropy, Topological Adjacency) by plotting its standard deviation against a range of realizations.
 
     Parameters:
-    ----------
-    dist_hist : numpy.ndarray
-        A distance matrix that stores pairwise distances between simulations for the histogram-based measure.
-    dist_topo_hamming : numpy.ndarray
-        A distance matrix that stores pairwise Hamming distances between simulations based on topological adjacency.
-    nsim : int
-        Total number of simulations.
-    referenceIsPresent : bool, optional
-        If `True`, the last simulation is treated as a reference and is displayed differently in the plot. 
-        Default is `False`.
+    -----------
+    std_array : ndarray
+        An array of standard deviation values corresponding to the indicator, computed for different numbers 
+        of realizations.
+    realizations_range : ndarray or list
+        A range of realization counts for which the standard deviation is computed.
+    indicator_name : str
+        The name of the indicator whose standard deviation is being plotted (e.g., "Entropy").
     show : bool, optional
         If `True`, the plot is displayed immediately. Default is `False`.
 
     Returns:
-    -------
-    None
-
-    Notes:
-    -----
-    - This plot relies on a random initialization of the 2D MDS positions, seeded for reproducibility.
-    - Each simulation is colored using a categorical colormap to distinguish between different simulations.
-    - When `referenceIsPresent` is `True`, the reference is displayed with a circular red marker for clarity.
-    - The color bar displays simulation IDs.
+    --------
+    None. Displays the plot of standard deviation against realizations.
     """
-    plt.clf()
-    plt.close()
     
-    np.random.seed(852)
-    mdspos_lc = np.random.rand(nsim, 2)  # Simulated MDS positions for simvars
-    s_id = np.arange(nsim)
-       
-    mycmap = plt.get_cmap('tab20', nsim)
-    norm = mcolors.BoundaryNorm(boundaries=np.arange(nsim+1)-0.5, ncolors=nsim)
-    
-    ix = np.tril_indices(nsim, k=-1)
-    dist_hist_vals = dist_hist[ix]
-    dist_topo_hamming_vals = dist_topo_hamming[ix]
-    
-    lcmin, lcmax = np.min(dist_hist_vals), np.max(dist_hist_vals)
-    sfmin, sfmax = np.min(dist_topo_hamming_vals), np.max(dist_topo_hamming_vals)
-    
-    s = 100
-    plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
-    
-    if referenceIsPresent:
-        scatter = plt.scatter(mdspos_lc[:-1, 0], mdspos_lc[:-1, 1], c=s_id[:-1], cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
-        plt.scatter(mdspos_lc[-1, 0], mdspos_lc[-1, 1], c='red', s=50, label='reference Hamming', marker='o')
-    else:
-        scatter = plt.scatter(mdspos_lc[:, 0], mdspos_lc[:, 1], c=s_id, cmap=mycmap, s=s, label='Scalar field Hamming', marker='x')
-        
-    plt.xlim(np.min(mdspos_lc[:, 0]), np.max(mdspos_lc[:, 0]))
-    plt.ylim(np.min(mdspos_lc[:, 1]), np.max(mdspos_lc[:, 1]))
-    plt.legend(scatterpoints=1, loc='best', shadow=False)
-    
-    cbar = plt.colorbar(scatter, ticks=np.arange(nsim))
-    cbar.ax.set_yticklabels([str(val) for val in s_id])  # Label the ticks with sample IDs
-    cbar.set_label('Simulation #')
-    plt.tight_layout()
-    
-    if show:
-        plt.show()
-
-
-def plot_standard_deviation(std_array, realizations_range, indicator_name, show=False):
     plt.clf()
     plt.close()
     #Jensen-Shannon Divergence, Entropy, Topological Adjacency
@@ -471,4 +494,9 @@ def plot_standard_deviation(std_array, realizations_range, indicator_name, show=
     
     if show:
         plt.show()
-    
+
+
+
+
+
+

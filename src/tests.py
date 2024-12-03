@@ -10,7 +10,6 @@ from interface import get_simulation_info
 from ti_mask_generation import *
 from sg_mask_generation import *
 from build_ti_cd import *
-# from proportions import *
 from utils import *
 from saving import *
 from variability import *
@@ -697,15 +696,15 @@ def test_calculate_indicators():
     nsim = len(sim)
     
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1, reference_var = np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"))
-    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, referenceIsPresent=True, show=True)
+    plot_histogram_dissimilarity(dist_hist, nsim = nsim, referenceIsPresent=True, show=True)
     
     ent, dist_hist, dist_topo_hamming = calculate_indicators(deesse_output, 1)
-    plot_histogram_disimilarity(dist_hist, seed = 852, nsim = nsim, show=True)
+    plot_histogram_dissimilarity(dist_hist, nsim = nsim, show=True)
 
     plot_entropy(ent, background_image=np.load(r"C:\Users\00115212\Documents\GeoclassificationMPS\data\grid_geo.npy"), categ_var_name='Lithofacies', show=True)
     
-    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=False, show=True)
-    plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True, show=True)
+    plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=False, show=True)
+    plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=True, show=True)
 
     all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
     all_sim = all_sim_img.val
@@ -754,6 +753,7 @@ def test_calculate_std_deviation():
     
     return
 
+
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
 def test_plot_realization():
@@ -789,7 +789,7 @@ def test_plot_entropy():
     return
     
     
-def test_plot_histogram_disimilarity():
+def test_plot_histogram_dissimilarity():
     return
     
 
@@ -863,17 +863,65 @@ def test_get_bins():
 
 ##################################### TESTS UTILS.PY
 
-def test_cartesian_product():
-    a = [1, 2]
-    b = [3, 4]
-    c = [5, 6]
-    combinations = cartesian_product(a, b, c)
-    print(combinations)
+def test_find_farthest_points_from_centroid():
+
+    # Test case 1: Simple 2D array
+    print("Test Case 1: Simple 2D array")
+    mds_positions = np.array([[0, 0], [1, 1], [2, 2], [3, 3]])
+    n_points = 2
+    expected = [0, 3]  # Points [0, 0] and [3, 3] are farthest
+    result = find_farthest_points_from_centroid(mds_positions, n_points)
+    assert result == expected, f"Failed Test 1: Expected {expected}, got {result}"
+    print(f"Passed Test 1: {result}")
+
+    # Test case 2: Points in a line
+    print("Test Case 2: Points in a line")
+    mds_positions = np.array([[0, 0], [1, 0], [2, 0], [3, 0]])
+    n_points = 1
+    expected = [3]  # Point [3, 0] is farthest
+    result = find_farthest_points_from_centroid(mds_positions, n_points)
+    assert result == expected, f"Failed Test 2: Expected {expected}, got {result}"
+    print(f"Passed Test 2: {result}")
+
+    # Test case 3: More points requested than available
+    print("Test Case 3: More points requested than available")
+    mds_positions = np.array([[0, 0], [1, 1]])
+    n_points = 5
+    try:
+        result = find_farthest_points_from_centroid(mds_positions, n_points)
+        assert len(result) == len(mds_positions), "Failed Test 3: Unexpected behavior"
+        print(f"Passed Test 3: Returned points {result}")
+    except Exception as e:
+        print(f"Failed Test 3: Exception raised - {e}")
+
+    # Test case 4: Identical points
+    print("Test Case 4: Identical points")
+    mds_positions = np.array([[1, 1], [1, 1], [1, 1]])
+    n_points = 2
+    expected = [0, 1]  # Any two indices as points are identical
+    result = find_farthest_points_from_centroid(mds_positions, n_points)
+    assert len(result) == n_points, f"Failed Test 4: Expected {n_points} indices, got {result}"
+    print(f"Passed Test 4: {result}")
+
+    # Test case 5: Centroid and distances verification
+    print("Test Case 5: Centroid and distances verification")
+    mds_positions = np.array([[0, 0], [3, 4], [6, 8]])
+    centroid = np.mean(mds_positions, axis=0)
+    distances = np.linalg.norm(mds_positions - centroid, axis=1)
+    print(f"Centroid: {centroid}")
+    print(f"Distances: {distances}")
+    result = find_farthest_points_from_centroid(mds_positions, n_points=2)
+    print(f"Farthest indices: {result}")
+    return
+
+
+def test_load_pickle_file():
+    print("\n##################################################################")
+    print("\t\t\tTESTING LOAD PICKLE FILE")
+    print("##################################################################\n")
     
-    nbins = 8
-    values = list(range(1, nbins + 1))
-    combinations = cartesian_product(*([values]*3))
-    print(combinations)
+    data = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test2.pkl")
+    print(data)
     return
 
 
@@ -886,12 +934,12 @@ def test_save_deesse_output():
 def test_save_simulation():
     return
     
-    
-def test_load_pickle_file():
+
+def test_save_plot():
     return
 
 
-def test_save_plot():
+def test_save_log_to_csv():
     return
     
     

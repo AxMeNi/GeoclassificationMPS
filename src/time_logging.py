@@ -71,25 +71,3 @@ def end_timer_and_log(start_tuple, log_df):
     log_df = pd.concat([log_df, log_entry], ignore_index=True)
     return log_df
 
-
-def save_log_to_csv(log_df, filename='timing_log.csv'):
-    """
-    Save the process log DataFrame to a CSV file.
-
-    This function saves the `log_df` DataFrame, which contains the process timing information, 
-    to a specified CSV file. The function will overwrite the file if it already exists.
-
-    Parameters:
-    ----------
-    log_df : pandas.DataFrame
-        The DataFrame containing the process timing logs, where each row represents 
-        a logged process with its name, start time, end time, and duration.
-    filename : str, optional
-        The name of the CSV file where the log will be saved. Default is 'timing_log.csv'.
-        
-    Returns:
-    -------
-    None
-    """
-    
-    log_df.to_csv(filename, index=False)

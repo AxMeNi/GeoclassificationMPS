@@ -224,16 +224,16 @@ def launcher(params,
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
         save_plot(fname=prefix_entropy+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
         
-        #2 HISTOGRAM DISIMILARITY
-        plot_histogram_disimilarity(dist_hist, seed, nsim, referenceIsPresent=True)
-        save_plot(fname=prefix_histogram_disimilarity+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        #2 HISTOGRAM DISSIMILARITY
+        plot_histogram_dissimilarity(dist_hist, nsim, referenceIsPresent=True)
+        save_plot(fname=prefix_histogram_dissimilarity+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
         
         #3 HISTOGRAMS
         plot_simvar_histograms(all_sim, nsim)
         save_plot(fname=prefix_simvar_histograms+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
         
         #4 TOPOLOGICAL ADAJCENCY
-        plot_topological_adjacency(dist_hist,dist_topo_hamming, nsim, referenceIsPresent=True)
+        plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=True)
         save_plot(fname=prefix_topological_adjacency+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
         
         #5 PROPORTIONS

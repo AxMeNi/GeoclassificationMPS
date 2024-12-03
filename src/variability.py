@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 
+###################################################################
+### SOME PRE-REQUIREMENTS FOR THE COMPUTATION OF THE INDICATORS ###
+###################################################################
 
 def custom_jsdist_hist(img1, img2, nbins, base, plot=False, title="", lab1="img1", lab2="img2", iz_section=0):
     # nbins >1 : for continuous variables
@@ -157,7 +160,11 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
             plot_topology_adjacency(categ1, categ2, topo1adjacency, topo2adjacency, leg, shd, lsgd)
 
     return shd, lsgd
+
     
+#####################################
+### COMPUTATION OF THE INDICATORS ###
+#####################################
     
 def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
     """
@@ -291,3 +298,88 @@ def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=
     return std_array, realizations_range
 
 
+def analyze_global_MDS(dissimilarity_matrices, sim_names, simulation_log_path, n_points=4, seed=852, show=True):
+    """
+    Analyzes and compares multiple dissimilarity matrices via a global MDS representation.
+
+    This function extracts a set of `n_points` farthest from the centroid in each dissimilarity 
+    matrix's MDS representation, combines them into a global dissimilarity matrix, and applies 
+    MDS to compare these points across all matrices.
+
+    Parameters:
+    -----------
+    dissimilarity_matrices : list of ndarray
+        List of dissimilarity matrices (each of shape (n_samples, n_samples)) to process.
+    sim_names : list of str
+        List of the nqmes give to the simulation. Eg : ['1', '2', '3', '24']
+        /!\ Must be the same size as dissimilarity_matrices
+    simulation_log_path : str
+        Path to the file logging the details of the simulations to compare
+    n_points : int, optional
+        Number of farthest points to extract from each MDS representation. Default is 4.
+    seed : int, optional
+        Random seed for reproducibility in MDS. Default is 852.
+    show : bool, optional
+        If `True`, displays the final MDS plot. Default is `True`.
+
+    Returns:
+    --------
+    global_mds_positions : ndarray of shape (n_points * len(dissimilarity_matrices), 2)
+        The 2D coordinates of all selected points in the global MDS space.
+    labels : list of int
+        A list of matrix indices corresponding to each point in the global MDS space.
+
+    Notes:
+    ------
+    - MDS (Multi-Dimensional Scaling) is applied individually to each dissimilarity matrix and 
+      globally to the selected points.
+    - The function uses Euclidean distances to construct the global dissimilarity matrix.
+    """
+    
+    #Step 1: Apply MDS to each dissimilarity matrix and extract farthest points    
+    mds = manifold.MDS(n_components=2,
+                        max_iter=3000, 
+                        eps=1e-9,
+                        dissimilarity='precomputed',
+                        random_state=852,
+                        n_jobs=1)
+    
+    labels = []
+
+    for matrix_name, matrix in zip(sim_names, dissimilarity_matrices):
+        mds_positions = mds.fit_transform(matrix)
+        farthest_indices = find_farthest_points_from_centroid(mds_positions, n_points=n_points)        
+    
+        #Step 2: Retrieving the corresponding realizations
+        pd.read_excel()
+    
+    
+    #Step 3: Build global dissimilarity matrix
+    global_dissimilarity_matrix = 1
+    
+
+    #Step 4: Apply global MDS
+    global_mds = manifold.MDS(
+        n_components=2,
+        max_iter=3000,
+        eps=1e-9,
+        dissimilarity='precomputed',
+        random_state=seed,
+        n_jobs=1
+    )
+    global_mds_positions = global_mds.fit_transform(global_dissimilarity_matrix)
+
+    # Step 5: Visualization
+    if show:
+        plt.figure(figsize=(10, 8))
+        scatter = plt.scatter(global_mds_positions[:, 0], global_mds_positions[:, 1], 
+                               c=labels, cmap='hsv', marker='o')
+        plt.colorbar(scatter, label='Matrix Index')
+        plt.title("Global MDS Representation of Selected Points")
+        plt.xlabel("MDS Dimension 1")
+        plt.ylabel("MDS Dimension 2")
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+
+    return global_mds_positions, labels

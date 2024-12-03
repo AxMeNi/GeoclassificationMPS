@@ -12,6 +12,8 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+import argparse
+
 
 
 #################################################################
@@ -218,3 +220,12 @@ def run_simulation(verbose):
 
 if __name__ == "__main__":
     run_simulation(verbose=True)
+    
+    parser = argparse.ArgumentParser(description="Geoclassification MPS")
+    parser.add_argument('--seed', type=int, required=True, help="Random seed for the simulation")
+    parser.add_argument('--n_ti', type=int, required=True, help="Number of Training Images")
+    parser.add_argument('--ti_pct_area', type=int, required=True, help="Percentage of training image area to use")
+    args = parser.parse_args()
+    aux_vars = args.aux_vars.split(',')
+    
+    get_simulation_info(args.seed, args.num_ti, aux_vars, args.ti_pct_area)

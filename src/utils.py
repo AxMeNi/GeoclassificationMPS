@@ -5,19 +5,52 @@ __author__ = "MENGELLE Axel"
 __date__ = "sept 2024"
 
 
-def cartesian_product(*arrays):
-    # Base case: if no arrays are given, return an empty tuple
-    if not arrays:
-        return [()]
-    
-    # Recursive case: process the first array and combine with the rest
-    first_array, *rest_arrays = arrays
-    rest_product = cartesian_product(*rest_arrays)
-    
-    # Combine elements from the first array with the result of the recursive call
-    result = []
-    for element in first_array:
-        for combination in rest_product:
-            result.append((element,) + combination)
-    
-    return result
+from sklearn import manifold
+
+import numpy as np
+
+import pickle
+
+
+
+def find_farthest_points_from_centroid(mds_positions, n_points=3):
+    """
+    Finds the n_points farthest from the centroid in a given 2D MDS representation.
+
+    Parameters:
+    -----------
+    mds_positions : ndarray of shape (n_samples, 2)
+        2D coordinates from the MDS representation.
+    n_points : int, optional
+        Number of farthest points to find. Default is 4.
+
+    Returns:
+    --------
+    farthest_indices : list of int
+        Indices of the n_points farthest from the centroid.
+    """
+
+    centroid = np.mean(mds_positions, axis=0)
+    distances = np.linalg.norm(mds_positions - centroid, axis=1)
+    farthest_indices = np.argsort(distances)[-n_points:]
+
+    return farthest_indices.tolist()
+
+
+def load_pickle_file(file_path):
+    """
+    Load data from a pickle file.
+
+    Parameters:
+    ----------
+    file_path : str
+        The path to the pickle file to be loaded.
+
+    Returns:
+    -------
+    data : object
+        The data loaded from the pickle file.
+    """
+    with open(file_path, 'rb') as file:
+        data = pickle.load(file)
+    return data

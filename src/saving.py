@@ -41,11 +41,11 @@ def save_deesse_output(deesse_output, output_dir, file_name):
 
 def save_simulation(deesse_output, params, comments="", output_directory="output/"):
     """
-    Save the Deesse output and log simulation parameters into an Excel file.
+    Save the Deesse output and log simulation parameters into an CSV file.
 
-    This function saves the output of a Deesse simulation to a specified file and updates an Excel 
+    This function saves the output of a Deesse simulation to a specified file and updates an CSV 
     log with the parameters used for the simulation, along with a timestamp, the output file name, 
-    and any additional comments. It dynamically creates new columns in the Excel file based on the 
+    and any additional comments. It dynamically creates new columns in the CSV file based on the 
     keys in the provided parameters dictionary.
 
     Parameters:
@@ -72,8 +72,8 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
 
     Notes:
     -----
-    - The function creates an Excel log file named 'simulation_log.xlsx' in the specified output directory, where each simulation run is appended as a new row.
-    - New columns are added to the Excel file as needed when new parameter keys are added to the `params` dictionary.
+    - The function creates an CSV log file named 'simulation_log.xlsx' in the specified output directory, where each simulation run is appended as a new row.
+    - New columns are added to the CSV file as needed when new parameter keys are added to the `params` dictionary.
     """
     os.makedirs(output_directory, exist_ok=True)
     output_file_name = f"deesse_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl"
@@ -89,36 +89,17 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     for key, value in params.items():
         data[key] = [value]
 
-    excel_file_path = os.path.join(output_directory, 'simulation_log.xlsx')
+    excel_file_path = os.path.join(output_directory, 'simulation_log.csv')
 
     if os.path.exists(excel_file_path):
-        df_existing = pd.read_excel(excel_file_path,engine="openpyxl")
+        df_existing = pd.read_csv(csv_file_path)
     else:
         df_existing = pd.DataFrame()
 
     df_new = pd.DataFrame(data)
 
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
-    df_updated.to_excel(excel_file_path, index=False)
-
-
-def load_pickle_file(file_path):
-    """
-    Load data from a pickle file.
-
-    Parameters:
-    ----------
-    file_path : str
-        The path to the pickle file to be loaded.
-
-    Returns:
-    -------
-    data : object
-        The data loaded from the pickle file.
-    """
-    with open(file_path, 'rb') as file:
-        data = pickle.load(file)
-    return data
+    df_updated.to_csv(csv_file_path, index=False)
     
 
 def save_plot(fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
@@ -181,3 +162,26 @@ def save_plot(fname='', default_name='fig.png', output_directory='output/', comm
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
 
     df_updated.to_excel(excel_file_path, index=False)
+
+
+def save_log_to_csv(log_df, filename='timing_log.csv'):
+    """
+    Save the process log DataFrame to a CSV file.
+
+    This function saves the `log_df` DataFrame, which contains the process timing information, 
+    to a specified CSV file. The function will overwrite the file if it already exists.
+
+    Parameters:
+    ----------
+    log_df : pandas.DataFrame
+        The DataFrame containing the process timing logs, where each row represents 
+        a logged process with its name, start time, end time, and duration.
+    filename : str, optional
+        The name of the CSV file where the log will be saved. Default is 'timing_log.csv'.
+        
+    Returns:
+    -------
+    None
+    """
+    
+    log_df.to_csv(filename, index=False)
