@@ -6,6 +6,8 @@ __date__ = "sept 2024"
 
 
 from loopui import *
+from itertools import combinations
+
 import geone as gn
 import numpy as np
 import matplotlib.pyplot as plt
@@ -298,7 +300,11 @@ def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=
     return std_array, realizations_range
 
 
-def analyze_global_MDS(dissimilarity_matrices, sim_names, simulation_log_path, n_points=4, seed=852, show=True):
+def analyze_global_MDS(dissimilarity_matrices, 
+                        sim_names, 
+                        simulation_log_path, 
+                        column_to_seek = "seed", 
+                        n_points=4):
     """
     Analyzes and compares multiple dissimilarity matrices via a global MDS representation.
 
@@ -311,23 +317,19 @@ def analyze_global_MDS(dissimilarity_matrices, sim_names, simulation_log_path, n
     dissimilarity_matrices : list of ndarray
         List of dissimilarity matrices (each of shape (n_samples, n_samples)) to process.
     sim_names : list of str
-        List of the nqmes give to the simulation. Eg : ['1', '2', '3', '24']
+        List of the names give to the simulation. e.g. : ['1', '2', '3', '24']
         /!\ Must be the same size as dissimilarity_matrices
     simulation_log_path : str
         Path to the file logging the details of the simulations to compare
+    column_to_seek : str, optional
+        Header of the column of the logging file where to seek the simulation index. Default is "seed"
     n_points : int, optional
         Number of farthest points to extract from each MDS representation. Default is 4.
-    seed : int, optional
-        Random seed for reproducibility in MDS. Default is 852.
-    show : bool, optional
-        If `True`, displays the final MDS plot. Default is `True`.
 
     Returns:
     --------
     global_mds_positions : ndarray of shape (n_points * len(dissimilarity_matrices), 2)
         The 2D coordinates of all selected points in the global MDS space.
-    labels : list of int
-        A list of matrix indices corresponding to each point in the global MDS space.
 
     Notes:
     ------
@@ -335,7 +337,6 @@ def analyze_global_MDS(dissimilarity_matrices, sim_names, simulation_log_path, n
       globally to the selected points.
     - The function uses Euclidean distances to construct the global dissimilarity matrix.
     """
-    
     #Step 1: Apply MDS to each dissimilarity matrix and extract farthest points    
     mds = manifold.MDS(n_components=2,
                         max_iter=3000, 
@@ -344,42 +345,40 @@ def analyze_global_MDS(dissimilarity_matrices, sim_names, simulation_log_path, n
                         random_state=852,
                         n_jobs=1)
     
-    labels = []
+    labels = [] #labels is used in the plotting part to assign their colors to each group of simulation
+    list_n_real = []
 
-    for matrix_name, matrix in zip(sim_names, dissimilarity_matrices):
+    for i, (sim_name, matrix) in enumerate(zip(sim_names, dissimilarity_matrices)):
+        labels.extend([i] * n_points)
+        
         mds_positions = mds.fit_transform(matrix)
-        farthest_indices = find_farthest_points_from_centroid(mds_positions, n_points=n_points)        
+        farthest_indices = find_farthest_points_from_centroid(mds_positions, n_points=n_points)   
     
         #Step 2: Retrieving the corresponding realizations
-        pd.read_excel()
-    
+        #READING THE FILE
+        pd.read_csv(simulation_log_path)
+        file_name = df.loc[df[column_to_seek] == sim_name, 'File Name'].values
+        deesse_output = load_pickle_file(file_name)
+        #LOOKING FOR THE REALIZATIONS
+        sim = deesse_output['sim']
+        all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
+        all_sim = all_sim_img.val
+        all_sim = np.transpose(all_sim,(1,2,3,0)) #Transposing the dimensions of the array to make it work with loop-ui...
+        
+        for idx_real in farthest_indices:
+            list_n_real.append(np.squeeze(all_sim[:,:,:,idx_real]))
     
     #Step 3: Build global dissimilarity matrix
-    global_dissimilarity_matrix = 1
-    
+    nreal = len(list_n_real)
+    dist_hist = np.zeros((nreal, nreal)) # To store Jensen Shannon indicators
+    dist_topo_hamming = np.zeros((nreal, nreal)) # To store topological adjacency indicators
 
-    #Step 4: Apply global MDS
-    global_mds = manifold.MDS(
-        n_components=2,
-        max_iter=3000,
-        eps=1e-9,
-        dissimilarity='precomputed',
-        random_state=seed,
-        n_jobs=1
-    )
-    global_mds_positions = global_mds.fit_transform(global_dissimilarity_matrix)
+    for idx1_real in range(nreal) :
+        for idx2_real in range(idx1_real):
+            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(list_n_real[idx1_real]),list_n_real[idx2_real],-1,base=np.e)
+            dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
+            
+            dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(list_n_real[idx1_real],list_n_real[idx2_real],npctiles=-1,)
+            dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx1_real, idx2_real]
 
-    # Step 5: Visualization
-    if show:
-        plt.figure(figsize=(10, 8))
-        scatter = plt.scatter(global_mds_positions[:, 0], global_mds_positions[:, 1], 
-                               c=labels, cmap='hsv', marker='o')
-        plt.colorbar(scatter, label='Matrix Index')
-        plt.title("Global MDS Representation of Selected Points")
-        plt.xlabel("MDS Dimension 1")
-        plt.ylabel("MDS Dimension 2")
-        plt.grid()
-        plt.tight_layout()
-        plt.show()
-
-    return global_mds_positions, labels
+    return dist_hist, dist_topo_hamming, labels

@@ -60,13 +60,15 @@ def run_tests(verbose):
     t_CustomTopoDist =              False #TODO
     t_CalculateIndicators =         False
     t_CalculateStandardDeviation =  False
+    t_AnalyzeGlobalMDS =            False #TODO
 
 #DISPLAY_FUNCTIONS.PY
     t_PlotRealization =             False
     t_PlotMask =                    False
     t_PlotProportions =             False #TODO
     t_PlotEntropy =                 False #TODO
-    t_PlotHistogramDissimilarity =   False #TODO
+    t_PlotHistogramDissimilarity =  False #TODO
+    t_PlotGeneralMDS =              False
     t_PlotSimvarHistogram =         False #TODO
     t_PlotTopologicalAdjacency =    False #TODO
     t_PlotStandardDeviation =       False
@@ -115,12 +117,14 @@ def run_tests(verbose):
     if t_CustomTopoDist : test_custom_topo_dist()
     if t_CalculateIndicators : test_calculate_indicators()
     if t_CalculateStandardDeviation : test_calculate_std_deviation()
+    if t_AnalyzeGlobalMDS : test_analyze_global_MDS()
     
     if t_PlotRealization :test_plot_realization()
     if t_PlotMask : test_plot_mask()
     if t_PlotProportions : test_plot_proportions()
     if t_PlotEntropy : test_plot_entropy()
     if t_PlotHistogramDissimilarity : test_plot_histogram_dissimilarity()
+    if t_PlotGeneralMDS : test_plot_general_MDS()
     if t_PlotSimvarHistogram : test_plot_simvar_histograms()
     if t_PlotTopologicalAdjacency : test_plot_topological_adjacency()
     if t_PlotStandardDeviation : test_plot_std_deviation()

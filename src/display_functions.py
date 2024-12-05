@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import geone as gn
 
-from utils import compute_MDS
+from utils import *
 
 
 
@@ -388,6 +388,30 @@ def plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=False
     if show:
         plt.show()
 
+
+def plot_general_MDS(global_dissimilarity_matrix, labels, indicator_name='unknown_indicator', show = False):
+    plt.clf()
+    plt.close()
+    
+    global_mds = manifold.MDS(n_components=2,
+                                max_iter=3000,
+                                eps=1e-9,
+                                dissimilarity='precomputed',
+                                random_state=seed,
+                                n_jobs=1)
+    global_mds_positions = global_mds.fit_transform(global_dissimilarity_matrix)
+
+    # Step 5: Visualization
+    plt.figure(figsize=(10, 8))
+    scatter = plt.scatter(global_mds_positions[:, 0], global_mds_positions[:, 1], 
+                           c=labels, cmap='hsv', marker='o')
+    plt.colorbar(scatter, label='Matrix Index')
+    plt.title(f"Global MDS Representation of {title}")
+    
+    plt.tight_layout()
+    
+    if show :
+        plt.show()
 
 def plot_simvar_histograms(simvar_all, nsim, show=False):
     """

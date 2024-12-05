@@ -754,6 +754,10 @@ def test_calculate_std_deviation():
     return
 
 
+def test_analyze_global_MDS():
+    return
+
+
 ##################################### TEST DISPLAY_FUNCTIONS.PY
 
 def test_plot_realization():
@@ -787,8 +791,12 @@ def test_plot_proportions():
 
 def test_plot_entropy():
     return
-    
-    
+
+
+def test_plot_general_MDS():
+    return
+
+
 def test_plot_histogram_dissimilarity():
     return
     
