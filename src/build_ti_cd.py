@@ -286,7 +286,7 @@ def gen_n_random_ti_cd(n, nc, nr,
     """
 
     if method not in ("DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"):
-        raise ValueError(f"The method provided to create the set of twenty TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiSg\".")
+        raise ValueError(f"The method provided to create the set of {n} TIs and CDs is inconsistant ({method}) please chose one between \"DependentCircles\", \"DependentSquares\", \"IndependentSquares\", \"ReducedTiSg\".")
     
     ti_lists = []
     cd_lists = []

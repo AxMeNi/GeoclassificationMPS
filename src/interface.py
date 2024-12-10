@@ -21,7 +21,7 @@ import argparse
 ### #### # ## #### ##### ##### ### ## ###### ### ## ##### #######
 ### #### ## # #### #####   ###  # ###   ####     ## #####   #####
 ### #### ###  #### ##### ##### # #### ###### ### ## ##### #######
-#     ## #### #### #####    ## ## ### ###### ### ###   ##    ####
+#     ## #### #### #####    ## #   ## ###### ### ###   ##    ####
 #################################################################
 
 
@@ -30,7 +30,7 @@ import argparse
 # ║ INTERFACE FOR PROGRAMMING A COMBINED DEESSE AND LOOPUI SIMULATION                                                  ║
 # ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-def get_simulation_info():
+def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars):
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
@@ -62,7 +62,7 @@ def get_simulation_info():
          
     ##################### RANDOM PARAMETERS #####################
 
-    seed = 852
+    seed = arg_seed
 
     ##################### NOVALUE #####################
 
@@ -74,8 +74,8 @@ def get_simulation_info():
     ti_methods = ["DependentSquares"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
-    ti_pct_area = 55
-    ti_nshapes = 2 
+    ti_pct_area = arg_ti_pct_area
+    ti_nshapes = arg_num_shape 
     
     #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
@@ -87,14 +87,14 @@ def get_simulation_info():
     rr_ti=None
     
     #Number of random TI and CD sets to generate a simulation with
-    nRandomTICDsets = 1
+    nRandomTICDsets = arg_n_ti
     
     ##################### DEESSE SIMULATION PARAMETERS #####################
 
     nn = 24  # Number of neighboring nodes
     dt = 0.1  # Distance threshold
     ms = 0.25  # Maximum scan fraction
-    numberofmpsrealizations = 30  # Number of Deesse realizations
+    numberofmpsrealizations = 15  # Number of Deesse realizations
     nthreads = 4  # Number of threads for parallel processing
     
     ##################### OUTPUT PARAMETERS #####################
@@ -108,7 +108,7 @@ def get_simulation_info():
     prefix_deesse_output = "simulation"
     
     plot_output_folder = "variability"
-    prefix_histogram_disimilarity = "jensen_shannon_divergence"
+    prefix_histogram_dissimilarity = "jensen_shannon_divergence"
     prefix_entropy = "entropy"
     prefix_simvar_histograms = "histograms"
     prefix_topological_adjacency = "topological_adjacency"
@@ -125,8 +125,20 @@ def get_simulation_info():
     
     check_ti_methods(ti_methods)
     
-    sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
-    sim_var, auxTI_var, auxSG_var, condIm_var = check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue)
+    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
+    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
+    
+    ############################################################################################################
+    ### MOVE THAT IN A FUNCTION ################################################################################
+    ############################################################################################################
+    auxTI_var = {key: value for key, value in auxTI_var_temp.items() if key in arg_aux_vars}
+    auxSG_var = {key: value for key, value in auxSG_var_temp.items() if key in arg_aux_vars}
+    outputVarFlag = {key: value for key, value in outputVarFlag.items() if key in arg_aux_vars}
+    outputVarFlag["grid_geo"]=True
+    names_var = [["grid_geo"],arg_aux_vars,arg_aux_vars,[]]
+    types_var[1], types_var[2] = types_var[1][:len(arg_aux_vars)], types_var[2][:len(arg_aux_vars)]
+    ############################################################################################################
+    
     nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
@@ -160,7 +172,7 @@ def get_simulation_info():
         'deesse_output_folder': deesse_output_folder,
         'prefix_deesse_output': prefix_deesse_output,
         'plot_output_folder': plot_output_folder,
-        'prefix_histogram_disimilarity': prefix_histogram_disimilarity,
+        'prefix_histogram_dissimilarity': prefix_histogram_dissimilarity,
         'prefix_entropy': prefix_entropy,
         'prefix_simvar_histograms': prefix_simvar_histograms,
         'prefix_topological_adjacency': prefix_topological_adjacency,
@@ -200,7 +212,7 @@ def launch_simulation(params,
                 verbose)
 
 
-def run_simulation(verbose):
+def run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars):
     """
     """
     if verbose :
@@ -208,7 +220,7 @@ def run_simulation(verbose):
     params, \
     shorten, \
     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
-    nr, nc = get_simulation_info()
+    nr, nc = get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars)
     if verbose :
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> SIMULATION INFORMATION RETRIEVED")
     
@@ -218,14 +230,16 @@ def run_simulation(verbose):
                         nr, nc,
                         verbose)
 
+
+
 if __name__ == "__main__":
-    run_simulation(verbose=True)
     
     parser = argparse.ArgumentParser(description="Geoclassification MPS")
     parser.add_argument('--seed', type=int, required=True, help="Random seed for the simulation")
     parser.add_argument('--n_ti', type=int, required=True, help="Number of Training Images")
     parser.add_argument('--ti_pct_area', type=int, required=True, help="Percentage of training image area to use")
+    parser.add_argument('--num_shape', type=int, required=True, help="Number of shapes for the croping")
+    parser.add_argument("--aux_vars", type=str, required=True, help="Comma-separated auxiliary variables")
     args = parser.parse_args()
     aux_vars = args.aux_vars.split(',')
-    
-    get_simulation_info(args.seed, args.num_ti, aux_vars, args.ti_pct_area)
+    run_simulation(True, args.seed, args.n_ti, args.ti_pct_area, args.num_shape, aux_vars)

@@ -56,7 +56,7 @@ def launcher(params,
     deesse_output_folder = params['deesse_output_folder']
     prefix_deesse_output = params['prefix_deesse_output']
     plot_output_folder = params['plot_output_folder']
-    prefix_histogram_disimilarity = params['prefix_histogram_disimilarity']
+    prefix_histogram_dissimilarity = params['prefix_histogram_dissimilarity']
     prefix_entropy = params['prefix_entropy']
     prefix_simvar_histograms = params['prefix_simvar_histograms']
     prefix_topological_adjacency = params['prefix_topological_adjacency']
@@ -67,7 +67,6 @@ def launcher(params,
     deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
     plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
     
-    #Variables initialization
     ti_list = []
     cd_list = []
     
@@ -161,7 +160,7 @@ def launcher(params,
             nv=nvar, varname=names,
             TI=ti_list,
             #pdfTI = pdf_ti,
-            mask = simgrid_mask,
+            mask=simgrid_mask,
             dataImage=cd_list,
             distanceType=distance_types,
             nneighboringNode=nvar*[nn],
@@ -192,10 +191,11 @@ def launcher(params,
         i_mask = seed
         nsim=numberofmpsrealizations
         n_sim_variables=1
+        aux_var_names = "_".join(auxTI_var.keys())
         
         #SAVING THE MASKS
-        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"Mask {i_mask}", show=False)
-        save_plot(fname=f"msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}", show=False)
+        save_plot(fname=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #PARAMETERS FOR RETRIEVING THE SIMULATION
         sim = deesse_output['sim']
@@ -214,45 +214,45 @@ def launcher(params,
         
         #PLOT OF THE STANDARD DEVIATION
         t0_plot = start_timer(f"indicators plotting")
-        std_ent, realizations_range1 = calculate_std_deviation(ent, 1, 30)
-        std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, 30)
-        std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, 30)
+        std_ent, realizations_range1 = calculate_std_deviation(ent, 1, numberofmpsrealizations)
+        std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, numberofmpsrealizations)
+        std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, numberofmpsrealizations)
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE STANDARD DEVIATION")
         
         #1 ENTROPY
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
-        save_plot(fname=prefix_entropy+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_entropy+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #2 HISTOGRAM DISSIMILARITY
         plot_histogram_dissimilarity(dist_hist, nsim, referenceIsPresent=True)
-        save_plot(fname=prefix_histogram_dissimilarity+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_histogram_dissimilarity+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #3 HISTOGRAMS
         plot_simvar_histograms(all_sim, nsim)
-        save_plot(fname=prefix_simvar_histograms+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_simvar_histograms+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #4 TOPOLOGICAL ADAJCENCY
         plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=True)
-        save_plot(fname=prefix_topological_adjacency+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_topological_adjacency+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #5 PROPORTIONS
         plot_proportions(sim)
-        save_plot(fname=prefix_proportions+f"_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_proportions+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #6 STANDARD DEVIATON
         plot_standard_deviation(std_ent, realizations_range1, indicator_name="Entropy")
-        save_plot(fname=prefix_std_deviation+f"_entropy_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'entropy_msk{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_std_deviation+f"_entropy_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'entropy_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         plot_standard_deviation(std_dist_hist, realizations_range2, indicator_name="Jensen Shanon divergence")
-        save_plot(fname=prefix_std_deviation+f"_dist_histogram_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_histogram_msk{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_std_deviation+f"_dist_histogram_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'dist_histogram_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         plot_standard_deviation(std_dist_hamming, realizations_range3, indicator_name="Topological adjacency")
-        save_plot(fname=prefix_std_deviation+f"_dist_topo_hamming_msk{i_mask}.png", output_directory=plot_output_folder_complete, comments=f'dist_topo_hamming_msk{i_mask}', params={"nsim":nsim})
+        save_plot(fname=prefix_std_deviation+f"_dist_topo_hamming_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'dist_topo_hamming_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         timelog = end_timer_and_log(t0_plot, timelog)
         
         time_folder = os.path.join(output_directory, plot_output_folder, "time")
         os.makedirs(time_folder, exist_ok=True)
-        timelogname = os.path.join(time_folder, f"timing_log_msk{i_mask}.csv")
+        timelogname = os.path.join(time_folder, f"timing_log_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.csv")
         
         save_log_to_csv(timelog, filename=timelogname)
         

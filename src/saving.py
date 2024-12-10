@@ -76,10 +76,10 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     - New columns are added to the CSV file as needed when new parameter keys are added to the `params` dictionary.
     """
     os.makedirs(output_directory, exist_ok=True)
-    output_file_name = f"deesse_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl"
+    output_file_name = f"deesse_output_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}.pkl"
     save_deesse_output(deesse_output, output_directory, output_file_name)
 
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
     data = {
         'Date and Time': [now],
         'File Name': [output_file_name],
@@ -89,10 +89,10 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     for key, value in params.items():
         data[key] = [value]
 
-    excel_file_path = os.path.join(output_directory, 'simulation_log.csv')
+    csv_file_path = os.path.join(output_directory, 'simulation_log.csv')
 
-    if os.path.exists(excel_file_path):
-        df_existing = pd.read_csv(csv_file_path)
+    if os.path.exists(csv_file_path):
+        df_existing = pd.read_csv(csv_file_path, index_col=None)
     else:
         df_existing = pd.DataFrame()
 
@@ -150,10 +150,10 @@ def save_plot(fname='', default_name='fig.png', output_directory='output/', comm
     for key, value in params.items():
         data[key] = [value]
 
-    excel_file_path = os.path.join(output_directory, 'plot_log.xlsx')
+    csv_file_path = os.path.join(output_directory, 'plot_log.csv')
 
-    if os.path.exists(excel_file_path):
-        df_existing = pd.read_excel(excel_file_path)
+    if os.path.exists(csv_file_path):
+        df_existing = pd.read_csv(csv_file_path, index_col=None)
     else:
         df_existing = pd.DataFrame()
 
@@ -161,7 +161,7 @@ def save_plot(fname='', default_name='fig.png', output_directory='output/', comm
 
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
 
-    df_updated.to_excel(excel_file_path, index=False)
+    df_updated.to_csv(csv_file_path, index=False)
 
 
 def save_log_to_csv(log_df, filename='timing_log.csv'):

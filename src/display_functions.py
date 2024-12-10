@@ -367,7 +367,7 @@ def plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=False
     plt.title('2D MDS Representation of Topological Adjacency (Hamming)')
     
     if referenceIsPresent:
-        scatter = plt.scatter(mds_positions[:-1, 0], mds_positions[:-1, 1], c=s_id[:-1], cmap=mycmap, 
+        scatter = plt.scatter(mds_positions[:-1, 0], mds_positions[:-1, 1], c=s_id, cmap=mycmap, 
             s=100, label='Simulations Hamming', marker='x')
         plt.scatter(mds_positions[-1, 0], mds_positions[-1, 1], c='red', 
             s=100, label='Reference Hamming', marker='o')
@@ -390,6 +390,32 @@ def plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=False
 
 
 def plot_general_MDS(global_dissimilarity_matrix, labels, indicator_name='unknown_indicator', show = False):
+    """
+    Visualizes the global MDS representation of a dissimilarity matrix.
+
+    This function computes a 2D MDS (Multidimensional Scaling) embedding of a given global 
+    dissimilarity matrix and visualizes it using a scatter plot. Points are colored based on 
+    their corresponding matrix indices.
+
+    Parameters:
+    -----------
+    global_dissimilarity_matrix : ndarray of shape (n_samples, n_samples)
+        The global dissimilarity matrix to be embedded and visualized.
+    labels : list or ndarray of shape (n_samples,)
+        Labels corresponding to the matrix indices for coloring the scatter plot.
+    title : str
+        Title of the plot, typically indicating the type or context of the dissimilarity matrix.
+    seed : int, optional
+        Random seed for the MDS algorithm to ensure reproducibility. Default is 852.
+    show : bool, optional
+        Whether to display the plot interactively. Default is False.
+
+    Returns:
+    --------
+    None
+        The function creates and optionally displays the scatter plot. 
+        The plot will need to be saved externally if required.
+    """
     plt.clf()
     plt.close()
     
@@ -397,7 +423,7 @@ def plot_general_MDS(global_dissimilarity_matrix, labels, indicator_name='unknow
                                 max_iter=3000,
                                 eps=1e-9,
                                 dissimilarity='precomputed',
-                                random_state=seed,
+                                random_state=852,
                                 n_jobs=1)
     global_mds_positions = global_mds.fit_transform(global_dissimilarity_matrix)
 
@@ -406,7 +432,7 @@ def plot_general_MDS(global_dissimilarity_matrix, labels, indicator_name='unknow
     scatter = plt.scatter(global_mds_positions[:, 0], global_mds_positions[:, 1], 
                            c=labels, cmap='hsv', marker='o')
     plt.colorbar(scatter, label='Matrix Index')
-    plt.title(f"Global MDS Representation of {title}")
+    plt.title(f"Global MDS Representation of {indicator_name}")
     
     plt.tight_layout()
     

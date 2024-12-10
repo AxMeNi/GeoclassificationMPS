@@ -6,10 +6,15 @@ __date__ = "sept 2024"
 
 
 from loopui import *
+from utils import *
 from itertools import combinations
+from sklearn import manifold
+
+import os
 
 import geone as gn
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
@@ -302,7 +307,8 @@ def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=
 
 def analyze_global_MDS(dissimilarity_matrices, 
                         sim_names, 
-                        simulation_log_path, 
+                        simulation_log_path,
+                        deesse_output_directory,
                         column_to_seek = "seed", 
                         n_points=4):
     """
@@ -356,9 +362,10 @@ def analyze_global_MDS(dissimilarity_matrices,
     
         #Step 2: Retrieving the corresponding realizations
         #READING THE FILE
-        pd.read_csv(simulation_log_path)
-        file_name = df.loc[df[column_to_seek] == sim_name, 'File Name'].values
-        deesse_output = load_pickle_file(file_name)
+        df = pd.read_csv(simulation_log_path)
+        file_name = df.loc[df[column_to_seek] == sim_name, 'File Name'].values[0]
+        deesse_output = load_pickle_file(os.path.join(deesse_output_directory, file_name))
+        
         #LOOKING FOR THE REALIZATIONS
         sim = deesse_output['sim']
         all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
@@ -370,12 +377,13 @@ def analyze_global_MDS(dissimilarity_matrices,
     
     #Step 3: Build global dissimilarity matrix
     nreal = len(list_n_real)
-    dist_hist = np.zeros((nreal, nreal)) # To store Jensen Shannon indicators
-    dist_topo_hamming = np.zeros((nreal, nreal)) # To store topological adjacency indicators
+    dist_hist = np.zeros((nreal, nreal)) # Jensen Shannon indicators
+    dist_topo_hamming = np.zeros((nreal, nreal)) # topological adjacency indicators
+    dist_topo_lapl_spec = np.zeros((nreal, nreal))
 
     for idx1_real in range(nreal) :
         for idx2_real in range(idx1_real):
-            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(list_n_real[idx1_real]),list_n_real[idx2_real],-1,base=np.e)
+            dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(list_n_real[idx1_real],list_n_real[idx2_real],-1,base=np.e)
             dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
             
             dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(list_n_real[idx1_real],list_n_real[idx2_real],npctiles=-1,)
