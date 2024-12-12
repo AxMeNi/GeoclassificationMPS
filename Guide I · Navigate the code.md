@@ -1,4 +1,5 @@
 # Guide I  ·  NAVIGATE THE CODE
+NOTE : Every python scripts of the project was placed in the "src" folder.
 ## I. 1. Global structuration
 ### ⮕ main.py
 The script is designed to run tests or simulations based on the provided command-line arguments: 
@@ -10,8 +11,7 @@ The following arguments are available:
 - ***-s*** (set as prinicpal argument) : Launches the run_simulation(verbose) function defined in the INTERFACE.PY script. It launches a simulation with the parameters given in the INTERFACE.PY script.
 - ***-v*** (set along with -s or -t as an optional argument) : Launches a detailed version of the program with text explaining the different steps of the algorithm and a timestamping of these steps.
 
-NOTE : Work is still in progress for the verbose of the tests. Consequently, "-t -v" has not yet an effect.
+NOTE : Work is still in progress for the verbose of the tests. Consequently, "python main.py -t -v" has not yet an effect.
  
-### General framework
-
+### General organization
 
