@@ -13,5 +13,7 @@ The following arguments are available:
 
 NOTE : Work is still in progress for the verbose of the tests. Consequently, "python main.py -t -v" has not yet an effect.
  
-### General organization
+### ⮕ General organization
+
+<center><img src="images/Structuration of the scripts.png" alt="what image shows" width="85%"></center>
 
