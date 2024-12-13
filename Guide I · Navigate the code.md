@@ -21,10 +21,14 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 
 ### ⮕ tests.py
 
-- Each function in the project, named func, corresponds to a single test function, **test_func**.
+- Each function in the project, generically named func, corresponds to a single test function, **test_func**.
 - Each test function is designed to **debug** and check the robustness of the corresponding code.
 - Some tests have not yet been implemented; these can be identified by the **#TODO** comment written next to their flag in the MAIN.PY script.
 - All **parameters** for each test are defined directly within the corresponding test function.
 - As the TESTS.PY script is lengthy, it is recommended to **fold** all functions when using an editor like Notepad++. You can then unfold one or more functions as needed to check or modify their parameters.
 
-  ### ⮕ tests.py
+### ⮕ interface.py
+
+- Interface.py is the script where each parameters of the simulation can be defined.
+- The prefixes correspond to the prefixes of the corresponding output folder.
+- The block named "MOVE THAT INTO A FUNCTION"
