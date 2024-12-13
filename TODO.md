@@ -11,4 +11,5 @@
 - [ ] The function execute_shorter_program in interface.py
 - [ ] Adding the parameter numberOfMasks (which changes the seed)
 ---
-
+### LIST OF WARNINGS AND BUGS ENCOUNTERED
+---
