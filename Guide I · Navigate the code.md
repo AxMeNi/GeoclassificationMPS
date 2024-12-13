@@ -17,3 +17,6 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 
 <center><img src="images/Structuration of the scripts.png" alt="what image shows" width="85%"></center>
 
+## I. 2. Precisions for tests.py, interface.py, launcher.py, variability.py, display_functions.py
+
+
