@@ -30,6 +30,10 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 ### ⮕ interface.py
 
 - Interface.py is the script where each parameters of the simulation can be defined.
+- The parameter "nRandomTICDsets" is still in WIP and can create bugs, it is recommended to keep it to 1 for better results.
 - The prefixes correspond to the prefixes of the corresponding output folder.
 - The block named "MOVE THAT INTO A FUNCTION" in the get_simulation_info function, is used in the case one wants to follow a design of experiment, see [Guide IV](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide%20IV%20%C2%B7%20Launch%20a%20simulation%20following%20a%20DOE.md). In other cases, this block can be removed.
 - The execute_shorter_program function is meant to launcher smaller simulation. Work is still in progress for this function, feel free to propose any idea.
+
+## ⮕ launcher.py
+
