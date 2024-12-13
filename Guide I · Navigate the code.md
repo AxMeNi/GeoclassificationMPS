@@ -38,7 +38,7 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 
 ## ⮕ launcher.py
 
-- The structure of the luancher as of 12th December 2024 is as follows when a simulation is launched :
+- The structure of the launcher as of 12th December 2024 is as follows when a simulation is launched :
    - Retrieving the paramters,
    - Creating the simulation grid mask,
    - If the number of sets for the TI and Conditiong Data is set to 1
