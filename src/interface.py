@@ -70,7 +70,8 @@ def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_
 
     ##################### TRAINING IMAGE PARAMETERS #####################
     
-    #"DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
+    # The available methods are :
+    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
     ti_methods = ["DependentSquares"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
@@ -81,10 +82,10 @@ def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_
     pct_ti_sg_overlap=50  
     pct_sg=30
     pct_ti=70
-    cc_sg=None
-    rr_sg=None
-    cc_ti=None
-    rr_ti=None
+    cc_sg=None #Number of columns of the simulation grid
+    rr_sg=None #Number of rows of the simulation grid
+    cc_ti=None #Number of columns of the training image
+    rr_ti=None #Number of rows of the training image
     
     #Number of random TI and CD sets to generate a simulation with
     nRandomTICDsets = arg_n_ti
@@ -100,7 +101,7 @@ def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_
     ##################### OUTPUT PARAMETERS #####################
     
     #---- To turn On or Off the saving of the output ----#
-    saveOutput = True
+    saveOutput = True #Only for the DeeSse Output
     
     output_directory = "/group/ses001/amengelle/GeoclassificationMPS/output"
     
@@ -114,10 +115,9 @@ def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
     prefix_std_deviation = "std_deviation"
-    path = "/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy"
     reference_var = np.load(r"/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
-   
-   ##################### SHORTEN THE SIMULATION #####################
+    
+    ##################### SHORTEN THE SIMULATION #####################
 
     shorten = False
     
@@ -129,7 +129,7 @@ def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_
     sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
     
     ############################################################################################################
-    ### MOVE THAT IN A FUNCTION ################################################################################
+    ### MOVE THAT INTO A FUNCTION ################################################################################
     ############################################################################################################
     auxTI_var = {key: value for key, value in auxTI_var_temp.items() if key in arg_aux_vars}
     auxSG_var = {key: value for key, value in auxSG_var_temp.items() if key in arg_aux_vars}

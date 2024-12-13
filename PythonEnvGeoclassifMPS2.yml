@@ -1,0 +1,24 @@
+name: PythonEnvGeoclassifMPS2
+channels:
+  - defaults
+dependencies:
+  - matplotlib=3.8.4
+  - matplotlib-base=3.8.4
+  - numpy=1.26.4
+  - numpy-base=1.26.4
+  - pandas=2.2.2
+  - python=3.9.19
+  - python-dateutil=2.9.0post0
+  - python-tzdata=2023.3
+  - pytz=2024.1
+  - qt-main=5.15.2
+  - scikit-image=0.22.0
+  - scikit-learn=1.5.1
+  - scipy=1.13.1
+  - pip=24.2
+  - pip:
+    - geone
+    - loopui==0.1
+    - openpyxl==3.1.5
+    - pyvista==0.44.1
+    - pywavelets==1.6.0
