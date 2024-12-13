@@ -31,9 +31,28 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 
 - Interface.py is the script where each parameters of the simulation can be defined.
 - The parameter "nRandomTICDsets" is still in WIP and can create bugs, it is recommended to keep it to 1 for better results.
+- The parameter reference_var is used in two ways. The first is as a reference point for the MPS representation of the indicators. The second is a background_image for the entropy.
 - The prefixes correspond to the prefixes of the corresponding output folder.
 - The block named "MOVE THAT INTO A FUNCTION" in the get_simulation_info function, is used in the case one wants to follow a design of experiment, see [Guide IV](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide%20IV%20%C2%B7%20Launch%20a%20simulation%20following%20a%20DOE.md). In other cases, this block can be removed.
 - The execute_shorter_program function is meant to launcher smaller simulation. Work is still in progress for this function, feel free to propose any idea.
 
 ## ⮕ launcher.py
+
+- The structure of the luancher as of 12th December 2024 is as follows when a simulation is launched :
+   - Retrieving the paramters,
+   - Creating the simulation grid mask,
+   - If the number of sets for the TI and Conditiong Data is set to 1
+      - Creating the TIs, the conditioning data, retrieving the dimensions corresponding to the method to create the TI:
+      - Retrieving names and types of the variables
+      - Launching the DeeSse simulation
+      - Saving the output and the mask
+      - Calulate entropy, Jensen-Shannon divergence, and topological adjancecy
+      - Calculate standard deviations for the three indicators
+      - Plot the three indicators + histograms and proportions
+      - Plot standard deviations
+  - If the number of sets for the TI and Conditioning Data is higher than 1
+      - Generate TIs, CDs
+      - Launch DeeSse simulations for each set
+      - Save the simulation
+      - Calculate the indicators
 
