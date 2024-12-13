@@ -19,4 +19,12 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 
 ## I. 2. Precisions for tests.py, interface.py, launcher.py, variability.py, display_functions.py
 
+### ⮕ tests.py
 
+- Each function in the project, named func, corresponds to a single test function, **test_func**.
+- Each test function is designed to **debug** and check the robustness of the corresponding code.
+- Some tests have not yet been implemented; these can be identified by the **#TODO** comment written next to their flag in the MAIN.PY script.
+- All **parameters** for each test are defined directly within the corresponding test function.
+- As the TESTS.PY script is lengthy, it is recommended to **fold** all functions when using an editor like Notepad++. You can then unfold one or more functions as needed to check or modify their parameters.
+
+  ### ⮕ tests.py
