@@ -9,5 +9,5 @@
 - The validity of the provided information and data is verified before each simulation.
 
 ## II. 2. The parameters
-All the parameters related to the simulations can be changed in the interface.py script.
+All the parameters related to the simulations can be changed in the INTERFACE.PY script.
 ### ⮕ 
