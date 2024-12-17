@@ -5,11 +5,13 @@
 ---
 ### WIP
 - [ ] The case nRandomTICDsets > 1 in launcher.py (still few bugs that require a complete inspection of the current implementation)
+- [ ] Adjust the colors of the global MDS plot to emphasize the differences
 ---
 ### TO IMPLEMENT
 - [ ] All tests flagged as #TODO in main.py
 - [ ] The function execute_shorter_program in interface.py
-- [ ] Adding the parameter numberOfMasks (which changes the seed)
+- [ ] Adding the parameter numberOfMasks (which changes the seed).
+- [ ] Dividing the function calculate_indicators in variability.py in several smaller functions.
 ---
 ### LIST OF WARNINGS AND BUGS ENCOUNTERED
 ---
