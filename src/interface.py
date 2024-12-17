@@ -30,7 +30,7 @@ import argparse
 # ║ INTERFACE FOR PROGRAMMING A COMBINED DEESSE AND LOOPUI SIMULATION                                                  ║
 # ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-def get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars):
+def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None, arg_num_shape = None, arg_aux_vars = None):
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
