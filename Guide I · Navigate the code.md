@@ -64,7 +64,11 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 - Dividing calculate_indicators in several smaller functions could help simplify the code.
 - The analyze_global_MDS function is used to compare multiple simulations (different deesse_output results). It processes an ensemble of dissimilarity matrices computed for a specific indicator, such as Jensen-Shannon divergence or Hamming topological distance, where each matrix corresponds to a single simulation. The function identifies the four most distant points in the MDS representation of each matrix. These quadruplets are then combined into a single set to calculate the "global" Jensen-Shannon divergence and the "global" Hamming topological distance.
 
+## ⮕ display_functions.py
 
+- The display_functions script contains all the functions designed to plot or visualize indicators, simulations, and masks. 
+- Colors used in the plots can be modified directly within these functions.
+- Titles, legends, size, disposition and symbology can also be modified directly within these functions.
 
 
 
