@@ -62,7 +62,7 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
 - Some functions of loop-ui were reconstructed to fit the requirements of the projects ; they were named as custom_nameoftheoriginalfunction.
 - The function calculate_indicators allows to calculate three indicators : the entropy between realizations, the Jensen-Shannon divergence to compare the histograms of the realizations, and the Hamming topological distance between realizations. This function is used to compare realizations only. To compare simulations, see analyze_global_MDS.
 - Dividing calculate_indicators in several smaller functions could help simplify the code.
-- The analyze_global_MDS function is used to compare multiple simulations (different deesse_output results). It processes an ensemble of dissimilarity matrices computed for a specific indicator, such as Jensen-Shannon divergence or Hamming topological distance. Each matrix corresponds to a single simulation.
+- The analyze_global_MDS function is used to compare multiple simulations (different deesse_output results). It processes an ensemble of dissimilarity matrices computed for a specific indicator, such as Jensen-Shannon divergence or Hamming topological distance, where each matrix corresponds to a single simulation. The function identifies the four most distant points in the MDS representation of each matrix. These quadruplets are then combined into a single set to calculate the "global" Jensen-Shannon divergence and the "global" Hamming topological distance.
 
 
 
