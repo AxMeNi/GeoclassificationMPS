@@ -10,7 +10,7 @@ This project focuses on the development and evaluation of indicators to assess t
 
 ## Overview
 4 guides are available for this project.
-1. How to navigate the ***code*** : [①](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide1%20%C2%B7%20Navigate%20the%20code.md)
+1. How to navigate the ***code*** : [①](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide%20I%20%C2%B7%20Navigate%20the%20code.md)
 2. How to ***launch simulations*** : [②]
 3. How to launch simulations ***with a HPC*** : [③]
 4. How to launch simulations following a ***design of experiment (DOE)*** : [④]
