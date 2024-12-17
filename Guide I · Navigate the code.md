@@ -55,4 +55,19 @@ NOTE : Work is still in progress for the verbose of the tests. Consequently, "py
       - Launch DeeSse simulations for each set
       - Save the simulation
       - Calculate the indicators
+   
+ ## ⮕ variability.py
 
+- Variability.py calls the functions of loop-ui to calculate the indicators used in the project.
+- Some functions of loop-ui were reconstructed to fit the requirements of the projects ; they were named as custom_nameoftheoriginalfunction.
+- The function calculate_indicators allows to calculate three indicators : the entropy between realizations, the Jensen-Shannon divergence to compare the histograms of the realizations, and the Hamming topological distance between realizations. This function is used to compare realizations only. To compare simulations, see analyze_global_MDS.
+- Dividing calculate_indicators in several smaller functions could help simplify the code.
+- The analyze_global_MDS function is used to compare multiple simulations (different deesse_output results). It processes an ensemble of dissimilarity matrices computed for a specific indicator, such as Jensen-Shannon divergence or Hamming topological distance. Each matrix corresponds to a single simulation.
+
+
+
+
+
+
+
+ 
