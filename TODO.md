@@ -7,6 +7,7 @@
 - [ ] The case nRandomTICDsets > 1 in launcher.py (still few bugs that require a complete inspection of the current implementation)
 - [ ] Adjust the colors of the global MDS plot to emphasize the differences
 - [ ] Modify the CSV file header for the data_csv (remove the "grid" column or find a utility)
+- [ ] An optimization of the method ReducedTiSg in reduced_ti_sg.py to make it run faster.
 ---
 ### TO IMPLEMENT
 - [ ] All tests flagged as #TODO in main.py
