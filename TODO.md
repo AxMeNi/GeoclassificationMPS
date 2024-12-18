@@ -6,6 +6,7 @@
 ### WIP
 - [ ] The case nRandomTICDsets > 1 in launcher.py (still few bugs that require a complete inspection of the current implementation)
 - [ ] Adjust the colors of the global MDS plot to emphasize the differences
+- [ ] Modify the CSV file header for the data_csv (remove the "grid" column or find a utility)
 ---
 ### TO IMPLEMENT
 - [ ] All tests flagged as #TODO in main.py
