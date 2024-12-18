@@ -39,26 +39,30 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
     
-    # Expected CSV File Format (Columns are separataed by ";"):
+    # Expected CSV File Format (Columns are separataed by ","):
     #
     # The CSV file should contain information about variables to be loaded as numpy arrays.
     # Each line in the CSV file should be formatted as follows:
     #
     # Column 1: var_name      - The name of the variable.
     # Column 2: categ_conti   - The type of variable, either "categorical" or "continuous".
-    # Column 3: nature        - Indicates whether the variable is asimulated ("sim") variable, auxiliary descriptive ("auxTI") variable, auxiliary conditioning ("auxSG"), or conditioning ("cond") variable.
+    # Column 3: nature        - Indicates whether the variable is a simulated ("sim") variable, auxiliary descriptive ("auxTI") variable, auxiliary conditioning ("auxSG"), or conditioning image ("condIm") variable.
     # Column 4: path          - The full file path to the .npy file containing the numpy array data. (format .npy and the array must be in 2 dimensions)
+    # Column 5: grid          - The grid where the varaible will be loaded ("TI" or "SG")
     #
     # Example (first line contains headers):
     #
-    # var_name;categ_conti;nature;path
-    # grid_geo;categorical;sim;C:\path\to\grid_geo_sim.npy
-    # grid_grv;continuous;sim;C:\path\to\grid_grv.npy
-    # grid_lmp;continuous;sim;C:\path\to\grid_lmp.npy
-    # grid_mag;continuous;sim;C:\path\to\grid_mag.npy
-    # grid_geo;categorical;condIm;C:\path\to\grid_geo_cond.npy
-    # auxiliary;continuous;auxTI;C:\path\to\auxTI.npy
-    # auxiliary;continuous;auxSG;C:\path\to\auxSG.npy
+    # var_name,categ_conti,nature,path,grid
+    # grid_geo,categorical,sim,C:\path\to\grid_geo_sim.npy,TI
+    # grid_grv,continuous,auxTI,C:\path\to\grid_grv.npy,TI
+    # grid_grv,continuous,auxSG,C:\path\to\grid_grv.npy,SG
+    # grid_lmp,continuous,auxTI,C:\path\to\grid_lmp.npy,TI
+    # grid_lmp,continuous,auxSG,C:\path\to\grid_lmp.npy,SG
+    # grid_mag,continuous,auxTI,C:\path\to\grid_mag.npy,TI
+    # grid_mag,continuous,auxSG,C:\path\to\grid_mag.npy,SG
+    # grid_geo,categorical,condIm,C:\path\to\grid_geo_cond.npy,SG
+    # auxiliary,continuous,auxTI,C:\path\to\auxTI.npy,TI
+    # auxiliary,continuous,auxSG,C:\path\to\auxSG.npy,SG
          
     ##################### RANDOM PARAMETERS #####################
 

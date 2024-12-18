@@ -107,7 +107,7 @@ def create_variables(csv_file_path):
         - "condIm" for a conditioning image variable.
     """
     
-    data_df = pd.read_csv(csv_file_path, sep=';')
+    data_df = pd.read_csv(csv_file_path, sep=',')
     
     sim_var = {}
     auxTI_var = {}
