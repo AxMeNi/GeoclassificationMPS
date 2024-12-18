@@ -38,7 +38,24 @@ All the parameters related to the simulations can be changed in the INTERFACE.PY
 ### ⮕ DeeSse simulation parameters
 See the official documentation of [geone](https://github.com/randlab/geone/blob/master/docs/source/notebooks/ex_deesse_01_basics.ipynb) for further explanations.
 ### ⮕ Output parameters
-- `saveOutput` is a boolean to specify if the [output object of DeeSse](https://github.com/randlab/geone/blob/master/src/geone/deesseinterface.py#L5367) will be saved or not. 
+- `saveOutput` : boolean to specify if the [output object of DeeSse](https://github.com/randlab/geone/blob/master/src/geone/deesseinterface.py#L5367) will be saved or not. It is recommended to save the output if further work will be done on the results.
+- `output_directory` : path to the output directory.
+- `deesse_output_folder` : folder where Deesse output is stored.
+- `prefix_deesse_output` : prefix for Deesse simulation files.
+- `plot_output_folder` : name of the folder for storing plot outputs.
+- `prefix_histogram_dissimilarity` : prefix for Jensen-Shannon divergence histograms.
+- `prefix_entropy` : prefix for entropy-related outputs.
+- `prefix_simvar_histograms` : prefix for simulation variable histograms.
+- `prefix_topological_adjacency` : prefix for topological adjacency outputs.
+- `prefix_proportions` : prefix for proportion-related data.
+- `prefix_std_deviation` : prefix for standard deviation results.
+- `reference_var` : reference variable (a path to **.npy** file).
+### ⮕ Shorten simulation parameter
+The line :
+```python 
+shorten = False
+```
+must always remain as is. The shorter simulation is a WIP.
 ### ⮕ Remove inapproriate paragraph
 - Unless a new function was created, it is required to remove the paragraph "MOVE THAT INTO A FUNCTION" to run the program:
 ```python
@@ -51,3 +68,11 @@ See the official documentation of [geone](https://github.com/randlab/geone/blob/
 ```
 - This paragraph is only to be used when a design of experiment (DOE) is provided. See Guide IV for more information related to simulations following a DOE.
 
+## II. 3. Chose appropriate titles for the figures
+- It is appropriate to adjust the figure names in LAUNCHER.PY to fit the problem being studied, if necessary.
+- Other changes can be done in the script DISPLAY_FUNCTIONS.PY.
+## II. 4. Launch simulations
+Once all parameters and titles are set, write in your terminal :
+```shell
+python path/to/main.py -s
+```
