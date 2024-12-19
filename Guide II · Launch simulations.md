@@ -1,6 +1,8 @@
 # Guide II  ·  LAUNCH SIMULATIONS
 This guide explain how to launch a simulation on a personal computer
-## II. 1. Place the data in folder
+## II. 1. Install the environment
+- Download the **.yml** file 
+## II. 2. Place the data in a folder
 ### ⮕ The NumPy (.npy) format
 - All the raw data provided to the project must be in a form of 2D numpy arrays.
 - All the data files must be loaded in the NumPy format (see "[.npy](https://numpy.org/devdocs/reference/generated/numpy.lib.format.html)" for more information about the .npy format).
@@ -10,7 +12,7 @@ This guide explain how to launch a simulation on a personal computer
 - All data files used must be meticulously recorded in a .csv file, similar to the one available in the [data](https://github.com/AxMeNi/GeoclassificationMPS/tree/main/data) folder.
 - The validity of the provided information and data is verified before each simulation.
 
-## II. 2. Provide the parameters
+## II. 3. Provide the parameters
 All the parameters related to the simulations can be changed in the INTERFACE.PY script.
 - NOTE: To modify the plot style and the generic textual information displayed on the plot, use the DISPLAY_FUNCTIONS.py script.
 - NOTE : For the following parameters :
@@ -68,10 +70,10 @@ must always remain as is. The shorter simulation is a WIP.
 ```
 - This paragraph is only to be used when a design of experiment (DOE) is provided. See Guide IV for more information related to simulations following a DOE.
 
-## II. 3. Chose appropriate titles for the figures
+## II. 4. Chose appropriate titles for the figures
 - It is appropriate to adjust the figure names in LAUNCHER.PY to fit the problem being studied, if necessary.
 - Other changes can be done in the script DISPLAY_FUNCTIONS.PY.
-## II. 4. Launch simulations
+## II. 5. Launch simulations
 Once all parameters and titles are set, write in your terminal :
 ```shell
 python path/to/main.py -s
