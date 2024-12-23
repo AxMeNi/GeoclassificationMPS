@@ -1,4 +1,4 @@
-name: PythonEnvGeoclassifMPS2
+name: geoclassif
 channels:
   - defaults
 dependencies:
