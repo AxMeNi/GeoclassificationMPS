@@ -3,4 +3,6 @@
 ### ⮕ Check the files
 - Every file needed must be uploaded to the distant storage.
 - Check that every file is correctly uploaded
-### ⮕ Check the files
+### ⮕ Install the Python Conda environment
+- PythonEnvGeoclassifMPS2.yml
+
