@@ -11,4 +11,5 @@
   ``` cmd
   conda activate geoclassif
   ```
-- Once the environment is activated, 
+- Once the environment is activated, a batch job can be launched.
+- 
