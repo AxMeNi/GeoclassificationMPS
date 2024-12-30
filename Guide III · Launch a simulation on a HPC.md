@@ -24,24 +24,11 @@
   #SBATCH --partition=work
   #SBATCH --job-name=geoclassification_mps
   #SBATCH --cpus-per-task=4
-  #SBATCH --output=log/test_array_job_task_%a.txt
-  #SBATCH --array=1-30
+  #SBATCH --output=log/test_array_job_task.txt
   ```
   These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. NOTE : The [```--array```](https://slurm.schedmd.com/sbatch.html#OPT_array) parameter is for submitting multiple jobs to be executed with identical parameters by using this unique batch script. Each job is assigned a unique job ID, which, in the latter, will be referred to as **JOBID**.
 
   ```batch
-  cp path/to/interface.py path/to/interface_${SLURM_ARRAY_TASK_ID}.py
+  python path/to/main.py
   ```
-  This line copies the script INTERFACE.PY to INTERFACE_JOBID.PY to allow some changes in the interface.py file without changing the original version.
-  ```batch
-  sed -i "s/seed = 852/seed = ${SLURM_ARRAY_TASK_ID}/" path/to/interface_${SLURM_ARRAY_TASK_ID}.py
-  ```
-  This line modifies the value of the seed which will now be equal to the JOBID.
-  ```batch
-  python path/to/interface_${SLURM_ARRAY_TASK_ID}.py
-  ```
-  This line executes the modified copy of INTERFACE.PY.
-  ```batch
-  rm path/to/interface_${SLURM_ARRAY_TASK_ID}.py
-  ```
-  This line removes the copy from the storage.
+  This line executes MAIN.PY.
