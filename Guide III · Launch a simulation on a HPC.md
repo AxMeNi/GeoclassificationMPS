@@ -1,5 +1,8 @@
 # Guide III  ·  LAUNCH SIMULATIONS ON A HIGH PERFORMANCE COMPUTER
-## III. 1. Prepare the environment
+## III. 1. Adapt the interface.py script to the desired job
+- The INTERFACE.PY script must be adapted to the desired job. It is recommended to follow the dedicated paragraph in [Guide II](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide%20II%20%C2%B7%20Launch%20simulations.md#ii-3-provide-the-parameters) to see what changes can be operated
+- To test the system, one can use small parameters and small datasets to facilitate the work.
+## III. 2. Prepare the environment
 ### ⮕ Check the files
 - Every file needed must be uploaded to the distant storage.
 - Check that every file is correctly uploaded
@@ -12,7 +15,7 @@
   conda activate geoclassif
   ```
 - Once the environment is activated, a batch job can be launched.
-## III. 2. Launch a batch job with a batch script
+## III. 3. Launch a batch job with a batch script
 ### ⮕ Adapt the batch script to your project
 - One example of a batch script can be found in the folder **batch_scripts**. It is recomanded to use **bs_simple.sh** for trials.
 - Below is a small explanation of what the script does:
