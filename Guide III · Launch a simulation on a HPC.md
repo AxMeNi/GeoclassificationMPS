@@ -33,5 +33,12 @@
   ```batch
   sed -i "s/seed = 852/seed = ${SLURM_ARRAY_TASK_ID}/" path/to/interface_${SLURM_ARRAY_TASK_ID}.py
   ```
-  This line modifies the value of the seed which will be equal to the JOBID.
-  
+  This line modifies the value of the seed which will now be equal to the JOBID.
+  ```batch
+  python path/to/interface_${SLURM_ARRAY_TASK_ID}.py
+  ```
+  This line executes the modified copy of INTERFACE.PY.
+  ```batch
+  rm path/to/interface_${SLURM_ARRAY_TASK_ID}.py
+  ```
+  This line removes the copy from the storage.
