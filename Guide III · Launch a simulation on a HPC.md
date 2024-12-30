@@ -32,3 +32,11 @@
   python path/to/main.py
   ```
   This line executes MAIN.PY.
+### ⮕ Launch the script
+- Type the following command line in the shell to execute the batch job with the provided features:
+  ```shell
+  sbatch bs_simple.sh
+  ```
+## III. 4. Follow the execution of the job and retrieve the output in the provided folder
+- Use [squeue -u username](https://slurm.schedmd.com/squeue.html) to check the status of the job.
+- Each output files can be retrievd in the folder given in this [line](https://github.com/AxMeNi/GeoclassificationMPS/blob/d9b0fac87d78e6428cfd4703df29ef539c6bbb55/src/interface.py#L110)
