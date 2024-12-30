@@ -26,5 +26,5 @@
   - `ti_nshapes`
   - `nRandomTICDsets`
 
-   It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti
-    `
+   It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti`. The reason behind this is that those parameters will be changed for each jobs. Therefore, they are modified directly in the batch script, and their values are then submitted when excuting the INTERFACE.PY script.
+  
