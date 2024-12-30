@@ -1,4 +1,5 @@
 # Guide IV  · LAUNCH A SIMULATION FOLLOWING A DESIGN OF EXPERIMENT
+The key idea is that for each combination of parameters desired, the program will launch a new batch job via a slurm [array](https://slurm.schedmd.com/sbatch.html#OPT_array).
 ## III. 1. Adapt the interface.py script to allow changes via the batch script
 ### ⮕ Make sure the dedicated paragraph is present
 - The following lines:
@@ -26,5 +27,5 @@
   - `ti_nshapes`
   - `nRandomTICDsets`
 
-   It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti`. The reason behind this is that those parameters will be changed for each jobs. Therefore, they are modified directly in the batch script, and their values are then submitted when excuting the INTERFACE.PY script.
+   It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti`. The reason behind this is that those parameters will be changed for each job. Therefore, they are modified directly in the batch script, and their values are then submitted when excuting the INTERFACE.PY script.
   
