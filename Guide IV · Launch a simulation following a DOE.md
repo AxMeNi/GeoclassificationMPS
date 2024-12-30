@@ -1,6 +1,6 @@
 # Guide IV  · LAUNCH A SIMULATION FOLLOWING A DESIGN OF EXPERIMENT
 ## III. 1. Adapt the interface.py script to allow changes via the batch script
-### ⮕ Ensure the dedicated paragraph is present
+### ⮕ Make sure the dedicated paragraph is present
 - The following lines:
   ```python
   auxTI_var = {key: value for key, value in auxTI_var_temp.items() if key in arg_aux_vars}
