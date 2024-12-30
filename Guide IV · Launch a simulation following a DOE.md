@@ -1,5 +1,5 @@
 # Guide IV  · LAUNCH A SIMULATION FOLLOWING A DESIGN OF EXPERIMENT
-The key idea is that for each combination of parameters desired, the program will launch a new batch job via a slurm [array](https://slurm.schedmd.com/sbatch.html#OPT_array).
+The key idea is that for each desired combination of parameters, the program will launch a new batch job via a slurm [array](https://slurm.schedmd.com/sbatch.html#OPT_array).
 ## III. 1. Adapt the interface.py script to allow changes via the batch script
 ### ⮕ Make sure the dedicated paragraph is present
 - The following lines:
