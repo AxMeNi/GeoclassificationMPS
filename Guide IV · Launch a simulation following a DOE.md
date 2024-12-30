@@ -1,6 +1,6 @@
 # Guide IV  · LAUNCH A SIMULATION FOLLOWING A DESIGN OF EXPERIMENT
 The key idea is that for each desired combination of parameters, the program will launch a new batch job via a slurm [array](https://slurm.schedmd.com/sbatch.html#OPT_array).
-## III. 1. Adapt the interface.py script to allow changes via the batch script
+## IV. 1. Adapt the interface.py script to allow changes via the batch script
 ### ⮕ Make sure the dedicated paragraph is present
 - The following lines:
   ```python
@@ -28,4 +28,9 @@ The key idea is that for each desired combination of parameters, the program wil
   - `nRandomTICDsets`
 
    It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti`. The reason behind this is that those parameters will be changed for each job. Therefore, they are modified directly in the batch script, and their values are then submitted when excuting the INTERFACE.PY script.
+- Any other changes must be done before uploading the file to the distant storage.
+## IV. 2. Prepare the environment
+See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20III%20%C2%B7%20Launch%20a%20simulation%20on%20a%20HPC.md#iii-2-prepare-the-environment)
+## IV. 3. Launch the simulations with a batch script
+### ⮕ Adapt the batch script to your project
   
