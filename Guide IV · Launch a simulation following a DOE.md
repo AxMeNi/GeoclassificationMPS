@@ -19,4 +19,12 @@
   nvar = count_variables(names_var)
   ```
   Check the [script](https://github.com/AxMeNi/GeoclassificationMPS/blob/550f1475c31712f36b88f58970c87cfa25ba08e3/src/interface.py#L135) for more clarity.
-  
+### ⮕ Adapt the variable values:
+- For the following parameters:
+  - `seed`
+  - `ti_pct_area`
+  - `ti_nshapes`
+  - `nRandomTICDsets`
+
+   It is required to set their values to, respectively : `seed = arg_seed`, `ti_pct_area = arg_ti_pct_area`, `ti_nshape = arg_num_shape` and `nRandomTICDsets = arg_n_ti
+    `
