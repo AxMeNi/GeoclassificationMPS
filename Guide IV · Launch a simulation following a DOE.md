@@ -14,7 +14,7 @@
   ```python
   sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
   ```
-  and this line:
+  and that line:
   ```python
   nvar = count_variables(names_var)
   ```
