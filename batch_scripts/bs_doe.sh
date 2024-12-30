@@ -5,7 +5,7 @@
 #SBATCH --output=log/test_doe_job_task_%a.txt
 #SBATCH --array=1-140  # TEST TEST
 
-# Définition des paramètres du plan d'expérience
+# Definiion of the parameters of the design of experiment
 SEED=852
 NUM_TI_LIST=(1)
 TI_PCT_AREA_LIST=(25 55 75 90)
@@ -21,27 +21,27 @@ AUX_VARS_LIST=(
 )
 
 
-# Calcul du nombre total de combinaisons
+# Calulcation of the total number of parameters
 NUM_TI_COUNT=${#NUM_TI_LIST[@]}
 TI_PCT_AREA_COUNT=${#TI_PCT_AREA_LIST[@]}
 NUM_SHAPE_COUNT=${#NUM_SHAPE_LIST[@]}
 AUX_VARS_COUNT=${#AUX_VARS_LIST[@]}
 
-# Calcul des indices pour chaque paramètre
-IDX=$((SLURM_ARRAY_TASK_ID - 1)) # Indice de la tâche, en partant de 0
+# Calculation of the index for each parameter
+IDX=$((SLURM_ARRAY_TASK_ID - 1)) # Index of the task, starting from 0
 IDX_TI=$((IDX % NUM_TI_COUNT))
 IDX_AREA=$(((IDX / NUM_TI_COUNT) % TI_PCT_AREA_COUNT))
 IDX_SHAPE=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT)) % NUM_SHAPE_COUNT))
 IDX_AUX_VARS=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT * NUM_SHAPE_COUNT)) % AUX_VARS_COUNT))
 
-# Récupération des paramètres correspondants
+# Calulation of the parameters values
 NUM_TI=${NUM_TI_LIST[$IDX_TI]}
 TI_PCT_AREA=${TI_PCT_AREA_LIST[$IDX_AREA]}
 NUM_SHAPE=${NUM_SHAPE_LIST[$IDX_SHAPE]}
 AUX_VARS=${AUX_VARS_LIST[$IDX_AUX_VARS]}
 
-# Exécution du script Python avec les paramètres générés
-python /group/ses001/amengelle/GeoclassificationMPS/src/interface.py \
+# Execution of the Python script with the generated parameters
+python path/to/interface.py \
     --seed ${SEED} \
     --n_ti ${NUM_TI} \
     --ti_pct_area ${TI_PCT_AREA} \
