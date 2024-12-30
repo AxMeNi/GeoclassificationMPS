@@ -1,7 +1,7 @@
 # Guide III  ·  LAUNCH SIMULATIONS ON A HIGH PERFORMANCE COMPUTER
 ## III. 1. Adapt the interface.py script to the desired job
 - The INTERFACE.PY script must be adapted to the desired job. It is recommended to follow the dedicated paragraph in [Guide II](https://github.com/AxMeNi/GeoclassificationMPS/blob/main/Guide%20II%20%C2%B7%20Launch%20simulations.md#ii-3-provide-the-parameters) to see what changes can be operated
-- To test the system, one can use small parameters and small datasets to facilitate the work.
+- To test the system, one can use small parameters and small data sets to facilitate the work.
 ## III. 2. Prepare the environment
 ### ⮕ Check the files
 - Every file needed must be uploaded to the distant storage.
