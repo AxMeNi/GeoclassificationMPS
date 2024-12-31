@@ -61,3 +61,46 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
   )
    ```
   Here, the parameters are defined. Once the experimental design is established, all the values the experimenter intends to assign must be organized into lists. Each combination of parameters will be loaded in one job. The total number of combinations to test should be calculated using combinatorial enumeration. This value corresponds to the total number of jobs that need to be executed in the experiment.
+  ```batch
+  NUM_TI_COUNT=${#NUM_TI_LIST[@]}
+  TI_PCT_AREA_COUNT=${#TI_PCT_AREA_LIST[@]}
+  NUM_SHAPE_COUNT=${#NUM_SHAPE_LIST[@]}
+  AUX_VARS_COUNT=${#AUX_VARS_LIST[@]}
+  ```
+  These lines compute the total number of options available for each parameter list.
+  `#` is used to determine the number of elements in each list (`NUM_TI_LIST`, `TI_PCT_AREA_LIST`, etc.).
+  ```batch
+  IDX=$((SLURM_ARRAY_TASK_ID - 1)) # Index of the task, starting from 0
+  IDX_TI=$((IDX % NUM_TI_COUNT))
+  IDX_AREA=$(((IDX / NUM_TI_COUNT) % TI_PCT_AREA_COUNT))
+  IDX_SHAPE=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT)) % NUM_SHAPE_COUNT))
+  IDX_AUX_VARS=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT * NUM_SHAPE_COUNT)) % AUX_VARS_COUNT))
+  ```
+  `SLURM_ARRAY_TASK_ID` is used to assign a unique task index for each job in the array.
+Modular arithmetic ensures that each task's index is mapped to the corresponding parameter value from the lists.
+  - `IDX_TI`: Determines the index for the training images.
+  - `IDX_AREA`: Determines the percentage area index for the simulation grid.
+  - `IDX_SHAPE`: Maps the index to the number of shapes.
+  - `IDX_AUX_VARS`: Assigns the appropriate auxiliary variable combination.
+  ```batch
+  NUM_TI=${NUM_TI_LIST[$IDX_TI]}
+  TI_PCT_AREA=${TI_PCT_AREA_LIST[$IDX_AREA]}
+  NUM_SHAPE=${NUM_SHAPE_LIST[$IDX_SHAPE]}
+  AUX_VARS=${AUX_VARS_LIST[$IDX_AUX_VARS]}
+  ```
+  These lines assign the specific parameter values for the current task based on the calculated indices.
+  ```batch
+  python path/to/interface.py \
+    --seed ${SEED} \
+    --n_ti ${NUM_TI} \
+    --ti_pct_area ${TI_PCT_AREA} \
+    --num_shape ${NUM_SHAPE} \
+    --aux_vars "${AUX_VARS}"
+  ```
+  The Python script is executed with the calculated parameter values passed as arguments.
+  Each task runs the script with a unique combination of parameters derived from the design of the experiment.
+### ⮕ Launch the script
+- Type the following command line in the terminal to execute the batch job with the provided features:
+  ```shell
+  sbatch bs_doe.sh
+  ```
