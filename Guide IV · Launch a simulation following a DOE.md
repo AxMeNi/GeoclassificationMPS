@@ -34,4 +34,29 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
 ## IV. 3. Launch the simulations with a batch script
 ### ⮕ Adapt the batch script to your project
 - One example of a batch script following a design of exeperiment can be found in the folder **batch_scripts**. It is recommended to use **bs_doe.sh** for trials.
-  
+- Below is a small explanation of what the script does:
+ ```batch
+  #!/bin/bash
+  #SBATCH --partition=work
+  #SBATCH --job-name=geoclassification_mps
+  #SBATCH --cpus-per-task=4
+  #SBATCH --output=log/test_doe_job_task_%a.txt
+  #SBATCH --array=1-140
+  ```
+  These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. NOTE : The [```--array```](https://slurm.schedmd.com/sbatch.html#OPT_array) parameter is for submitting multiple jobs to be executed with identical parameters by using this unique batch script. Each job is assigned a unique job ID, which, in the latter, will be referred to as **JOBID**.
+  ```batch
+  # Definiion of the parameters of the design of experiment
+  SEED=852
+  NUM_TI_LIST=(1)
+  TI_PCT_AREA_LIST=(25 55 75 90)
+  NUM_SHAPE_LIST=(1 5 10 15 50)
+  AUX_VARS_LIST=(
+      "grid_grv"
+      "grid_lmp"
+      "grid_mag"
+      "grid_grv,grid_lmp"
+      "grid_grv,grid_mag"
+      "grid_lmp,grid_mag"
+      "grid_grv,grid_lmp,grid_mag"
+  )
+   ```
