@@ -25,10 +25,9 @@
   #SBATCH --partition=work
   #SBATCH --job-name=geoclassification_mps
   #SBATCH --cpus-per-task=4
-  #SBATCH --output=log/test_array_job_task.txt
+  #SBATCH --output=log/test_job_task.txt
   ```
-  These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. NOTE : The [```--array```](https://slurm.schedmd.com/sbatch.html#OPT_array) parameter is for submitting multiple jobs to be executed with identical parameters by using this unique batch script. Each job is assigned a unique job ID, which, in the latter, will be referred to as **JOBID**.
-
+  These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. 
   ```batch
   python path/to/main.py
   ```
