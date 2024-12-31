@@ -33,4 +33,5 @@ The key idea is that for each desired combination of parameters, the program wil
 See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20III%20%C2%B7%20Launch%20a%20simulation%20on%20a%20HPC.md#iii-2-prepare-the-environment)
 ## IV. 3. Launch the simulations with a batch script
 ### ⮕ Adapt the batch script to your project
+- One example of a batch script following a design of exeperiment can be found in the folder **batch_scripts**. It is recommended to use **bs_doe.sh** for trials.
   
