@@ -16,4 +16,7 @@
 - [ ] Dividing the function calculate_indicators in variability.py in several smaller functions.
 ---
 ### LIST OF WARNINGS AND BUGS ENCOUNTERED
+- [ ]
+- [ ]
+- [ ]
 ---
