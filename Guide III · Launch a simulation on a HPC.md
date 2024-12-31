@@ -33,7 +33,7 @@
   ```
   This line executes MAIN.PY.
 ### ⮕ Launch the script
-- Type the following command line in the shell to execute the batch job with the provided features:
+- Type the following command line in the terminal to execute the batch job with the provided features:
   ```shell
   sbatch bs_simple.sh
   ```
