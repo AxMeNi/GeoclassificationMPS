@@ -16,7 +16,6 @@
 - [ ] Dividing the function calculate_indicators in variability.py in several smaller functions.
 ---
 ### LIST OF WARNINGS AND BUGS ENCOUNTERED
-- [ ]
-- [ ]
-- [ ]
+- [ ] When launching a simulation with multiple TIs, or when launching with the parameter ReducedTiSg, we get this ERROR : `Invalid data in simulation grid : Too far beyond the range covered by all the TI(s) : continuous variable`
+- [ ] For some combinations of parameters (especially, when 3 auxliliary variables are used), the program returns : `save_plot : line 156 : File is not a zip file`. This bug can be related to the way the plot are stored (and especially the format used).
 ---
