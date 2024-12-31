@@ -45,7 +45,7 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
   ```
   These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. NOTE : The [```--array```](https://slurm.schedmd.com/sbatch.html#OPT_array) parameter is for submitting multiple jobs to be executed with identical parameters by using this unique batch script. Each job is assigned a unique job ID, which, in the latter, will be referred to as **JOBID**.
   ```batch
-  # Definiion of the parameters of the design of experiment
+  # Definition of the parameters of the design of experiment
   SEED=852
   NUM_TI_LIST=(1)
   TI_PCT_AREA_LIST=(25 55 75 90)
