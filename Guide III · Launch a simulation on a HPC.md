@@ -18,7 +18,7 @@
 - Once the environment is activated, a batch job can be launched.
 ## III. 3. Launch a batch job with a batch script
 ### ⮕ Adapt the batch script to your project
-- One example of a batch script can be found in the folder **batch_scripts**. It is recomanded to use **bs_simple.sh** for trials.
+- One example of a batch script can be found in the folder **batch_scripts**. It is recommended to use **bs_simple.sh** for trials.
 - Below is a small explanation of what the script does:
   ```batch
   #!/bin/bash
