@@ -3,7 +3,7 @@
 #SBATCH --job-name=geoclassification_mps
 #SBATCH --cpus-per-task=4
 #SBATCH --output=log/test_doe_job_task_%a.txt
-#SBATCH --array=1-140  # TEST TEST
+#SBATCH --array=1-140
 
 # Definiion of the parameters of the design of experiment
 SEED=852
