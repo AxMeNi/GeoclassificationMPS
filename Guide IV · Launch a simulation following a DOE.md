@@ -60,3 +60,4 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
       "grid_grv,grid_lmp,grid_mag"
   )
    ```
+  Here, the parameters are defined. Once the experimental design is established, all the values the experimenter intends to assign must be organized into lists. Each combination of parameters will be loaded in one job. The total number of combinations to test should be calculated using combinatorial enumeration. This value corresponds to the total number of jobs that need to be executed in the experiment.
