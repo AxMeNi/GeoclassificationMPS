@@ -371,22 +371,24 @@ def test_merge_masks():
 ##################################### TEST TI_GENERATION.PY
 
 def test_gen_ti_frame_circles():
-    nc = 3000 
-    nr = 1000
+    nc = 1500
+    nr = 1500
     ti_pct_area = 50  # pourcentage de l'aire de la grille à couvrir
     ti_ndisks = 10 
     seed = 852 
 
     mask = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_ndisks, seed)[0][0]
-    plt.figure(figsize=(10, 10))
+    plt.figure(figsize=(5, 5))
     plt.imshow(mask, cmap='gray', origin='lower')
-    plt.title(f'TI mask generated with {ti_ndisks} disks covering {ti_pct_area}% of a grid of size {nc} x {nr}')
-    plt.xlabel('Columns')
-    plt.ylabel('Rows')
-    
-    handles = [plt.Line2D([0], [0], color='black', lw=4),
-               plt.Line2D([0], [0], color='white', lw=4)]
-    plt.legend(handles, ['Hidden (value = 0)', 'Used for Simulation (value = 1)'], loc='upper right', fontsize='medium', frameon=True, shadow=False)
+    plt.title(f'TI mask generated with {ti_ndisks} disks\ncovering {ti_pct_area} % of a grid of size {nc} x {nr}', fontsize=12)
+    plt.xlabel('Columns', fontsize=12)
+    plt.ylabel('Rows', fontsize=12)
+    plt.tick_params(axis='both', which='major', labelsize=12)
+    legend_elements = [
+    plt.Line2D([0], [0], color='white', markerfacecolor='black', lw=4, marker='o', markersize=10, markeredgewidth=0.5, markeredgecolor='black'),
+    plt.Line2D([0], [0], color='white', markerfacecolor='white', lw=4, marker='o', markersize=10, markeredgewidth=0.5, markeredgecolor='black')
+    ]
+    plt.legend(legend_elements , ['Hidden (value = 0)', 'Used for simulation (value = 1)'], loc='upper right', fontsize=12, frameon=True,framealpha=1,shadow=False)
     
     plt.show()
 
