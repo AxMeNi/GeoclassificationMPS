@@ -19,8 +19,6 @@ from time_logging import *
 from matplotlib.colors import *
 
 import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')  # Utilise Computer Modern (par défaut dans LaTeX)
 import os
 
 
