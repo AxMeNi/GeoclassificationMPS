@@ -19,6 +19,8 @@ from time_logging import *
 from matplotlib.colors import *
 
 import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')  # Utilise Computer Modern (par défaut dans LaTeX)
 import os
 
 
@@ -928,7 +930,7 @@ def test_load_pickle_file():
     print("\t\t\tTESTING LOAD PICKLE FILE")
     print("##################################################################\n")
     
-    data = load_pickle_file(r"C:\Users\00115212\Documents\GeoclassificationMPS\test\deesse_output_test2.pkl")
+    data = load_pickle_file(r"D:\CET\Documents\Kaya simulations\26-11-2024\deesse_output\deesse_output_20241126_132024.pkl")
     print(data)
     return
 

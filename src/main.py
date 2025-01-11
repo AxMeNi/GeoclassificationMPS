@@ -45,10 +45,10 @@ def run_tests(verbose):
     t_MergeMasks =                  False
 
 #TI_MASK_GENERATION.PY
-    t_GenTiFrameCircles =           False
-    t_GenTiFrameSquares =           False
-    t_GenTiFrameSeparatedSquares =  False
-    t_GenTiFrameCdMask =            False
+    t_GenTiFrameCircles =           True
+    t_GenTiFrameSquares =           True
+    t_GenTiFrameSeparatedSquares =  True
+    t_GenTiFrameCdMask =            True
 
 #BUILD_TI_CD.PY
     t_BuildTiCd =                   False #TODO faire le cas où il y a des conditioning data et tout le reste...
@@ -78,7 +78,7 @@ def run_tests(verbose):
 
 #UTILS.PY
     t_FindFarthestPtsFrmCentroids = False
-    t_LoadPickleFile =              True
+    t_LoadPickleFile =              False
 
 #SAVING.PY
     t_SaveDeesseOutput =            False #TODO
