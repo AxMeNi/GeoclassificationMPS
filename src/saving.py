@@ -6,6 +6,7 @@ __date__ = "septembre 2024"
 
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 import os
@@ -100,6 +101,31 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
 
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
     df_updated.to_csv(csv_file_path, index=False)
+
+def save_indicators(indicators_dict={}, output_directory='output/', comments='',  params={}):
+    data_init = {}
+    for key, value in params.items():
+        data_init[key] = [value]
+    os.makedirs(output_directory, exist_ok=True)
+    for indicator_name, indicator_value in indicators_dict.items():
+        indicator_path = os.path.join(output_directory, indicator_name)
+        np.save(indicator_path, indicator_value)
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        data = data_init.copy()
+        data = {
+            'Date and Time': [now],
+            'Indicator Name': [indicator_name],
+            'Comments': [comments]
+        }
+        csv_file_path = os.path.join(output_directory, 'indicators_log.csv')
+        if os.path.exists(csv_file_path):
+            df_existing = pd.read_csv(csv_file_path, index_col=None)
+        else:
+            df_existing = pd.DataFrame()
+        df_new = pd.DataFrame(data)
+        df_updated = pd.concat([df_existing, df_new], ignore_index=True)
+        df_updated.to_csv(csv_file_path, index=False)
+          
     
 
 def save_plot(fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
