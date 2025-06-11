@@ -106,6 +106,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     #---- To turn On or Off the saving of the output ----#
     saveOutput = True #Only for the DeeSse Output
+    saveIndicators = True #For the indicators and the standard deviation of the indicators
     
     output_directory = "/group/ses001/amengelle/GeoclassificationMPS/output"
     
