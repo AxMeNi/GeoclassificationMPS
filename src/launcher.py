@@ -52,6 +52,7 @@ def launcher(params,
     numberofmpsrealizations = params['n_mps_realizations']
     nthreads = params['n_threads']
     saveOutput = params['saveOutput']
+    saveIndicators = params['saveIndicators']
     output_directory = params['output_directory']
     deesse_output_folder = params['deesse_output_folder']
     prefix_deesse_output = params['prefix_deesse_output']
@@ -212,14 +213,26 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE INDICATORS, CALCULATING THE STANDARD DEVIATION")
         
-        #PLOT OF THE STANDARD DEVIATION
+        #CALCULATION OF THE STANDARD DEVIATION
         t0_plot = start_timer(f"indicators plotting")
         std_ent, realizations_range1 = calculate_std_deviation(ent, 1, numberofmpsrealizations)
         std_dist_hist, realizations_range2 = calculate_std_deviation(dist_hist, 1, numberofmpsrealizations)
         std_dist_hamming, realizations_range3 = calculate_std_deviation(dist_topo_hamming, 1, numberofmpsrealizations)
         if verbose:
-            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE STANDARD DEVIATION")
-        
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CALCULATION OF THE STANDARD DEVIATIONS")
+
+        if saveIndicators:
+            save_indicators(indicators_dict={"ent":ent,
+                                            "dist_hist":dist_hist,
+                                            "dist_topo_hamming": dist_topo_hamming,
+                                            f"std_ent_{realizations_range1}": std_ent,
+                                            f"std_dist_hist_{realizations_range2}": std_dist_hist,
+                                            f"std_dist_hamming_{realizations_range3}": std_dist_hamming
+                                            },
+                            output_directory=f'output/TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', 
+                            comments='',  
+                            params={"nsim":nsim})
+                
         #1 ENTROPY
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
         save_plot(fname=prefix_entropy+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
