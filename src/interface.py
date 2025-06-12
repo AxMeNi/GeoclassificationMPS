@@ -30,14 +30,15 @@ import argparse
 # ║ INTERFACE FOR PROGRAMMING A COMBINED DEESSE AND LOOPUI SIMULATION                                                  ║
 # ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 
-def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None, arg_num_shape = None, arg_aux_vars = None):
+def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None, arg_num_shape = None, arg_aux_vars = None, arg_output_dir = "./output"):
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
     #\group\ses001\amengelle\
     #C:\Users\00115212\Documents\
     
-    csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
+    #csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
+    csv_file_path = "./data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
     
     # Expected CSV File Format (Columns are separataed by ","):
     #
@@ -108,7 +109,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     saveOutput = True #Only for the DeeSse Output
     saveIndicators = True #For the indicators and the standard deviation of the indicators
     
-    output_directory = "/group/ses001/amengelle/GeoclassificationMPS/output"
+    output_directory = arg_output_dir #"./output"  # TO DO MAKE THIS PARAM MORE ACCESSIBLE
     
     deesse_output_folder = "deesse_output"
     prefix_deesse_output = "simulation"
@@ -120,7 +121,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
     prefix_std_deviation = "std_deviation"
-    reference_var = np.load(r"/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy")
+    reference_var = np.load(r"./data/grid_geo.npy") # TO DO MAKE THIS PARAM MORE ACCESSIBLE 
     
     ##################### SHORTEN THE SIMULATION #####################
 
@@ -173,6 +174,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
         'n_mps_realizations': numberofmpsrealizations,
         'n_threads': nthreads,
         'saveOutput': saveOutput,
+        'saveIndicators': saveIndicators,
         'output_directory': output_directory,
         'deesse_output_folder': deesse_output_folder,
         'prefix_deesse_output': prefix_deesse_output,
@@ -217,7 +219,7 @@ def launch_simulation(params,
                 verbose)
 
 
-def run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars):
+def run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars, arg_output_dir):
     """
     """
     if verbose :
@@ -225,7 +227,7 @@ def run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, 
     params, \
     shorten, \
     nvar, sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputVarFlag, \
-    nr, nc = get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars)
+    nr, nc = get_simulation_info(arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars, arg_output_dir)
     if verbose :
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> SIMULATION INFORMATION RETRIEVED")
     
@@ -240,6 +242,7 @@ def run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, 
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Geoclassification MPS")
+    parser.add_argument("--output_dir", type=str, required=True, help="Output main directory")
     parser.add_argument('--seed', type=int, required=True, help="Random seed for the simulation")
     parser.add_argument('--n_ti', type=int, required=True, help="Number of Training Images")
     parser.add_argument('--ti_pct_area', type=int, required=True, help="Percentage of training image area to use")
@@ -247,4 +250,4 @@ if __name__ == "__main__":
     parser.add_argument("--aux_vars", type=str, required=True, help="Comma-separated auxiliary variables")
     args = parser.parse_args()
     aux_vars = args.aux_vars.split(',')
-    run_simulation(True, args.seed, args.n_ti, args.ti_pct_area, args.num_shape, aux_vars)
+    run_simulation(True, args.seed, args.n_ti, args.ti_pct_area, args.num_shape, aux_vars, args.output_dir)

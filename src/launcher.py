@@ -67,6 +67,8 @@ def launcher(params,
     
     deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
     plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
+    #print('deesse_output_folder_complete: '+deesse_output_folder_complete)
+    #print('plot_output_folder_complete: '+plot_output_folder_complete)
     
     ti_list = []
     cd_list = []
@@ -225,11 +227,15 @@ def launcher(params,
             save_indicators(indicators_dict={"ent":ent,
                                             "dist_hist":dist_hist,
                                             "dist_topo_hamming": dist_topo_hamming,
-                                            f"std_ent_{realizations_range1}": std_ent,
-                                            f"std_dist_hist_{realizations_range2}": std_dist_hist,
-                                            f"std_dist_hamming_{realizations_range3}": std_dist_hamming
+                                            #"std_ent": std_ent,
+                                            "std_dist_hist": std_dist_hist,
+                                            "std_dist_hamming": std_dist_hamming,
+                                            "n_mps_real": numberofmpsrealizations
+                                            #f"std_ent_{realizations_range1}": std_ent,
+                                            #f"std_dist_hist_{realizations_range2}": std_dist_hist,
+                                            #f"std_dist_hamming_{realizations_range3}": std_dist_hamming
                                             },
-                            output_directory=f'output/TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', 
+                            output_directory=output_directory ,#f'output/TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', 
                             comments='',  
                             params={"nsim":nsim})
                 

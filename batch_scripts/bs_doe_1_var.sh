@@ -1,28 +1,21 @@
 #!/bin/bash
 #SBATCH --partition=cet
-#SBATCH --job-name=mps_clf
+#SBATCH --job-name=mps_clf_1_var
 #SBATCH --cpus-per-task=4
-#SBATCH --output=log/mps_clf_task_%a.txt
-#SBATCH --array=1-140
+#SBATCH --output=log/mps_clf_1_var%a.txt
+#SBATCH --array=1
 
-# Definiion of the parameters of the design of experiment
+# Definition of the parameters of the design of experiment
 SEED=852
 NUM_TI_LIST=(1)
-TI_PCT_AREA_LIST=(25 55 75 90)
-NUM_SHAPE_LIST=(1 5 10 15 50)
+TI_PCT_AREA_LIST=(55)
+NUM_SHAPE_LIST=(1)
 AUX_VARS_LIST=(
     "grid_grv"
-    "grid_lmp"
-    "grid_mag"
-    "grid_grv,grid_lmp"
-    "grid_grv,grid_mag"
-    "grid_lmp,grid_mag"
-    "grid_grv,grid_lmp,grid_mag"
 )
 
-OUTPUT_DIR="./mps_clf_task_${SLURM_ARRAY_TASK_ID}"
+OUTPUT_DIR="./output_mps_clf_1_var_${SLURM_ARRAY_TASK_ID}"
 echo "OUTPUT_DIR ${OUTPUT_DIR}"
-
 
 # Calulcation of the total number of parameters
 NUM_TI_COUNT=${#NUM_TI_LIST[@]}

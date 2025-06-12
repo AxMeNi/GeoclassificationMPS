@@ -1,8 +1,8 @@
 var_name,categ_conti,nature,path,grid
-grid_geo,categorical,sim,/group/ses001/amengelle/GeoclassificationMPS/data/grid_geo.npy,TI
-grid_grv,continuous,auxTI,/group/ses001/amengelle/GeoclassificationMPS/data/grid_grv.npy,TI
-grid_grv,continuous,auxSG,/group/ses001/amengelle/GeoclassificationMPS/data/grid_grv.npy,SG
-grid_mag,continuous,auxSG,/group/ses001/amengelle/GeoclassificationMPS/data/grid_mag.npy,SG
-grid_mag,continuous,auxTI,/group/ses001/amengelle/GeoclassificationMPS/data/grid_mag.npy,TI
-grid_lmp,continuous,auxTI,/group/ses001/amengelle/GeoclassificationMPS/data/grid_lmp.npy,TI
-grid_lmp,continuous,auxSG,/group/ses001/amengelle/GeoclassificationMPS/data/grid_lmp.npy,SG
+grid_geo,categorical,sim,./data/grid_geo.npy,TI
+grid_grv,continuous,auxTI,./data/grid_grv.npy,TI
+grid_grv,continuous,auxSG,./data/grid_grv.npy,SG
+grid_mag,continuous,auxSG,./data/grid_mag.npy,SG
+grid_mag,continuous,auxTI,./data/grid_mag.npy,TI
+grid_lmp,continuous,auxTI,./data/grid_lmp.npy,TI
+grid_lmp,continuous,auxSG,./data/grid_lmp.npy,SG
