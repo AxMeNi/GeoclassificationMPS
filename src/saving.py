@@ -103,6 +103,32 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     df_updated.to_csv(csv_file_path, index=False)
 
 def save_indicators(indicators_dict={}, output_directory='output/', comments='',  params={}):
+    """
+    Save multiple indicator arrays to .npy (NumPy format) files and log the details in a CSV file.
+
+    Parameters:
+    -----------
+    indicators_dict : dict, optional (default: {})
+        A dictionary where keys are indicator names (str) and values are numpy arrays to be saved as .npy files.
+    output_directory : str, optional (default: 'output/')
+        The directory where the .npy files and the log file will be saved.
+    comments : str, optional (default: '')
+        Additional comments to log in the CSV file.
+    params : dict, optional (default: {})
+        A dictionary of additional parameters to log alongside the indicators.
+
+    Returns:
+    --------
+    None.
+
+    Notes:
+    ------
+    - A CSV log file ('indicators_log.csv') is created or updated in the output directory to record:
+        - Date and time of saving,
+        - Indicator name,
+        - Additional comments,
+        - Any extra parameters provided in `params`.
+    """
     data_init = {}
     for key, value in params.items():
         data_init[key] = [value]
