@@ -106,6 +106,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     ##################### OUTPUT PARAMETERS #####################
     
     #---- To turn On or Off the saving of the output ----#
+    saveMask = True #To save each mask used for each simulation
     saveOutput = True #Only for the DeeSse Output
     saveIndicators = True #For the indicators and the standard deviation of the indicators
     
@@ -173,6 +174,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
         'max_scan_fraction': ms,
         'n_mps_realizations': numberofmpsrealizations,
         'n_threads': nthreads,
+        'saveMask':saveMask,
         'saveOutput': saveOutput,
         'saveIndicators': saveIndicators,
         'output_directory': output_directory,

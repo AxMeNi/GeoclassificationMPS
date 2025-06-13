@@ -14,7 +14,32 @@ import pickle
 
 
 
-def save_deesse_output(deesse_output, output_dir, file_name):
+def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments=''):
+    data_init = {}
+    for param, value in params.items():
+        data_init[param] = [value]
+    os.makedirs(output_directory, exist_ok=True)
+    mask_path = os.path.join(output_directory, file_name)
+    np.save(mask_path, mask_value)
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    data = data_init.copy()
+    data = {
+        'Date and Time': [now],
+        'Mask Name': [file_name],
+        'Comments': [comments]
+    }
+    csv_file_path = os.path.join(output_directory, 'indicators_log.csv')
+    if os.path.exists(csv_file_path):
+        df_existing = pd.read_csv(csv_file_path, index_col=None)
+    else:
+        df_existing = pd.DataFrame()
+    df_new = pd.DataFrame(data)
+    df_updated = pd.concat([df_existing, df_new], ignore_index=True)
+    df_updated.to_csv(csv_file_path, index=False)
+          
+
+
+def save_deesse_output(deesse_output, output_dir = 'output/', file_name='deesse_output'):
     """
     Save the deesse_output to a specified folder.
 

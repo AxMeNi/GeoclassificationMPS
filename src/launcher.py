@@ -51,6 +51,7 @@ def launcher(params,
     ms = params['max_scan_fraction']
     numberofmpsrealizations = params['n_mps_realizations']
     nthreads = params['n_threads']
+    saveMask = params['saveMask']
     saveOutput = params['saveOutput']
     saveIndicators = params['saveIndicators']
     output_directory = params['output_directory']
@@ -131,7 +132,9 @@ def launcher(params,
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
         
-  
+        if saveMask:
+            save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+            
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
         # yy = im.yy()[0]
