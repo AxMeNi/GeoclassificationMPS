@@ -81,8 +81,10 @@ def run_tests(verbose):
     t_LoadPickleFile =              False
 
 #SAVING.PY
+    t_SaveMask =                    False #TODO
     t_SaveDeesseOutput =            False #TODO
     t_SaveSimulation =              False #TODO
+    t_SaveIndicators =              False #TODO 
     t_SavePlot =                    False #TODO
     t_SaveLogToCSV =                False #TODO
 
@@ -134,8 +136,10 @@ def run_tests(verbose):
     if t_FindFarthestPtsFrmCentroids : test_find_farthest_points_from_centroid()
     if t_LoadPickleFile : test_load_pickle_file()
     
+    if t_SaveMask : test_save_mask()
     if t_SaveDeesseOutput : test_save_deesse_output()
     if t_SaveSimulation : test_save_simulation()
+    if t_SaveIndicators : test_save_indicators()
     if t_SavePlot : test_save_plot()
     if t_SaveLogToCSV : test_save_log_to_csv()
     

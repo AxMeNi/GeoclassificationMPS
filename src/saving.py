@@ -75,7 +75,6 @@ def save_mask(mask_value, output_directory = 'output/', file_name='simulation_gr
     df_updated.to_csv(csv_file_path, index=False)
           
 
-
 def save_deesse_output(deesse_output, output_dir = 'output/', file_name='deesse_output'):
     """
     Save the deesse_output to a specified folder.
@@ -164,6 +163,7 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     df_updated = pd.concat([df_existing, df_new], ignore_index=True)
     df_updated.to_csv(csv_file_path, index=False)
 
+
 def save_indicators(indicators_dict={}, output_directory='output/', comments='',  params={}):
     """
     Save multiple indicator arrays to .npy (NumPy format) files and log the details in a CSV file.
@@ -214,7 +214,6 @@ def save_indicators(indicators_dict={}, output_directory='output/', comments='',
         df_updated = pd.concat([df_existing, df_new], ignore_index=True)
         df_updated.to_csv(csv_file_path, index=False)
           
-    
 
 def save_plot(fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
     """
