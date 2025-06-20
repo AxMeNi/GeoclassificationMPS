@@ -3,7 +3,7 @@
 #SBATCH --job-name=mps_clf_1_var
 #SBATCH --cpus-per-task=4
 #SBATCH --output=log/mps_clf_1_var%a.txt
-#SBATCH --array=1-3
+#SBATCH --array=1-6
 
 # Definition of the parameters of the design of experiment
 SEED_LIST=(852 123)
