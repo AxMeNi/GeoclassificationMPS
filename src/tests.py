@@ -937,13 +937,21 @@ def test_load_pickle_file():
 
 ##################################### TEST SAVING.PY
 
+def test_save_mask():
+    return
+
+
 def test_save_deesse_output():
     return
 
 
 def test_save_simulation():
     return
-    
+
+
+def test_save_indicators():
+    return
+
 
 def test_save_plot():
     return
