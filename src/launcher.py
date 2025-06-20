@@ -131,9 +131,16 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
+
+        #THREE PARAMETERS USED BELOW
+        i_mask = seed
+        nsim=numberofmpsrealizations
+        n_sim_variables=1
+        aux_var_names = "_".join(auxTI_var.keys())
+
         
         if saveMask:
-            save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+            save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask.npy",params={"nsim":nsim})
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -192,13 +199,7 @@ def launcher(params,
             
         if saveOutput:
             save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
-        
-        #THREE PARAMETERS USED BELOW
-        i_mask = seed
-        nsim=numberofmpsrealizations
-        n_sim_variables=1
-        aux_var_names = "_".join(auxTI_var.keys())
-        
+                
         #SAVING THE MASKS
         plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}", show=False)
         save_plot(fname=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
@@ -274,7 +275,7 @@ def launcher(params,
         
         time_folder = os.path.join(output_directory, plot_output_folder, "time")
         os.makedirs(time_folder, exist_ok=True)
-        timelogname = os.path.join(time_folder, f"timing_log_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.csv")
+        timelogname = os.path.join(time_folder, f"timing_log.csv") #_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}
         
         save_log_to_csv(timelog, filename=timelogname)
         

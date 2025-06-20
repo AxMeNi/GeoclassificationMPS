@@ -102,7 +102,7 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     - New columns are added to the CSV file as needed when new parameter keys are added to the `params` dictionary.
     """
     os.makedirs(output_directory, exist_ok=True)
-    output_file_name = f"deesse_output_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}.pkl"
+    output_file_name = f"deesse_output.pkl" #_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}.pkl"
     save_deesse_output(deesse_output, output_directory, output_file_name)
 
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
