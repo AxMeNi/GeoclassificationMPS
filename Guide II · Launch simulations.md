@@ -24,7 +24,7 @@ All the parameters related to the simulations can be changed in the INTERFACE.PY
   It is required to specify directly their value in the get_simulation_info function (e.g. set `ti_pct_area = 55` if the percentage of the data grid covered by the training image is 55 %)
 ### ⮕ General parameters
 - All parameters related to the data are stored in the .csv file. Therefore, the first parameter to specify is the path to this CSV file.
-- Specify a `seed` for randomization that will be used for all random processes.
+- Specify a list of`seed` for randomization that will be used for all random processes.
 - The `novalue` parameter corresponds to the value in the .npy files which represents an absence of data. `NaN` values are not accepted in the file.
 ### ⮕ TI parameters
 - NOTE : In this section, a parameter which has no value must be set to None.

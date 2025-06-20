@@ -14,13 +14,50 @@ import pickle
 
 
 
-def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments=''):
+def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments='', cmap='tab20'):
+    """
+    Save a mask array to a .npy file and log the details in a CSV file.
+
+    Parameters
+    ----------
+    mask_value : np.ndarray
+        The mask array to be saved.
+    output_directory : str, optional (default: 'output/')
+        The directory where the mask file and log file will be saved.
+    file_name : str, optional (default: 'simulation_grid_mask')
+        The name of the file (without extension) to save the mask as.
+    params : dict, optional (default: {})
+        A dictionary of additional parameters to log in the CSV file.
+    comments : str, optional (default: '')
+        Additional comments to log in the CSV file.
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - The mask is saved in NumPy .npy format.
+    - A CSV log file ('indicators_log.csv') is created or updated in the output directory to record:
+        - Date and time of saving,
+        - Mask name,
+        - Additional comments,
+        - Any extra parameters provided in `params`.
+    """
     data_init = {}
     for param, value in params.items():
         data_init[param] = [value]
     os.makedirs(output_directory, exist_ok=True)
     mask_path = os.path.join(output_directory, file_name)
     np.save(mask_path, mask_value)
+
+    image_path = os.path.join(output_directory, file_name + '.png')
+    plt.figure(figsize=(6, 6))
+    plt.imshow(mask_value, cmap=cmap)
+    plt.axis('off')
+    plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
+    plt.close()
+
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = data_init.copy()
     data = {

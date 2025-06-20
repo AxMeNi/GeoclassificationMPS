@@ -41,12 +41,12 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
   #SBATCH --job-name=geoclassification_mps
   #SBATCH --cpus-per-task=4
   #SBATCH --output=log/test_doe_job_task_%a.txt
-  #SBATCH --array=1-140
+  #SBATCH --array=1-700
   ```
   These are [Slurm batch](https://slurm.schedmd.com/sbatch.html) directives. They define the characteristics of the job, it is recommended to adapt them to the desired job. NOTE : The [```--array```](https://slurm.schedmd.com/sbatch.html#OPT_array) parameter is for submitting multiple jobs to be executed with identical parameters by using this unique batch script. Each job is assigned a unique job ID, which, in the latter, will be referred to as **JOBID**.
   ```batch
-  # Definition of the parameters of the design of experiment
-  SEED=852
+  # Definiion of the parameters of the design of experiment
+  SEED_LIST=(1 2 3 4 5)
   NUM_TI_LIST=(1)
   TI_PCT_AREA_LIST=(25 55 75 90)
   NUM_SHAPE_LIST=(1 5 10 15 50)
@@ -62,6 +62,7 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
    ```
   Here, the parameters are defined. Once the experimental design is established, all the values the experimenter intends to assign must be organized into lists. Each combination of parameters will be loaded in one job. The total number of combinations to test should be calculated using combinatorial enumeration. This value corresponds to the total number of jobs that need to be executed in the experiment.
   ```batch
+  SEED_COUNT=${#SEED_LIST[@]}
   NUM_TI_COUNT=${#NUM_TI_LIST[@]}
   TI_PCT_AREA_COUNT=${#TI_PCT_AREA_LIST[@]}
   NUM_SHAPE_COUNT=${#NUM_SHAPE_LIST[@]}
@@ -75,6 +76,7 @@ See [III. 2.](https://github.com/AxMeNi/GeoclassificationMPS/edit/main/Guide%20I
   IDX_AREA=$(((IDX / NUM_TI_COUNT) % TI_PCT_AREA_COUNT))
   IDX_SHAPE=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT)) % NUM_SHAPE_COUNT))
   IDX_AUX_VARS=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT * NUM_SHAPE_COUNT)) % AUX_VARS_COUNT))
+  IDX_SEED=$(((IDX / (NUM_TI_COUNT * TI_PCT_AREA_COUNT * NUM_SHAPE_COUNT * AUX_VARS_COUNT)) % SEED_COUNT))
   ```
   `SLURM_ARRAY_TASK_ID` is used to assign a unique task index for each job in the array.
 Modular arithmetic ensures that each task's index is mapped to the corresponding parameter value from the lists.
@@ -82,7 +84,9 @@ Modular arithmetic ensures that each task's index is mapped to the corresponding
   - `IDX_AREA`: Determines the percentage area index for the simulation grid.
   - `IDX_SHAPE`: Maps the index to the number of shapes.
   - `IDX_AUX_VARS`: Assigns the appropriate auxiliary variable combination.
+  - `IDX_SEED`: Assigns the appropriate seed combination.
   ```batch
+  SEED=${SEED_LIST[$IDX_LIST]}
   NUM_TI=${NUM_TI_LIST[$IDX_TI]}
   TI_PCT_AREA=${TI_PCT_AREA_LIST[$IDX_AREA]}
   NUM_SHAPE=${NUM_SHAPE_LIST[$IDX_SHAPE]}
