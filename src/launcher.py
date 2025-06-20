@@ -95,6 +95,11 @@ def launcher(params,
             cd_list.extend(cd_list_DC)
             simgrid_mask = simgrid_mask_aux
             cc_sg, rr_sg = nc, nr
+            if saveMask:
+                plot_mask(simgrid_mask,masking_strategy="Dependent Circles")
+                save_plot(fname=f"mask_DependentCircles__SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'mask_dependentcircles_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+                save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_DependentCircles_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+            
             
         if "DependentSquares" in ti_methods :
             if verbose:
@@ -105,6 +110,11 @@ def launcher(params,
             cd_list.extend(cd_list_DS)
             simgrid_mask = simgrid_mask_aux
             cc_sg, rr_sg = nc, nr
+            if saveMask:
+                plot_mask(simgrid_mask,masking_strategy="Dependent Squares")
+                save_plot(fname=f"mask_DependentSquares__SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'mask_dependentsquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+                save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_DependentSquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+
             
         if "IndependentSquares" in ti_methods :
             if verbose:
@@ -115,7 +125,11 @@ def launcher(params,
             cd_list.extend(cd_list_IS)
             simgrid_mask = simgrid_mask_aux
             cc_sg, rr_sg = nc, nr
-            
+            if saveMask:
+                plot_mask(simgrid_mask,masking_strategy="Independent Squares")
+                save_plot(fname=f"mask_IndependentSquares__SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'mask_independentsquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+                save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_IndependentSquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+
         if "ReducedTiSg" in ti_methods :
             if verbose:
                 print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT REDUCED TI AND SG")
@@ -125,15 +139,15 @@ def launcher(params,
             ti_list.extend(ti_list_RTS)
             cd_list.extend(cd_list_RTS)
             simgrid_mask = None
+            if saveMask:
+                if verbose:
+                    print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> UNABLE TO SAVE MASK FOR METHOD REDUCED TI SG AS FUNCTION IS NOT YET IMPLEMENTED")
             
         timelog = end_timer_and_log(t0_sgticd, timelog)
             
         if verbose:
-            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> Data dimension : \n·····>> Number of rows : {nr} \n·····>> Number of columns : {nc}")
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
-        
-        if saveMask:
-            save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -199,10 +213,6 @@ def launcher(params,
         n_sim_variables=1
         aux_var_names = "_".join(auxTI_var.keys())
         
-        #SAVING THE MASKS
-        plot_mask(simgrid_mask, background_image=reference_var, alpha=0.5, title=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}", show=False)
-        save_plot(fname=f"msk TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
-        
         #PARAMETERS FOR RETRIEVING THE SIMULATION
         sim = deesse_output['sim']
         all_sim_img = gn.img.gatherImages(sim) #Using the inplace function of geone to gather images
@@ -244,23 +254,23 @@ def launcher(params,
                 
         #1 ENTROPY
         plot_entropy(ent, background_image=reference_var, categ_var_name="Lithofacies")
-        save_plot(fname=prefix_entropy+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+        save_plot(fname=prefix_entropy+f"_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #2 HISTOGRAM DISSIMILARITY
         plot_histogram_dissimilarity(dist_hist, nsim, referenceIsPresent=True)
-        save_plot(fname=prefix_histogram_dissimilarity+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+        save_plot(fname=prefix_histogram_dissimilarity+f"_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #3 HISTOGRAMS
         plot_simvar_histograms(all_sim, nsim)
-        save_plot(fname=prefix_simvar_histograms+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+        save_plot(fname=prefix_simvar_histograms+f"_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #4 TOPOLOGICAL ADAJCENCY
         plot_topological_adjacency(dist_topo_hamming, nsim, referenceIsPresent=True)
-        save_plot(fname=prefix_topological_adjacency+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+        save_plot(fname=prefix_topological_adjacency+f"_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #5 PROPORTIONS
         plot_proportions(sim)
-        save_plot(fname=prefix_proportions+f"_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+        save_plot(fname=prefix_proportions+f"_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
         
         #6 STANDARD DEVIATON
         plot_standard_deviation(std_ent, realizations_range1, indicator_name="Entropy")

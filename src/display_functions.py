@@ -55,56 +55,53 @@ def plot_realization(deesse_output, varname='', index_real=0, show=False):
         plt.show()
 
 
-def plot_mask(mask, background_image=None, alpha=0.5, title=None, show=False):
+def plot_mask(mask, title=None, show=False, masking_strategy="unknown"):
     """
-    Superimpose a binary mask onto a background image and display the results with optional legends and title.
-
-    This function visualizes the background image with a mask applied on top, hiding the values of the 
-    background image where the mask is active. The mask is displayed in the specified color, and a title 
-    and legends can be added. The mask can also be transparent depending on the `alpha` parameter.
-
+    Plot a mask over a background image or as a standalone image.
+    This function visualizes a mask, either overlaid on a background image or as a standalone image.
+    If a background image is provided, the mask is displayed with a specified transparency (alpha).
+    If no background image is provided, the mask is displayed in grayscale.
+    
     Parameters:
     ----------
-    mask : numpy array
-        A binary array representing the mask to overlay on the background image. The mask values should be 
-        either 0 or 1, where 1 indicates the presence of the mask.
-    background_image : numpy array, optional
-        The background image on which the mask will be applied. If `None`, only the mask visualization will be shown.
-    mask_color : str, optional
-        The color of the overlayed mask. The default is 'white' for the mask. This color must be a valid name 
-        in matplotlib color schemes.
-    alpha : float, optional
-        The transparency level of the overlayed mask. A value between 0 (transparent) and 1 (opaque). 
-        The default value is 0.5.
+    mask : array-like
+        A 2D array representing the mask to be visualized. Values should be in the range [0, 1].    
     title : str, optional
-        The optional title to display at the top of the image.
+        Title for the plot. If `None`, a default title based on the masking strategy is used.   
     show : bool, optional
-        If `True`, displays the plot immediately. Default is `False`.
-
-    Returns:
+        If `True`, the plot is displayed immediately. Default is `False`.
+    masking_strategy : str, optional
+        A string describing the masking strategy used, which will be included in the plot title if `title` is not provided. Default is "unknown".
+    
+    Returns:    
     -------
     None
 
+    Notes:  
+    -----
+    - The plot is cleared and closed before creating a new one to avoid overlapping plots.
+    - if masking_strategy is ReducedTIsG, the function is not yet capable to display the mask so returns nothing
     """
+    if masking_strategy == "ReducedTiSg":
+        return
+    
     plt.clf()
     plt.close()
     
-    if background_image is not None:
-        if background_image.shape != mask.shape:
-            raise ValueError(f"Error while trying to plot the mask: the shape of the mask {mask.shape} doesn't match the shape of the background_image {background_image.shape}.")
-        masked_background = np.ma.masked_where(mask == 1, background_image)
-        plt.imshow(masked_background, cmap='gray')
-    
-    plt.imshow(mask, cmap='gray', alpha=alpha if background_image is not None else 1, label="Mask")
-    
-    if title:
+    plt.figure()
+
+    plt.imshow(mask, cmap='gray')
+    plt.colorbar(label='Mask value')
+
+    if title is not None:
         plt.title(title)
-    
-    mask_legend = plt.Line2D([0], [0], color="dimgray", label="Mask", alpha=alpha)
-    plt.legend(handles=[mask_legend], loc='upper right')
-    
+    else:
+        plt.title(f"Masking strategy:{masking_strategy}")
+    plt.tight_layout()
+
     if show:
         plt.show()
+    plt.close()
 
 
 def plot_proportions(sim, show=False):
@@ -229,7 +226,6 @@ def plot_entropy(entropy, background_image=None, categ_var_name=None, show=False
         plt.tight_layout()
         
         if show:
-            
             plt.show()
     
     else:
@@ -438,6 +434,7 @@ def plot_general_MDS(global_dissimilarity_matrix, labels, indicator_name='unknow
     
     if show :
         plt.show()
+
 
 def plot_simvar_histograms(simvar_all, nsim, show=False):
     """
