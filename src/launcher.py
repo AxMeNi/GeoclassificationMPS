@@ -148,6 +148,14 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
+
+        #THREE PARAMETERS USED BELOW
+        i_mask = seed
+        nsim=numberofmpsrealizations
+        n_sim_variables=1
+        aux_var_names = "_".join(auxTI_var.keys())
+
+        
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
         # xx = im.xx()[0]
@@ -206,13 +214,7 @@ def launcher(params,
             
         if saveOutput:
             save_simulation(deesse_output, params, output_directory=deesse_output_folder_complete)
-        
-        #THREE PARAMETERS USED BELOW
-        i_mask = seed
-        nsim=numberofmpsrealizations
-        n_sim_variables=1
-        aux_var_names = "_".join(auxTI_var.keys())
-        
+    
         #PARAMETERS FOR RETRIEVING THE SIMULATION
         sim = deesse_output['sim']
         all_sim_img = gn.img.gatherImages(sim) #Using the inplace function of geone to gather images
@@ -284,7 +286,7 @@ def launcher(params,
         
         time_folder = os.path.join(output_directory, plot_output_folder, "time")
         os.makedirs(time_folder, exist_ok=True)
-        timelogname = os.path.join(time_folder, f"timing_log_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.csv")
+        timelogname = os.path.join(time_folder, f"timing_log.csv") #_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}
         
         save_log_to_csv(timelog, filename=timelogname)
         
