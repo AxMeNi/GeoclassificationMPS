@@ -14,7 +14,7 @@ import pickle
 
 
 
-def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments='', cmap='tab20'):
+def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments='',):
     """
     Save a mask array to a .npy file and log the details in a CSV file.
 
@@ -50,13 +50,6 @@ def save_mask(mask_value, output_directory = 'output/', file_name='simulation_gr
     os.makedirs(output_directory, exist_ok=True)
     mask_path = os.path.join(output_directory, file_name)
     np.save(mask_path, mask_value)
-
-    image_path = os.path.join(output_directory, file_name + '.png')
-    plt.figure(figsize=(6, 6))
-    plt.imshow(mask_value, cmap=cmap)
-    plt.axis('off')
-    plt.savefig(image_path, bbox_inches='tight', pad_inches=0)
-    plt.close()
 
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = data_init.copy()
