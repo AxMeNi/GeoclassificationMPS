@@ -15,6 +15,35 @@ import pickle
 
 
 def save_mask(mask_value, output_directory = 'output/', file_name='simulation_grid_mask', params={}, comments=''):
+    """
+    Save a mask array to a .npy file and log the details in a CSV file.
+
+    Parameters
+    ----------
+    mask_value : np.ndarray
+        The mask array to be saved.
+    output_directory : str, optional (default: 'output/')
+        The directory where the mask file and log file will be saved.
+    file_name : str, optional (default: 'simulation_grid_mask')
+        The name of the file (without extension) to save the mask as.
+    params : dict, optional (default: {})
+        A dictionary of additional parameters to log in the CSV file.
+    comments : str, optional (default: '')
+        Additional comments to log in the CSV file.
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - The mask is saved in NumPy .npy format.
+    - A CSV log file ('indicators_log.csv') is created or updated in the output directory to record:
+        - Date and time of saving,
+        - Mask name,
+        - Additional comments,
+        - Any extra parameters provided in `params`.
+    """
     data_init = {}
     for param, value in params.items():
         data_init[param] = [value]
