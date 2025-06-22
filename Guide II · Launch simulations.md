@@ -20,8 +20,12 @@ All the parameters related to the simulations can be changed in the INTERFACE.PY
   - `ti_pct_area`
   - `ti_nshapes`
   - `nRandomTICDsets`
-
-  It is required to specify directly their value in the get_simulation_info function (e.g. set `ti_pct_area = 55` if the percentage of the data grid covered by the training image is 55 %)
+  - `output_dir`
+  They will be successively prompted when excuting the Python file with the command 
+  ```shell
+  python path/to/main.py -s
+  ```
+  
 ### ⮕ General parameters
 - All parameters related to the data are stored in the .csv file. Therefore, the first parameter to specify is the path to this CSV file.
 - Specify a list of`seed` for randomization that will be used for all random processes.
@@ -78,3 +82,4 @@ Once all parameters and titles are set, write in your terminal :
 ```shell
 python path/to/main.py -s
 ```
+And provide every desired parameters successively.
