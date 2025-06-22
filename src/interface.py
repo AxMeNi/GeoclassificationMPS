@@ -38,7 +38,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     #C:\Users\00115212\Documents\
     
     #csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
-    csv_file_path = "./data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
+    csv_file_path = "../data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
     
     # Expected CSV File Format (Columns are separataed by ","):
     #
@@ -110,7 +110,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     saveOutput = True #Only for the DeeSse Output
     saveIndicators = True #For the indicators and the standard deviation of the indicators
     
-    output_directory = arg_output_dir #"./output"  # TO DO MAKE THIS PARAM MORE ACCESSIBLE
+    output_directory = arg_output_dir #"../output"  # TO DO MAKE THIS PARAM MORE ACCESSIBLE
     
     deesse_output_folder = "deesse_output"
     prefix_deesse_output = "simulation"
@@ -122,7 +122,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
     prefix_std_deviation = "std_deviation"
-    reference_var = np.load(r"./data/grid_geo.npy") # TO DO MAKE THIS PARAM MORE ACCESSIBLE 
+    reference_var = np.load(r"../data/grid_geo.npy") # TO DO MAKE THIS PARAM MORE ACCESSIBLE 
     
     ##################### SHORTEN THE SIMULATION #####################
 

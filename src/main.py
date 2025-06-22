@@ -161,6 +161,13 @@ if __name__ == '__main__':
     if "-v" in sys.argv:
         verbose = True
     if "-s" in sys.argv:
-        run_simulation(verbose)
+        arg_seed = int(input(">> Provide a seed: "))
+        arg_n_ti = int(input(">> Provide a number of training image: "))
+        arg_ti_pct_area = float(input(">> Provide a percentage of coverage of the data grid for the TI: "))
+        arg_num_shape = int(input(">> Provide a number of shapes: "))
+        arg_aux_vars = input(">> Provide a list of auxiliary variables separated by comas (,): ")
+        arg_output_dir = input(">> Provide the output dir: ")
+        arg_aux_vars = arg_aux_vars.split(',')
+        run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars, arg_output_dir)
     elif "-t" in sys.argv:
         run_tests(verbose)

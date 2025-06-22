@@ -81,6 +81,12 @@ def launcher(params,
         
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
 
+    #THREE PARAMETERS USED BELOW
+    i_mask = seed
+    nsim=numberofmpsrealizations
+    n_sim_variables=1
+    aux_var_names = "_".join(auxTI_var.keys())
+
     #---- METHOD 1 : for 1 set of TI and CD ----#
     
     if nRandomTICDsets == 1 :
@@ -148,13 +154,6 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
-
-        #THREE PARAMETERS USED BELOW
-        i_mask = seed
-        nsim=numberofmpsrealizations
-        n_sim_variables=1
-        aux_var_names = "_".join(auxTI_var.keys())
-
         
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
