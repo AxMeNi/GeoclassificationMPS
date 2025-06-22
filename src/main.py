@@ -165,7 +165,7 @@ if __name__ == '__main__':
         arg_n_ti = int(input(">> Provide a number of training image: "))
         arg_ti_pct_area = float(input(">> Provide a percentage of coverage of the data grid for the TI: "))
         arg_num_shape = int(input(">> Provide a number of shapes: "))
-        arg_aux_vars = input(">> Provide a list of auxiliary variables separated by comas (,): ")
+        arg_aux_vars = input(">> Provide a list of auxiliary variables separated by commas (,): ")
         arg_output_dir = input(">> Provide the output dir: ")
         arg_aux_vars = list(arg_aux_vars.split(','))
         run_simulation(verbose, arg_seed, arg_n_ti, arg_ti_pct_area, arg_num_shape, arg_aux_vars, arg_output_dir)

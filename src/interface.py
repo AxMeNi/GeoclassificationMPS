@@ -34,10 +34,6 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    #\group\ses001\amengelle\
-    #C:\Users\00115212\Documents\
-    
-    #csv_file_path = "/group/ses001/amengelle/GeoclassificationMPS/data/data_csv.csv"
     csv_file_path = "../data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
     
     # Expected CSV File Format (Columns are separataed by ","):
