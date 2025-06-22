@@ -68,8 +68,6 @@ def launcher(params,
     
     deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
     plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
-    #print('deesse_output_folder_complete: '+deesse_output_folder_complete)
-    #print('plot_output_folder_complete: '+plot_output_folder_complete)
     
     ti_list = []
     cd_list = []
@@ -150,6 +148,23 @@ def launcher(params,
                     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> UNABLE TO SAVE MASK FOR METHOD REDUCED TI SG AS FUNCTION IS NOT YET IMPLEMENTED")
             
         timelog = end_timer_and_log(t0_sgticd, timelog)
+
+        for var1 in ti_list:
+            for var2 in cd_list:
+                len1 = var1.val.shape[0]
+                len2 = var2.val.shape[0]
+                for i in range(1, len1): 
+                    plt.subplot(1,4,1)   
+                    plt.hist(var1.val[i,0,:,:].flatten(), bins=50)
+                    print(var1.val[i,0,:,:])
+                    plt.subplot(1,4,2) 
+                    plt.imshow(var1.val[i,0,:,:])
+                    plt.subplot(1,4,3)
+                    plt.hist(var2.val[i-1,0,:,:].flatten(), bins=50)
+                    plt.subplot(1,4,4) 
+                    plt.imshow(var2.val[i-1,0,:,:])
+                    plt.plot()
+                    plt.show()
             
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
