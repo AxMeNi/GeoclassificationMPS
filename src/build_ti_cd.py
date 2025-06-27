@@ -109,10 +109,6 @@ def build_ti_cd(ti_frames_list,
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 
                 ti.append_var(val=var_value_cut, varname=var_name)
-                           
-            gn.img.writeImageTxt(f"TI{i}.txt", ti)      
-            ti = gn.img.readImageTxt(f"TI{i}.txt")
-            os.remove(f"TI{i}.txt")
             
             ti_list.append(ti)
             
@@ -167,10 +163,6 @@ def build_ti_cd(ti_frames_list,
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
             cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             cd.append_var(val=var_value_masked, varname=var_name)
-        
-    gn.img.writeImageTxt(f"{name}.txt", cd)      
-    cd = gn.img.readImageTxt(f"{name}.txt") 
-    os.remove(f"{name}.txt")
     
     cd_list.append(cd)    
 
@@ -200,11 +192,7 @@ def build_ti_cd(ti_frames_list,
             else:
                 var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
                 cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
-                cd.append_var(val=var_value_masked, varname=var_name)
-        
-        gn.img.writeImageTxt(f"{name}.txt", cd)      
-        cd = gn.img.readImageTxt(f"{name}.txt")
-        os.remove(f"{name}.txt")        
+                cd.append_var(val=var_value_masked, varname=var_name)   
         
         cd_list.append(cd)  
     
