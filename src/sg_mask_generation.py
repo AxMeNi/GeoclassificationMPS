@@ -44,6 +44,7 @@ def create_sg_mask(auxTI_var, auxSG_var, nr, nc):
         sim_mask = np.where(np.isnan(var_value), 0, sim_mask)
     for var_name, var_value in auxSG_var.items():
         sim_mask = np.where(np.isnan(var_value), 0, sim_mask)
+    print(np.sum(sim_mask))
     return sim_mask
 
 

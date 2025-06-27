@@ -150,23 +150,6 @@ def launcher(params,
         timelog = end_timer_and_log(t0_sgticd, timelog)
         
 
-        plt.subplot(1,4,1)   
-        plt.hist(ti_list[0].val[0,0,:,:].flatten(), bins=50)
-        plt.subplot(1,4,2) 
-        plt.imshow(ti_list[0].val[0,0,:,:])
-        plt.subplot(1,4,3)
-        plt.hist(sim_var['grid_geo'].flatten(), bins=50)
-        plt.subplot(1,4,4) 
-        plt.imshow(sim_var['grid_geo'])
-        plt.plot()
-        plt.show()
-        print(np.unique(ti_list[0].val[1,0,:,:].flatten())[0], np.unique(cd_list[0].val[0,0,:,:].flatten())[0])
-        print(np.setdiff1d(np.unique(ti_list[0].val[1,0,:,:].flatten()), np.unique(cd_list[0].val[0,0,:,:].flatten())))
-        print(np.unique(ti_list[0].val[1,0,:,:].flatten()) == np.unique(cd_list[0].val[0,0,:,:].flatten()))
-        print(np.unique(ti_list[0].val[2,0,:,:].flatten()), np.unique(cd_list[0].val[1,0,:,:].flatten()))
-        print(np.unique(ti_list[0].val[2,0,:,:].flatten()) == np.unique(cd_list[0].val[1,0,:,:].flatten()))
-        exit()
-
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
@@ -221,7 +204,7 @@ def launcher(params,
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CREATED DEESSE INPUT, STARTING SIMULATION")        
         
-        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)
+        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads, verbose = 2)
 
         timelog = end_timer_and_log(t0_sim, timelog)
         

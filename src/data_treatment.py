@@ -127,21 +127,8 @@ def create_variables(csv_file_path):
         grid = row['grid']
         array_data = np.load(path)
         
-        #SIMULATED
-        if nature == 'sim':
-            if var_name != 'nan' :
-                if var_name not in names_var[0]:
-                    names_var[0].append(var_name)
-                    sim_var[var_name] = array_data
-                    types_var[0].append(categ_conti)
-                    outputFlag[var_name] = True
-                else:
-                    raise NameError(f"Line {i+1} of the CSV file : Two simulated variables have the same name, please consider naming all of your variables with different names.")
-            else:
-                raise NameError(f"Line {i+1} of the CSV file : One simulated variable has no name, please consider naming all of your variables with different names.")
-        
         #AUXTI
-        elif nature == 'auxTI':
+        if nature == 'auxTI':
             if var_name != 'nan' :
                 if var_name not in names_var[1]:
                     names_var[1].append(var_name)
@@ -164,7 +151,20 @@ def create_variables(csv_file_path):
                     raise NameError(f"Line {i+1} of the CSV file : Two auxiliary SG variables have the same name, please consider naming all of your variables with different names.")
             else:
                 raise NameError(f"Line {i+1} of the CSV file : One auxiliary SG variable has no name, please consider naming all of your variables with different names.")    
-            
+        
+        #SIMULATED
+        elif nature == 'sim':
+            if var_name != 'nan' :
+                if var_name not in names_var[0]:
+                    names_var[0].append(var_name)
+                    sim_var[var_name] = array_data
+                    types_var[0].append(categ_conti)
+                    outputFlag[var_name] = True
+                else:
+                    raise NameError(f"Line {i+1} of the CSV file : Two simulated variables have the same name, please consider naming all of your variables with different names.")
+            else:
+                raise NameError(f"Line {i+1} of the CSV file : One simulated variable has no name, please consider naming all of your variables with different names.")
+        
         #CONDIM
         elif nature == 'condIm':
             if var_name != 'nan' :
@@ -180,7 +180,7 @@ def create_variables(csv_file_path):
         else: 
             raise ValueError(f"Line {i+1} of the CSV file : One variable has an invalid nature ({nature}), please consider chosing between the following natures: \
                             \n    - \"sim\" for a simulated variable;\
-                            \n    - \"auxTI\" for an auxiliary variable describing the simulated variable(s) in the TI;\
+                            \n    - \"auxTI\" for an auxiliary variable describing the variability of the simulated variable(s) in the TI;\
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
                         
