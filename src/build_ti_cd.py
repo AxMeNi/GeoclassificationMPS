@@ -104,22 +104,23 @@ def build_ti_cd(ti_frames_list,
             
             # *** AUXILIARY variables first ***
             for var_name, var_value in auxTI_var.items():
-                ti.append_var(val=var_value, varname=var_name)
-            
+                var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
+                ti.append_var(val=var_value_masked, varname=var_name)
+
             # *** Then SIMULATED variables ***
             for var_name, var_value in sim_var.items():
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 ti.append_var(val=var_value_masked, varname=var_name)
             
             ti_list.append(ti)
-          
+
     # Building conditioning AUXILIARY data
     cd_list = []
 
     name = "CondData{}_{}".format(i,time())
     cd = gn.img.Img(nv=0, name=name)
     
-    for var_name, var_value in auxSG_var.items():
+    for aux_var_idx, (var_name, var_value) in enumerate(auxSG_var.items()):
         if var_value.shape != (nr_simgrid,nc_simgrid) :    
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
 
@@ -138,6 +139,19 @@ def build_ti_cd(ti_frames_list,
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
             cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             cd.append_var(val=var_value_masked, varname=var_name)
+        
+        if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
+            print("NOT EQUAL")
+            import matplotlib.pyplot as plt
+            plt.subplot(1,2,1)
+            plt.hist(ti_list[0].val[aux_var_idx, 0, :, :].flatten(), bins=50)
+            plt.subplot(1,2,2)
+            plt.hist(cd.val[-1, 0, :, :].flatten(), bins=50)
+            plt.show()
+            if np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))) != np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))):
+                print("NOT SAME MIN")
+                if np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))) != np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
+                    print("NOT SAME MAX")
     
     cd_list.append(cd)    
 

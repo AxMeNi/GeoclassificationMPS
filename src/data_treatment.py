@@ -76,17 +76,17 @@ def create_variables(csv_file_path):
 
     names_var : list of lists
         A list of four sublists, where each sublist contains the names of the variables for each category:
-        - `names_var[0]`: List of names of simulated variables.
-        - `names_var[1]`: List of names of auxiliary TI variables.
-        - `names_var[2]`: List of names of auxiliary SG variables.
-        - `names_var[3]`: List of names of conditioning image variables.
+        - `names_var[0]`: List of names of auxiliary TI variables.
+        - `names_var[1]`: List of names of auxiliary SG variables.
+        - `names_var[2]`: List of names of conditioning image variables.
+        - `names_var[3]`: List of names of simulated variables.
 
     types_var : list of lists
         A list of four sublists, where each sublist contains the types (categorical or continuous) of the variables for each category:
-        - `types_var[0]`: List of types of simulated variables.
-        - `types_var[1]`: List of types of auxiliary TI variables.
-        - `types_var[2]`: List of types of auxiliary SG variables.
-        - `types_var[3]`: List of types of conditioning image variables.
+        - `types_var[0]`: List of types of auxiliary TI variables.
+        - `types_var[1]`: List of types of auxiliary SG variables.
+        - `types_var[2]`: List of types of conditioning image variables.
+        - `types_var[3]`: List of types of simulated variables.
 
     Raises:
     ------
@@ -101,18 +101,20 @@ def create_variables(csv_file_path):
     -----
     - The function assumes that each variable has a unique and valid name.
     - The nature of the variable determines its category, which can be one of the following:
-        - "sim" for a simulated variable.
+
         - "auxTI" for an auxiliary variable describing the simulated variable(s) in the TI.
         - "auxSG" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid.
         - "condIm" for a conditioning image variable.
+        - "sim" for a simulated variable.
     """
     
     data_df = pd.read_csv(csv_file_path, sep=',')
     
-    sim_var = {}
+
     auxTI_var = {}
     auxSG_var = {}
     condIm_var = {}
+    sim_var = {}
     outputFlag = {} #To precise which variables will be retrieved in the output
 
     names_var = [[], [], [], []]
@@ -130,10 +132,10 @@ def create_variables(csv_file_path):
         #AUXTI
         if nature == 'auxTI':
             if var_name != 'nan' :
-                if var_name not in names_var[1]:
-                    names_var[1].append(var_name)
+                if var_name not in names_var[0]:
+                    names_var[0].append(var_name)
                     auxTI_var[var_name] = array_data
-                    types_var[1].append(categ_conti)
+                    types_var[0].append(categ_conti)
                     outputFlag[var_name] = False
                 else:
                     raise NameError(f"Line {i+1} of the CSV file : Two auxiliary TI variables have the same name, please consider naming all of your variables with different names.")
@@ -143,40 +145,40 @@ def create_variables(csv_file_path):
         #AUXSG
         elif nature == 'auxSG':
             if var_name != 'nan' :
-                if var_name not in names_var[2]:
-                    names_var[2].append(var_name)
+                if var_name not in names_var[1]:
+                    names_var[1].append(var_name)
                     auxSG_var[var_name] = array_data
-                    types_var[2].append(categ_conti)
+                    types_var[1].append(categ_conti)
                 else:
                     raise NameError(f"Line {i+1} of the CSV file : Two auxiliary SG variables have the same name, please consider naming all of your variables with different names.")
             else:
                 raise NameError(f"Line {i+1} of the CSV file : One auxiliary SG variable has no name, please consider naming all of your variables with different names.")    
         
-        #SIMULATED
-        elif nature == 'sim':
-            if var_name != 'nan' :
-                if var_name not in names_var[0]:
-                    names_var[0].append(var_name)
-                    sim_var[var_name] = array_data
-                    types_var[0].append(categ_conti)
-                    outputFlag[var_name] = True
-                else:
-                    raise NameError(f"Line {i+1} of the CSV file : Two simulated variables have the same name, please consider naming all of your variables with different names.")
-            else:
-                raise NameError(f"Line {i+1} of the CSV file : One simulated variable has no name, please consider naming all of your variables with different names.")
-        
         #CONDIM
         elif nature == 'condIm':
             if var_name != 'nan' :
-                if var_name not in names_var[3]:
-                    names_var[3].append(var_name)
+                if var_name not in names_var[2]:
+                    names_var[2].append(var_name)
                     condIm_var[var_name] = array_data
-                    types_var[3].append(categ_conti)
+                    types_var[2].append(categ_conti)
                 else:
                     raise NameError(f"Line {i+1} of the CSV file : Two condtioning image variables have the same name, please consider naming all of your variables with different names.")
             else:
                 raise NameError(f"Line {i+1} of the CSV file : One conditioning image variable has no name, please consider naming all of your variables with different names.")
         
+        #SIMULATED
+        elif nature == 'sim':
+            if var_name != 'nan' :
+                if var_name not in names_var[3]:
+                    names_var[3].append(var_name)
+                    sim_var[var_name] = array_data
+                    types_var[3].append(categ_conti)
+                    outputFlag[var_name] = True
+                else:
+                    raise NameError(f"Line {i+1} of the CSV file : Two simulated variables have the same name, please consider naming all of your variables with different names.")
+            else:
+                raise NameError(f"Line {i+1} of the CSV file : One simulated variable has no name, please consider naming all of your variables with different names.")
+            
         else: 
             raise ValueError(f"Line {i+1} of the CSV file : One variable has an invalid nature ({nature}), please consider chosing between the following natures: \
                             \n    - \"sim\" for a simulated variable;\
@@ -184,7 +186,7 @@ def create_variables(csv_file_path):
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
                         
-    return sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, outputFlag
+    return auxTI_var, auxSG_var, condIm_var, sim_var, names_var, types_var, outputFlag
  
 
 def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_var, novalue=-9999999):
@@ -214,16 +216,16 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         Dictionary containing conditioning iamge variables.
     names_var : list of lists
         A list containing four sub-lists:
-        - `names_var[0]`: Names of simulated variables.
-        - `names_var[1]`: Names of auxTI variables.
-        - `names_var[2]`: Names of auxSG variables.
-        - `names_var[3]`: Names of conditioning image variables.
+        - `names_var[0]`: Names of auxTI variables.
+        - `names_var[1]`: Names of auxSG variables.
+        - `names_var[2]`: Names of conditioning image variables.
+        - `names_var[3]`: Names of simulated variables.
     types_var : list of lists
         A list containing four sub-lists:
-        - `types_var[0]`: Expected types ('continuous' or 'categorical') of simulated variables.
-        - `types_var[1]`: Expected types of auxTI variables.
-        - `types_var[2]`: Expected types of auxSG variables.
-        - `types_var[3]`: Expected types of conditioning image variables.
+        - `types_var[0]`: Expected types of auxTI variables.
+        - `types_var[1]`: Expected types of auxSG variables.
+        - `types_var[2]`: Expected types of conditioning image variables.
+        - `types_var[3]`: Expected types ('continuous' or 'categorical') of simulated variables.
     novalue : scalar
         The value used to represent missing data in the variables, which will be replaced with `np.nan`.
 
@@ -263,10 +265,10 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         raise KeyError(f"No auxiliary variable was provided. Please select at least one auxiliary variable.")
     
     # Check types
-    for var_i in range(len(names_var[0])):
-        varname_sim = names_var[0][var_i]
+    for var_i in range(len(names_var[3])):
+        varname_sim = names_var[3][var_i]
         sim_array = sim_var[varname_sim]
-        expected_type = types_var[0][var_i]
+        expected_type = types_var[3][var_i]
         if expected_type == "continuous":
             if not np.issubdtype(sim_array.dtype, np.number):
                 raise TypeError(f"Type mismatch for sim var '{varname_sim}'. Expected numerical type for 'continuous', got {sim_array.dtype}.")    
@@ -276,10 +278,10 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         else:
             raise ValueError(f"Invalid type for {varname_sim} '{expected_type}' specified. Expected 'continuous' or 'categorical'.")
                 
-    for var_i in range(len(names_var[1])):
-        varname_auxTI = names_var[1][var_i]
+    for var_i in range(len(names_var[0])):
+        varname_auxTI = names_var[0][var_i]
         auxTI_array = auxTI_var[varname_auxTI]
-        expected_type = types_var[1][var_i]
+        expected_type = types_var[0][var_i]
         if expected_type == "continuous":
             if not np.issubdtype(auxTI_array.dtype, np.number):
                 raise TypeError(f"Type mismatch for auxTI var '{varname_auxTI}'. Expected numerical type for 'continuous', got {auxTI_array.dtype}.")    
@@ -289,10 +291,10 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         else:
             raise ValueError(f"Invalid type for {varname_auxTI} '{expected_type}' specified. Expected 'continuous' or 'categorical'.")
     
-    for var_i in range(len(names_var[2])):
-        varname_auxSG = names_var[2][var_i]
+    for var_i in range(len(names_var[1])):
+        varname_auxSG = names_var[1][var_i]
         auxSG_array = auxSG_var[varname_auxSG]
-        expected_type = types_var[2][var_i]
+        expected_type = types_var[1][var_i]
         if expected_type == "continuous":
             if not np.issubdtype(auxSG_array.dtype, np.number):
                 raise TypeError(f"Type mismatch for auxSG var '{varname_auxSG}'. Expected numerical type for 'continuous', got {auxSG_array.dtype}.")    
@@ -302,10 +304,10 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
         else:
             raise ValueError(f"Invalid type for {varname_auxSG} '{expected_type}' specified. Expected 'continuous' or 'categorical'.")
             
-    for var_i in range(len(names_var[3])):
-        varname_condIm = names_var[3][var_i]
+    for var_i in range(len(names_var[2])):
+        varname_condIm = names_var[2][var_i]
         condIm_array = condIm_var[varname_condIm]
-        expected_type = types_var[3][var_i]
+        expected_type = types_var[2][var_i]
         if expected_type == "continuous":
             if not np.issubdtype(condIm_array.dtype, np.number):
                 raise TypeError(f"Type mismatch for condIm var '{varname_condIm}'. Expected numerical type for 'continuous', got {condIm_array.dtype}.")    
@@ -324,11 +326,15 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
             sim_var[key] = np.where(sim_var[key] == novalue, np.nan, sim_var[key])
         if sim_var[key].shape != shape_TI:
                 raise ValueError(f"Simulated variable does not have the same dimensions XY for '{first_sim}' and '{key}'.")
+        
+    first_aux = next(iter(auxTI_var))
+    shape_TI = auxTI_var[first_aux].shape
+
     for key in auxTI_var:
         if np.any(auxTI_var[key] == novalue):
             auxTI_var[key] = np.where(auxTI_var[key] == novalue, np.nan, auxTI_var[key])
         if auxTI_var[key].shape != shape_TI:
-                raise ValueError(f"Auxiliary TI variable does not have the same dimensions XY for '{first_var}' and '{key}'.")
+                raise ValueError(f"Auxiliary TI variable does not have the same dimensions XY for '{first_aux}' and '{key}'.")
     
     first_aux = next(iter(auxSG_var))
     shape_SG = auxSG_var[first_aux].shape
@@ -345,21 +351,21 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
                 raise ValueError(f"Conditioning image variable does not have the same dimensions XY for '{first_aux}' and '{key}'.")
     
     #Check that the names of the conditioning data are present in the list of the names of the simulated variables
-    for name_condImvar in names_var[3]:
-        if name_condImvar not in names_var[0]:
+    for name_condImvar in names_var[2]:
+        if name_condImvar not in names_var[3]:
             raise NameError(f"The name of the conditioning image variable '{name_condImvar}' does not match any of the simulated variables. Conditioning variables must be named according to their corresponding simulated variables.")
     
     #Check that each auxTI has one auxSG
-    for name_auxTIvar in names_var[1]:
-        if name_auxTIvar not in names_var[2] :
+    for name_auxTIvar in names_var[0]:
+        if name_auxTIvar not in names_var[1] :
             raise NameError(f"The auxiliary TI variable '{name_auxTIvar}' has not matching auxSG_var. All auxiliary variables must be TI and conditioning.")
     
     #Check that the range of the values of each auxTI is the same as its corresponding auxSG
-    for name_auxvar in names_var[1]:
+    for name_auxvar in names_var[0]:
         if np.nanmin(auxTI_var[name_auxvar]) != np.nanmin(auxSG_var[name_auxvar]) or np.nanmax(auxTI_var[name_auxvar]) != np.nanmax(auxSG_var[name_auxvar]):
             raise ValueError(f"The auxiliary variable {name_auxvar} has not the same min and max value in the TI and in the SG. An auxiliary variable must have the same range of value in the TI and in the SG.")
     
-    return sim_var, auxTI_var, auxSG_var, condIm_var
+    return  auxTI_var, auxSG_var, condIm_var, sim_var
 
  
 def count_variables(names_var):
@@ -370,10 +376,10 @@ def count_variables(names_var):
     ----------
     names_var : list of lists
         A list of four sublists, where each sublist contains the names of the variables for each category:
-        - `names_var[0]`: List of names of simulated variables.
-        - `names_var[1]`: List of names of auxiliary TI variables.
-        - `names_var[2]`: List of names of auxiliary SG variables.
-        - `names_var[3]`: List of names of conditioning image variables.
+        - `names_var[0]`: List of names of auxiliary TI variables.
+        - `names_var[1]`: List of names of auxiliary SG variables.
+        - `names_var[2]`: List of names of conditioning image variables.
+        - `names_var[3]`: List of names of simulated variables.
 
     Returns:
     -------

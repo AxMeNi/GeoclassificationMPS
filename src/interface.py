@@ -128,8 +128,8 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     check_ti_methods(ti_methods)
     
-    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
-    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
+    auxTI_var_temp, auxSG_var_temp, condIm_var, sim_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
+    auxTI_var_temp, auxSG_var_temp, condIm_var, sim_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
     
     ############################################################################################################
     ### MOVE THAT INTO A FUNCTION ################################################################################

@@ -148,10 +148,16 @@ def launcher(params,
                     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> UNABLE TO SAVE MASK FOR METHOD REDUCED TI SG AS FUNCTION IS NOT YET IMPLEMENTED")
             
         timelog = end_timer_and_log(t0_sgticd, timelog)
-        
+
+        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[0, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[0, 0, :, :], nan=0.))))
+        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[1, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[1, 0, :, :], nan=0.))))
+        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[2, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[2, 0, :, :], nan=0.))))
+        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[0, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[0, 0, :, :], nan=0.))))
+        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[1, 0, :, :], nan=0.))))
+        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[2, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[2, 0, :, :], nan=0.))))
 
         if verbose:
-            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
+            print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION >> NUMBER OF ROWS : {nr} >> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
         
             
