@@ -51,7 +51,9 @@ def gen_ti_frame_circles(nr, nc, ti_pct_area = 90, ti_ndisks = 10, seed = None):
         rr, cc = disk((rndr[i], rndc[i]), radius, shape=(nr, nc))
         frame[rr, cc] = 1
     check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
-    while check_pct < ti_pct_area:
+    
+    while check_pct < 0.95*ti_pct_area or check_pct > 1.05*ti_pct_area:
+        frame = np.zeros((nr, nc))
         for i in range(ti_ndisks):
             rr, cc = disk((rndr[i], rndc[i]), radius + 1, shape=(nr, nc))
             frame[rr, cc] = 1
@@ -107,7 +109,8 @@ def gen_ti_frame_squares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, seed = None
 
     check_pct = np.sum(frame.flatten()) / (nc * nr) * 100
 
-    while check_pct < ti_pct_area:
+    while check_pct < 0.95*ti_pct_area or check_pct > 1.05*ti_pct_area:
+        frame = np.zeros((nr, nc))
         for i in range(ti_nsquares):
             rr_start = max(0, rndr[i] - (side_length // 2 + 1))
             cc_start = max(0, rndc[i] - (side_length // 2 + 1))

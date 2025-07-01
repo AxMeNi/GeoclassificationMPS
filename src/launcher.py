@@ -68,8 +68,6 @@ def launcher(params,
     
     deesse_output_folder_complete = os.path.join(output_directory, deesse_output_folder)
     plot_output_folder_complete = os.path.join(output_directory, plot_output_folder)
-    #print('deesse_output_folder_complete: '+deesse_output_folder_complete)
-    #print('plot_output_folder_complete: '+plot_output_folder_complete)
     
     ti_list = []
     cd_list = []
@@ -80,6 +78,12 @@ def launcher(params,
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATED CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
         
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
+
+    #THREE PARAMETERS USED BELOW
+    i_mask = seed
+    nsim=numberofmpsrealizations
+    n_sim_variables=1
+    aux_var_names = "_".join(auxTI_var.keys())
 
     #---- METHOD 1 : for 1 set of TI and CD ----#
     
@@ -144,17 +148,11 @@ def launcher(params,
                     print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> UNABLE TO SAVE MASK FOR METHOD REDUCED TI SG AS FUNCTION IS NOT YET IMPLEMENTED")
             
         timelog = end_timer_and_log(t0_sgticd, timelog)
-            
+        
+
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION : \n·····>> NUMBER OF ROWS : {nr} \n·····>> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
-
-        #THREE PARAMETERS USED BELOW
-        i_mask = seed
-        nsim=numberofmpsrealizations
-        n_sim_variables=1
-        aux_var_names = "_".join(auxTI_var.keys())
-
         
             
         # im = gn.img.Img(nc, nr, 1, 1, 1, 1, 0, 0, 0, nv=0)
@@ -180,7 +178,7 @@ def launcher(params,
         outputFlag = []
         for name in names:
             outputFlag.append(outputVarFlag[name])
-        
+
         deesse_input = gn.deesseinterface.DeesseInput(
             nx=cc_sg, ny=rr_sg, nz=1,
             sx=1, sy=1, sz=1,
@@ -200,13 +198,14 @@ def launcher(params,
             nrealization=numberofmpsrealizations
         ) 
         
+        
         t0_sim = start_timer(f"simulation {seed}")
         
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> CREATED DEESSE INPUT, STARTING SIMULATION")        
         
-        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads)
-        
+        deesse_output = gn.deesseinterface.deesseRun(deesse_input, nthreads = nthreads, verbose = 2)
+
         timelog = end_timer_and_log(t0_sim, timelog)
         
         if verbose:
