@@ -1,4 +1,4 @@
 log/*
 output*
 *.zip
-src/__pycache__
+src/__pycache__/*

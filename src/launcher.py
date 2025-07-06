@@ -149,13 +149,6 @@ def launcher(params,
             
         timelog = end_timer_and_log(t0_sgticd, timelog)
 
-        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[0, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[0, 0, :, :], nan=0.))))
-        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[1, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[1, 0, :, :], nan=0.))))
-        print(np.min(np.unique(np.nan_to_num(ti_list[0].val[2, 0, :, :], nan=0.))), np.min(np.unique(np.nan_to_num(cd_list[0].val[2, 0, :, :], nan=0.))))
-        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[0, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[0, 0, :, :], nan=0.))))
-        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[1, 0, :, :], nan=0.))))
-        print(np.max(np.unique(np.nan_to_num(ti_list[0].val[2, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(cd_list[0].val[2, 0, :, :], nan=0.))))
-
         if verbose:
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + f" <> DATA DIMENSION >> NUMBER OF ROWS : {nr} >> NUMBER OF COLUMNS : {nc}")
             print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> FINISHED THE CREATION OF SG, CD AND TI")
@@ -184,7 +177,8 @@ def launcher(params,
         outputFlag = []
         for name in names:
             outputFlag.append(outputVarFlag[name])
-
+        print(cd_list, names)
+        exit()
         deesse_input = gn.deesseinterface.DeesseInput(
             nx=cc_sg, ny=rr_sg, nz=1,
             sx=1, sy=1, sz=1,
