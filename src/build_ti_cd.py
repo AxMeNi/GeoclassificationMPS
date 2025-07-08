@@ -142,12 +142,6 @@ def build_ti_cd(ti_frames_list,
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
             print("NOT EQUAL")
-            # import matplotlib.pyplot as plt
-            # plt.subplot(1,2,1)
-            # plt.hist(ti_list[0].val[aux_var_idx, 0, :, :].flatten(), bins=50)
-            # plt.subplot(1,2,2)
-            # plt.hist(cd.val[-1, 0, :, :].flatten(), bins=50)
-            # plt.show()
             min1, min2, max1, max2 = np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))),  np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))), np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.)))
             if min1 != min2 :
                 print("NOT SAME MIN")
