@@ -64,6 +64,7 @@ def build_ti_cd(ti_frames_list,
     - For conditioning data, auxiliary variables (`auxSG_var`) are applied to control non-stationarity within the simulation grid.
     - Optional conditioning simulated data (`condIm_var`) is also included if provided.
     """
+    expMax = 0
     # Building TI(s)
     ti_list = []
     
@@ -142,11 +143,17 @@ def build_ti_cd(ti_frames_list,
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
             print("NOT EQUAL")
-            min1, min2, max1, max2 = np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))),  np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))), np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.)))
-            if min1 != min2 :
-                print(min1, min2)
+            minti, mincd, maxti, maxcd = np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))),  np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))), np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.)))
+            ###----## BASED ON GEONE TEST ##----###
+            new_min_ti = min ( mincd, minti )
+            new_max_ti = max ( maxcd, maxti )
+            expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1+0.01,expMax)
+            print(expMax)
+            ########################################
+            if minti != mincd :
+                
                 print("NOT SAME MIN")
-            if  max1 != max2:
+            if  maxti != maxcd:
                 print("NOT SAME MAX")
         #################################
     cd_list.append(cd)    
@@ -177,7 +184,7 @@ def build_ti_cd(ti_frames_list,
         
         cd_list.append(cd)  
     
-    return ti_list, cd_list
+    return ti_list, cd_list, expMax
 
 
 def gen_n_random_ti_cd(n, nc, nr,
@@ -271,23 +278,23 @@ def gen_n_random_ti_cd(n, nc, nr,
             
             if method == "DependentCircles":
                 ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "DependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "IndependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "ReducedTiSg":
                 ti_frame, need_to_cut, simgrid_mask2, nc_sg, nr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc_sg, nr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc_sg, nr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
 
             for cd in cd_list:
                 for ti in ti_list:

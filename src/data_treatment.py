@@ -185,7 +185,7 @@ def create_variables(csv_file_path):
                             \n    - \"auxTI\" for an auxiliary variable describing the variability of the simulated variable(s) in the TI;\
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
-    print(names_var, types_var)
+
     return auxTI_var, auxSG_var, condIm_var, sim_var, names_var, types_var, outputFlag
  
 
