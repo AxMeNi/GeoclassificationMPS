@@ -150,6 +150,7 @@ def build_ti_cd(ti_frames_list,
             # plt.show()
             min1, min2, max1, max2 = np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))),  np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))), np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.)))
             if min1 != min2 :
+                print(min1, min2)
                 print("NOT SAME MIN")
             if  max1 != max2:
                 print("NOT SAME MAX")
