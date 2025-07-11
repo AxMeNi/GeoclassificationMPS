@@ -185,7 +185,7 @@ def create_variables(csv_file_path):
                             \n    - \"auxTI\" for an auxiliary variable describing the variability of the simulated variable(s) in the TI;\
                             \n    - \"auxSG\" for an auxiliary variable conditioning the variability of the simulated variable(s) in the simulation grid;\
                             \n    - \"condIm\" for a conditioning image variable.")
-                        
+    print(names_var, types_var)
     return auxTI_var, auxSG_var, condIm_var, sim_var, names_var, types_var, outputFlag
  
 
@@ -423,13 +423,11 @@ def get_unique_names_and_types(names_var, types_var):
     """
     unique_names = []
     unique_types = []
-
     for name_list, type_list in zip(names_var, types_var):
         for name, var_type in zip(name_list, type_list):
             if name not in unique_names:
                 unique_names.append(name)
                 unique_types.append(var_type)
-
     return unique_names, unique_types
 
       

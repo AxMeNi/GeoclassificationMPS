@@ -132,13 +132,13 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     auxTI_var_temp, auxSG_var_temp, condIm_var, sim_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
     
     ############################################################################################################
-    ### MOVE THAT INTO A FUNCTION ################################################################################
+    ### MOVE THAT INTO A FUNCTION ##############################################################################
     ############################################################################################################
     auxTI_var = {key: value for key, value in auxTI_var_temp.items() if key in arg_aux_vars}
     auxSG_var = {key: value for key, value in auxSG_var_temp.items() if key in arg_aux_vars}
     outputVarFlag = {key: value for key, value in outputVarFlag.items() if key in arg_aux_vars}
     outputVarFlag["grid_geo"]=True
-    names_var = [["grid_geo"],arg_aux_vars,arg_aux_vars,[]]
+    names_var = [arg_aux_vars,arg_aux_vars,[],["grid_geo"]]
     types_var[1], types_var[2] = types_var[1][:len(arg_aux_vars)], types_var[2][:len(arg_aux_vars)]
     ############################################################################################################
     
