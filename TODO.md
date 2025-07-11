@@ -14,6 +14,7 @@
 - [ ] The function execute_shorter_program in interface.py
 - [ ] Adding the parameter numberOfMasks (which changes the seed).
 - [ ] Dividing the function calculate_indicators in variability.py in several smaller functions.
+- [ ] Change list of lists to dictionaries for readibility and accessability.
 ---
 ### LIST OF WARNINGS AND BUGS ENCOUNTERED
 - [ ] When launching a simulation with multiple TIs, or when launching with the parameter ReducedTiSg, we get this error : `Invalid data in simulation grid : Too far beyond the range covered by all the TI(s) : continuous variable`
