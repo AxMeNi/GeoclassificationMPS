@@ -147,7 +147,6 @@ def build_ti_cd(ti_frames_list,
             cd.append_var(val=var_value_masked, varname=var_name)
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
-            print("NOT EQUAL")
             minti = np.nanmin(ti_list[0].val[aux_var_idx, 0, :, :])
             maxti = np.nanmax(ti_list[0].val[aux_var_idx, 0, :, :])
             mincd = np.nanmin(cd.val[-1, 0, :, :])
@@ -156,12 +155,6 @@ def build_ti_cd(ti_frames_list,
             new_min_ti = min ( mincd, minti )
             new_max_ti = max ( maxcd, maxti )
             expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1,expMax)
-            # print("expMax", expMax, "minti", minti, "maxti", maxti, "mincd", mincd, "maxcd", maxcd)
-            ########################################
-            if minti != mincd :
-                print("NOT SAME MIN")
-            if maxti != maxcd:
-                print("NOT SAME MAX")
         #################################
     cd_list.append(cd)    
 
