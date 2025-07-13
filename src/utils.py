@@ -73,11 +73,11 @@ def calc_min_expMax(cd, ti_list, aux_var_idx, ):
     expMax: float
         expMax
     """
+    ###----## BASED ON GEONE TEST ##----###
     minti = np.nanmin(ti_list[0].val[aux_var_idx, 0, :, :])
     maxti = np.nanmax(ti_list[0].val[aux_var_idx, 0, :, :])
     mincd = np.nanmin(cd.val[-1, 0, :, :])
     maxcd = np.nanmax(cd.val[-1, 0, :, :])
-    ###----## BASED ON GEONE TEST ##----###
     new_min_ti = min ( mincd, minti )
     new_max_ti = max ( maxcd, maxti )
     expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1,expMax)
