@@ -64,7 +64,7 @@ def build_ti_cd(ti_frames_list,
     - For conditioning data, auxiliary variables (`auxSG_var`) are applied to control non-stationarity within the simulation grid.
     - Optional conditioning simulated data (`condIm_var`) is also included if provided.
     """
-    expMax = 0
+    expMax = 0.05
     # Building TI(s)
     ti_list = []
     
@@ -85,13 +85,15 @@ def build_ti_cd(ti_frames_list,
             ti.set_grid(nx=col_end-col_start+1, ny=row_end-row_start+1, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             
             # *** AUXILIARY variables first ***
-            for var_name, var_value in auxTI_var.items():
+            for var_name in names_var[0]:
+                var_value = auxTI_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 ti.append_var(val=var_value_cut, varname=var_name)
                 
             # *** Then SIMULATED variables ***
-            for var_name, var_value in sim_var.items():
+            for var_name in names_var[3]:
+                var_value = sim_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 ti.append_var(val=var_value_cut, varname=var_name)
@@ -104,12 +106,14 @@ def build_ti_cd(ti_frames_list,
             ti.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             
             # *** AUXILIARY variables first ***
-            for var_name, var_value in auxTI_var.items():
+            for var_name in names_var[0]:
+                var_value = auxTI_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 ti.append_var(val=var_value_masked, varname=var_name)
 
             # *** Then SIMULATED variables ***
-            for var_name, var_value in sim_var.items():
+            for var_name in names_var[3]:
+                var_value = sim_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 ti.append_var(val=var_value_masked, varname=var_name)
             
@@ -121,7 +125,8 @@ def build_ti_cd(ti_frames_list,
     name = "CondData{}_{}".format(i,time())
     cd = gn.img.Img(nv=0, name=name)
     
-    for aux_var_idx, (var_name, var_value) in enumerate(auxSG_var.items()):
+    for aux_var_idx, var_name in enumerate(names_var[1]):
+        var_value = auxSG_var[var_name]
         if var_value.shape != (nr_simgrid,nc_simgrid) :    
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
 
@@ -143,17 +148,19 @@ def build_ti_cd(ti_frames_list,
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
             print("NOT EQUAL")
-            minti, mincd, maxti, maxcd = np.min(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=0.))),  np.min(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=0.))), np.max(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.))), np.max(np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.)))
+            minti = np.nanmin(ti_list[0].val[aux_var_idx, 0, :, :])
+            maxti = np.nanmax(ti_list[0].val[aux_var_idx, 0, :, :])
+            mincd = np.nanmin(cd.val[-1, 0, :, :])
+            maxcd = np.nanmax(cd.val[-1, 0, :, :])
             ###----## BASED ON GEONE TEST ##----###
             new_min_ti = min ( mincd, minti )
             new_max_ti = max ( maxcd, maxti )
-            expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1+0.01,expMax)
-            print(expMax)
+            expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1,expMax)
+            # print("expMax", expMax, "minti", minti, "maxti", maxti, "mincd", mincd, "maxcd", maxcd)
             ########################################
             if minti != mincd :
-                
                 print("NOT SAME MIN")
-            if  maxti != maxcd:
+            if maxti != maxcd:
                 print("NOT SAME MAX")
         #################################
     cd_list.append(cd)    
@@ -163,7 +170,8 @@ def build_ti_cd(ti_frames_list,
         name = "CondData{}_{}".format(i,time())
         cd = gn.img.Img(nv=0, name=name)
         
-        for var_name, var_value in condIm_var.items():
+        for var_name in names_var[2]:
+            var_value = condIm_var[var_name]
             if var_value.shape != (nr_simgrid,nc_simgrid) :
                 var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
 

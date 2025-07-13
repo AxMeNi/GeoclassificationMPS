@@ -182,7 +182,14 @@ def launcher(params,
         outputFlag = []
         for name in names:
             outputFlag.append(outputVarFlag[name])
-
+        # print(#"expMax", expMax, 
+        #       "\nti_list", ti_list,
+        #       "\ncd_list", cd_list,
+        #       "\ncdmin grid_grv",np.nanmin(cd_list[0].val[0, 0, :, :]),"cdmin grid_mag",np.nanmin(cd_list[0].val[1, 0, :, :]),"cdmin grid_lmp",np.nanmin(cd_list[0].val[2, 0, :, :]),
+        #       "\ntimin grid_grv",np.nanmin(ti_list[0].val[0, 0, :, :]),"timin grid_mag",np.nanmin(ti_list[0].val[1, 0, :, :]),"timin grid_lmp",np.nanmin(ti_list[0].val[2, 0, :, :]),
+        #       "\ncdmax grid_grv",np.nanmax(cd_list[0].val[0, 0, :, :]),"cdmax grid_mag",np.nanmax(cd_list[0].val[1, 0, :, :]),"cdmax grid_lmp",np.nanmax(cd_list[0].val[2, 0, :, :]),
+        #       "\ntimax grid_grv",np.nanmax(ti_list[0].val[0, 0, :, :]),"timax grid_mag",np.nanmax(ti_list[0].val[1, 0, :, :]),"timax grid_lmp",np.nanmax(ti_list[0].val[2, 0, :, :]))
+        # print("outputFlag",outputFlag, "names", names, "types", distance_types)
         deesse_input = gn.deesseinterface.DeesseInput(
             nx=cc_sg, ny=rr_sg, nz=1,
             sx=1, sy=1, sz=1,
@@ -197,7 +204,7 @@ def launcher(params,
             distanceThreshold=nvar*[dt],
             maxScanFraction=nTI*[ms],
             outputVarFlag=outputFlag,
-            expMax=expMax,
+            expMax= expMax,
             npostProcessingPathMax=1,
             seed=seed,
             nrealization=numberofmpsrealizations
