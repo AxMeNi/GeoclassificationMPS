@@ -6,6 +6,7 @@ __date__ = "juillet 2024"
 
 from ti_mask_generation import gen_ti_frame_sg_mask, gen_ti_frame_circles, gen_ti_frame_squares, gen_ti_frame_separatedSquares
 from sg_mask_generation import merge_masks
+from utils import calc_min_expMax
 
 import numpy as np
 import geone as gn
@@ -147,14 +148,7 @@ def build_ti_cd(ti_frames_list,
             cd.append_var(val=var_value_masked, varname=var_name)
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
-            minti = np.nanmin(ti_list[0].val[aux_var_idx, 0, :, :])
-            maxti = np.nanmax(ti_list[0].val[aux_var_idx, 0, :, :])
-            mincd = np.nanmin(cd.val[-1, 0, :, :])
-            maxcd = np.nanmax(cd.val[-1, 0, :, :])
-            ###----## BASED ON GEONE TEST ##----###
-            new_min_ti = min ( mincd, minti )
-            new_max_ti = max ( maxcd, maxti )
-            expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1,expMax)
+            expMax = calc_min_expMax(cd, ti_list, aux_var_idx)
         #################################
     cd_list.append(cd)    
 

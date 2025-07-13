@@ -141,7 +141,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     names_var = [arg_aux_vars,arg_aux_vars,[],["grid_geo"]]
     types_var[1], types_var[2] = types_var[1][:len(arg_aux_vars)], types_var[2][:len(arg_aux_vars)]
     ############################################################################################################
-    print(auxTI_var.keys(), names_var)
+
     nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
