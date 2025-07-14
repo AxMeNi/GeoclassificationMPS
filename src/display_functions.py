@@ -103,6 +103,14 @@ def plot_mask(mask, title=None, show=False, masking_strategy="unknown"):
         plt.show()
 
 
+def plot_ti():
+    return
+
+
+def plot_sg():
+    return
+
+
 def plot_proportions(sim, show=False):
     """
     Plot category proportions for each of the seven categories in the Mount Isa dataset.
