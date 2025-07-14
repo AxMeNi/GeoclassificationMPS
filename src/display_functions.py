@@ -101,7 +101,6 @@ def plot_mask(mask, title=None, show=False, masking_strategy="unknown"):
 
     if show:
         plt.show()
-    plt.close()
 
 
 def plot_proportions(sim, show=False):

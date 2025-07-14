@@ -80,7 +80,7 @@ def launcher(params,
         print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> INITIATED CREATION OF THE SIMULATION GRID, OF THE CONDITIONING DATA, AND OF THE TI")
         
     simgrid_mask_aux = create_sg_mask(auxTI_var, auxSG_var, nr, nc)
-
+    
     #THREE PARAMETERS USED BELOW
     i_mask = seed
     nsim=numberofmpsrealizations
@@ -140,6 +140,8 @@ def launcher(params,
                 save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_IndependentSquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
 
         if "Customised" in ti_methods:
+            if verbose:
+                print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING CUSTOMISED MASK")
             ti_frame_C, ntc_C = gen_ti_frame_custom(nr, nc, custom_mask_path)
             ti_list_C, cd_list_C, expMax_no_error_C = build_ti_cd(ti_frame_C, ntc_C, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
             expMax = max(expMax_no_error_C, expMax)

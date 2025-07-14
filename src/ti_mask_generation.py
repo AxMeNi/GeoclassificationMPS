@@ -197,9 +197,10 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, se
 def gen_ti_frame_custom(nr, nc, custom_mask_path):
     """
     """
-    ti_frame_C = np.load(custom_mask_path)
-    check_custom_mask(ti_frame_C,nr,nc)
+    ti_frame = np.load(custom_mask_path)
+    check_custom_mask(ti_frame,nr,nc)
     need_to_cut = [False]
+    ti_frame_C = [ti_frame]
     return ti_frame_C, need_to_cut
 
 

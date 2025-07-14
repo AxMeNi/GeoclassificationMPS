@@ -148,7 +148,7 @@ def build_ti_cd(ti_frames_list,
             cd.append_var(val=var_value_masked, varname=var_name)
         ################################
         if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
-            expMax = calc_min_expMax(cd, ti_list, aux_var_idx)
+            expMax = calc_min_expMax(cd, ti_list, aux_var_idx, expMax)
         #################################
     cd_list.append(cd)    
 

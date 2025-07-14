@@ -369,10 +369,12 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
 
 
 def check_custom_mask(custom_mask, nr, nc):
-    if custom_mask.shape != (nr,nc):
+    if custom_mask.shape != (nr, nc):
         raise ValueError(f"The provided mask does not have the same dimension as the simulation grid. Mask : {custom_mask.shape}, SG : {nr, nc}")
-    if custom_mask.type != np.bool:
-        raise TypeError(f"Type of custom mask should be np.bool, provided mask is {custom_mask.type}")
+    if custom_mask.dtype != bool:
+        if np.unique(custom_mask).all() != np.array([0.,1.]).all():
+            raise TypeError(f"Type of custom mask should be np.bool, or np.int (with 1 and 0) provided mask is {custom_mask.dtype}")
+    custom_mask = custom_mask.astype(int)
     return
 
  
