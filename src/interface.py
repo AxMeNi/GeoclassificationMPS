@@ -72,12 +72,15 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     ##################### TRAINING IMAGE PARAMETERS #####################
     
     # The available methods are :
-    # "DependentCircles", "DependentSquares", "IndependentSquares", "ReducedTiSg"
+    # "DependentCircles", "DependentSquares", "IndependentSquares", "Customised", "ReducedTiSg"
     ti_methods = ["DependentSquares"] #List of methods
     
     #Parameters for "DependentCircles", "DependentSquares", "IndependentSquares"
     ti_pct_area = arg_ti_pct_area
-    ti_nshapes = arg_num_shape 
+    ti_nshapes = arg_num_shape
+
+    #Parameters for "Customised"
+    custom_mask_path = None #if no mask, please write None.
     
     #Parameters for "ReducedTiSg"
     pct_ti_sg_overlap=50  
@@ -164,6 +167,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
         'rr_sg': rr_sg,
         'cc_ti': cc_ti,
         'rr_ti': rr_ti,
+        'custom_mask_path':custom_mask_path,
         'nRandomTICDsets': nRandomTICDsets,
         'n_neighbouring_nodes': nn,
         'distance_threshold': dt,
@@ -243,9 +247,9 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, required=True, help="Output main directory")
     parser.add_argument('--seed', type=int, required=True, help="Random seed for the simulation")
     parser.add_argument('--n_ti', type=int, required=True, help="Number of Training Images")
-    parser.add_argument('--ti_pct_area', type=int, required=True, help="Percentage of training image area to use")
-    parser.add_argument('--num_shape', type=int, required=True, help="Number of shapes for the croping")
+    parser.add_argument('--ti_pct_area', type=int, required=False, default=None, help="Percentage of training image area to use")
+    parser.add_argument('--num_shape', type=int, required=False, default=None, help="Number of shapes for the croping")
     parser.add_argument("--aux_vars", type=str, required=True, help="Comma-separated auxiliary variables")
     args = parser.parse_args()
     aux_vars = args.aux_vars.split(',')
-    run_simulation(True, args.seed, args.n_ti, args.ti_pct_area, args.num_shape, aux_vars, args.output_dir)
+    run_simulation(True, args.seed, args.n_ti, args.ti_pct_area, args.num_shape, args.aux_vars, args.output_dir)

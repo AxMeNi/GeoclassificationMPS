@@ -10,6 +10,7 @@ import numpy as np
 from skimage.draw import disk  # For drawing shapes
 from skimage.draw import rectangle
 from skimage.morphology import binary_dilation  # For morphological operations
+from data_treatment import check_custom_mask
 from time import *
 from math import *
 
@@ -191,6 +192,15 @@ def gen_ti_frame_separatedSquares(nr, nc, ti_pct_area = 90, ti_nsquares = 10, se
     need_to_cut = [True for _ in range(len(ti_frames_list))]
     
     return ti_frames_list, need_to_cut
+
+
+def gen_ti_frame_custom(nr, nc, custom_mask_path):
+    """
+    """
+    ti_frame_C = np.load(custom_mask_path)
+    check_custom_mask(ti_frame_C,nr,nc)
+    need_to_cut = [False]
+    return ti_frame_C, need_to_cut
 
 
 def gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap=10, pct_sg=None, pct_ti=None, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=None):

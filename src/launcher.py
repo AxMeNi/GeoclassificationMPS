@@ -45,6 +45,7 @@ def launcher(params,
     rr_sg = params['rr_sg']
     cc_ti = params['cc_ti']
     rr_ti = params['rr_ti']
+    custom_mask_path = params['custom_mask_path']
     nRandomTICDsets = params['nRandomTICDsets']
     nn = params['n_neighbouring_nodes']
     dt = params['distance_threshold']
@@ -95,8 +96,8 @@ def launcher(params,
             if verbose:
                 print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT CIRCLES")
             ti_frame_DC, ntc_DC = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
-            ti_list_DC, cd_list_DC, expMax_no_error1 = build_ti_cd(ti_frame_DC, ntc_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-            expMax = max(expMax_no_error1, expMax)
+            ti_list_DC, cd_list_DC, expMax_no_error_DC = build_ti_cd(ti_frame_DC, ntc_DC, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+            expMax = max(expMax_no_error_DC, expMax)
             ti_list.extend(ti_list_DC)
             cd_list.extend(cd_list_DC)
             simgrid_mask = simgrid_mask_aux
@@ -111,8 +112,8 @@ def launcher(params,
             if verbose:
                 print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD DEPENDENT SQUARES")
             ti_frame_DS, ntc_DS = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
-            ti_list_DS, cd_list_DS, expMax_no_error2 = build_ti_cd(ti_frame_DS, ntc_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-            expMax = max(expMax_no_error2, expMax)
+            ti_list_DS, cd_list_DS, expMax_no_error_DS = build_ti_cd(ti_frame_DS, ntc_DS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+            expMax = max(expMax_no_error_DS, expMax)
             ti_list.extend(ti_list_DS)
             cd_list.extend(cd_list_DS)
             simgrid_mask = simgrid_mask_aux
@@ -127,8 +128,8 @@ def launcher(params,
             if verbose:
                 print((datetime.now()).strftime('%d-%b-%Y (%H:%M:%S:%f)') + " <> USING METHOD INDEPENDENT SQUARES")
             ti_frame_IS, ntc_IS = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
-            ti_list_IS, cd_list_IS, expMax_no_error3 = build_ti_cd(ti_frame_IS, ntc_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
-            expMax = max(expMax_no_error3, expMax)
+            ti_list_IS, cd_list_IS, expMax_no_error_IS = build_ti_cd(ti_frame_IS, ntc_IS, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+            expMax = max(expMax_no_error_IS, expMax)
             ti_list.extend(ti_list_IS)
             cd_list.extend(cd_list_IS)
             simgrid_mask = simgrid_mask_aux
@@ -137,6 +138,19 @@ def launcher(params,
                 plot_mask(simgrid_mask,masking_strategy="Independent Squares")
                 save_plot(fname=f"mask_IndependentSquares__SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'mask_independentsquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
                 save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_IndependentSquares_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
+
+        if "Customised" in ti_methods:
+            ti_frame_C, ntc_C = gen_ti_frame_custom(nr, nc, custom_mask_path)
+            ti_list_C, cd_list_C, expMax_no_error_C = build_ti_cd(ti_frame_C, ntc_C, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask_aux, condIm_var)
+            expMax = max(expMax_no_error_C, expMax)
+            ti_list.extend(ti_list_C)
+            cd_list.extend(cd_list_C)
+            simgrid_mask = simgrid_mask_aux
+            cc_sg, rr_sg = nc, nr
+            if saveMask:
+                plot_mask(simgrid_mask,masking_strategy="Independent Squares")
+                save_plot(fname=f"mask_IndependentSquares__SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.png", output_directory=plot_output_folder_complete, comments=f'mask_customised_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}', params={"nsim":nsim})
+                save_mask(simgrid_mask, output_directory=deesse_output_folder_complete, file_name=f"mask_Customised_SEED{seed}_TIPCT{ti_pct_area}-TINSHP{ti_nshapes}-{aux_var_names}.npy",params={"nsim":nsim})
 
         if "ReducedTiSg" in ti_methods :
             if verbose:

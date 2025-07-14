@@ -367,6 +367,14 @@ def check_variables(sim_var, auxTI_var, auxSG_var, condIm_var, names_var, types_
     
     return  auxTI_var, auxSG_var, condIm_var, sim_var
 
+
+def check_custom_mask(custom_mask, nr, nc):
+    if custom_mask.shape != (nr,nc):
+        raise ValueError(f"The provided mask does not have the same dimension as the simulation grid. Mask : {custom_mask.shape}, SG : {nr, nc}")
+    if custom_mask.type != np.bool:
+        raise TypeError(f"Type of custom mask should be np.bool, provided mask is {custom_mask.type}")
+    return
+
  
 def count_variables(names_var):
     """
