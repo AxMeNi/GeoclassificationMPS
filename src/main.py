@@ -79,6 +79,7 @@ def run_tests(verbose):
 #UTILS.PY
     t_FindFarthestPtsFrmCentroids = False
     t_LoadPickleFile =              False
+    t_CalcMinExpMas =               False #TODO
 
 #SAVING.PY
     t_SaveMask =                    False #TODO
@@ -135,6 +136,7 @@ def run_tests(verbose):
     
     if t_FindFarthestPtsFrmCentroids : test_find_farthest_points_from_centroid()
     if t_LoadPickleFile : test_load_pickle_file()
+    if t_CalcMinExpMax : test_calc_min_expmax()
     
     if t_SaveMask : test_save_mask()
     if t_SaveDeesseOutput : test_save_deesse_output()

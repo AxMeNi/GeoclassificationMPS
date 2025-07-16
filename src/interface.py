@@ -34,7 +34,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     ##################### LOCATIONS OF THE CSV DATA FILE #####################
     
-    csv_file_path = "../data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
+    csv_file_path = "./data/data_csv.csv" # MAKE THIS PARAM MORE ACCESSIBLE
     
     # Expected CSV File Format (Columns are separataed by ","):
     #
@@ -118,7 +118,7 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     prefix_topological_adjacency = "topological_adjacency"
     prefix_proportions = "proportions"
     prefix_std_deviation = "std_deviation"
-    reference_var = np.load(r"../data/grid_geo.npy") # TO DO MAKE THIS PARAM MORE ACCESSIBLE 
+    reference_var = np.load("./data/grid_geo.npy") # TO DO MAKE THIS PARAM MORE ACCESSIBLE 
     
     ##################### SHORTEN THE SIMULATION #####################
 
@@ -128,20 +128,20 @@ def get_simulation_info(arg_seed = None, arg_n_ti = None, arg_ti_pct_area = None
     
     check_ti_methods(ti_methods)
     
-    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
-    sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
+    auxTI_var_temp, auxSG_var_temp, condIm_var, sim_var, names_var, types_var, outputVarFlag = create_variables(csv_file_path)
+    auxTI_var_temp, auxSG_var_temp, condIm_var, sim_var = check_variables(sim_var, auxTI_var_temp, auxSG_var_temp, condIm_var, names_var, types_var, novalue)
     
     ############################################################################################################
-    ### MOVE THAT INTO A FUNCTION ################################################################################
+    ### MOVE THAT INTO A FUNCTION ##############################################################################
     ############################################################################################################
     auxTI_var = {key: value for key, value in auxTI_var_temp.items() if key in arg_aux_vars}
     auxSG_var = {key: value for key, value in auxSG_var_temp.items() if key in arg_aux_vars}
     outputVarFlag = {key: value for key, value in outputVarFlag.items() if key in arg_aux_vars}
     outputVarFlag["grid_geo"]=True
-    names_var = [["grid_geo"],arg_aux_vars,arg_aux_vars,[]]
+    names_var = [arg_aux_vars,arg_aux_vars,[],["grid_geo"]]
     types_var[1], types_var[2] = types_var[1][:len(arg_aux_vars)], types_var[2][:len(arg_aux_vars)]
     ############################################################################################################
-    
+
     nvar = count_variables(names_var)
     
     nr, nc = get_sim_grid_dimensions(sim_var)
