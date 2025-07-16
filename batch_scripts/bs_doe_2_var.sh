@@ -3,7 +3,7 @@
 #SBATCH --job-name=mps_clf_2_var
 #SBATCH --cpus-per-task=4
 #SBATCH --output=log/mps_clf_2_var%a.txt
-#SBATCH --array=4-6
+#SBATCH --array=7-9
 
 # Definition of the parameters of the design of experiment
 SEED=852
