@@ -197,7 +197,7 @@ def launcher(params,
             distanceThreshold=nvar*[dt],
             maxScanFraction=nTI*[ms],
             outputVarFlag=outputFlag,
-            expMax= expMax,
+            expMax=-1,
             npostProcessingPathMax=1,
             seed=seed,
             nrealization=numberofmpsrealizations

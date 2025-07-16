@@ -36,7 +36,7 @@ TI_PCT_AREA=${TI_PCT_AREA_LIST[$IDX_AREA]}
 NUM_SHAPE=${NUM_SHAPE_LIST[$IDX_SHAPE]}
 AUX_VARS=${AUX_VARS_LIST[$IDX_AUX_VARS]}
 
-OUTPUT_DIR="./output_mps_clf_1_var_${SLURM_ARRAY_TASK_ID}_${AUX_VARS}"
+OUTPUT_DIR="./output_mps_clf_${SLURM_ARRAY_TASK_ID}_${AUX_VARS}"
 echo "OUTPUT_DIR ${OUTPUT_DIR}"
 
 # Execution of the Python script with the generated parameters

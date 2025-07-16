@@ -1,22 +1,16 @@
 #!/bin/bash
 #SBATCH --partition=cet
-#SBATCH --job-name=mps_clf
+#SBATCH --job-name=mps_clf_3_var
 #SBATCH --cpus-per-task=4
-#SBATCH --output=log/mps_clf_task_%a.txt
-#SBATCH --array=561-840
+#SBATCH --output=log/mps_clf_3_var%a.txt
+#SBATCH --array=10-11
 
-# Definiion of the parameters of the design of experiment
-SEED_LIST=(254 648)
+# Definition of the parameters of the design of experiment
+SEED_LIST=(852 123)
 NUM_TI_LIST=(1)
-TI_PCT_AREA_LIST=(25 55 75 90)
-NUM_SHAPE_LIST=(1 5 10 15 50)
+TI_PCT_AREA_LIST=(55)
+NUM_SHAPE_LIST=(1)
 AUX_VARS_LIST=(
-    "grid_grv"
-    "grid_lmp"
-    "grid_mag"
-    "grid_grv,grid_lmp"
-    "grid_grv,grid_mag"
-    "grid_lmp,grid_mag"
     "grid_grv,grid_lmp,grid_mag"
 )
 
