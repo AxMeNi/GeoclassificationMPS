@@ -54,3 +54,31 @@ def load_pickle_file(file_path):
     with open(file_path, 'rb') as file:
         data = pickle.load(file)
     return data
+
+
+def calc_min_expMax(cd, ti_list, aux_var_idx, ):
+    """
+    Determine the minimal expMax parameter for geone deesse simulation,
+    expMax means "expansion maximum" and is the maximum range extension allowed for the
+    values difference for a same variable in the TI and in the SG (for auxiliary variable or conditioning data).
+
+    Parameters:
+    ----------
+    cd : Img geone
+        conditionning image 
+    ...
+    
+    Returns:
+    -------
+    expMax: float
+        expMax
+    """
+    ###----## BASED ON GEONE TEST ##----###
+    minti = np.nanmin(ti_list[0].val[aux_var_idx, 0, :, :])
+    maxti = np.nanmax(ti_list[0].val[aux_var_idx, 0, :, :])
+    mincd = np.nanmin(cd.val[-1, 0, :, :])
+    maxcd = np.nanmax(cd.val[-1, 0, :, :])
+    new_min_ti = min ( mincd, minti )
+    new_max_ti = max ( maxcd, maxti )
+    expMax = max((new_max_ti-new_min_ti)/(maxti-minti)-1,expMax)
+    return expMax

@@ -531,7 +531,7 @@ def test_build_ti_cd():
     
     ti_frame, need_to_cut, simgrid_mask2, cc_sg, rr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap=50, pct_sg=20, pct_ti=65, cc_sg=None, rr_sg=None, cc_ti=None, rr_ti=None, seed=seed)
     simgrid_mask = merge_masks(simgrid_mask1, simgrid_mask2)
-    ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+    ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, cc_sg, rr_sg, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
 
     # Check TI list length
     assert len(ti_list) == len(ti_frame), "TI list length mismatch."
@@ -567,7 +567,7 @@ def test_build_ti_cd():
     #ti_frame2, need_to_cut2 = gen_ti_frame_circles(nr, nc, ti_pct_area =87, ti_ndisks = 5, seed = seed)
     #ti_frame2, need_to_cut2 = gen_ti_frame_separatedSquares(nr, nc, 90, 5, seed)
     ti_frame2, need_to_cut2 = gen_ti_frame_squares(nr, nc, 90, 5, seed)
-    ti_list2, cd_list2 = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
+    ti_list2, cd_list2, expMax = build_ti_cd(ti_frame2, need_to_cut2, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask1, condIm_var)
 
     assert len(ti_list2) == len(ti_frame2), "TI list length mismatch."
 
@@ -932,6 +932,10 @@ def test_load_pickle_file():
     
     data = load_pickle_file(r"D:\CET\Documents\Kaya simulations\26-11-2024\deesse_output\deesse_output_20241126_132024.pkl")
     print(data)
+    return
+
+
+def test_calc_min_expmax():
     return
 
 

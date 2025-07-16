@@ -6,6 +6,7 @@ __date__ = "juillet 2024"
 
 from ti_mask_generation import gen_ti_frame_sg_mask, gen_ti_frame_circles, gen_ti_frame_squares, gen_ti_frame_separatedSquares
 from sg_mask_generation import merge_masks
+from utils import calc_min_expMax
 
 import numpy as np
 import geone as gn
@@ -64,6 +65,7 @@ def build_ti_cd(ti_frames_list,
     - For conditioning data, auxiliary variables (`auxSG_var`) are applied to control non-stationarity within the simulation grid.
     - Optional conditioning simulated data (`condIm_var`) is also included if provided.
     """
+    expMax = 0.05
     # Building TI(s)
     ti_list = []
     
@@ -84,13 +86,15 @@ def build_ti_cd(ti_frames_list,
             ti.set_grid(nx=col_end-col_start+1, ny=row_end-row_start+1, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             
             # *** AUXILIARY variables first ***
-            for var_name, var_value in auxTI_var.items():
+            for var_name in names_var[0]:
+                var_value = auxTI_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 ti.append_var(val=var_value_cut, varname=var_name)
                 
             # *** Then SIMULATED variables ***
-            for var_name, var_value in sim_var.items():
+            for var_name in names_var[3]:
+                var_value = sim_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 var_value_cut = var_value_masked[row_start:row_end+1, col_start:col_end+1]
                 ti.append_var(val=var_value_cut, varname=var_name)
@@ -103,23 +107,27 @@ def build_ti_cd(ti_frames_list,
             ti.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             
             # *** AUXILIARY variables first ***
-            for var_name, var_value in auxTI_var.items():
-                ti.append_var(val=var_value, varname=var_name)
-            
+            for var_name in names_var[0]:
+                var_value = auxTI_var[var_name]
+                var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
+                ti.append_var(val=var_value_masked, varname=var_name)
+
             # *** Then SIMULATED variables ***
-            for var_name, var_value in sim_var.items():
+            for var_name in names_var[3]:
+                var_value = sim_var[var_name]
                 var_value_masked = np.where(ti_frame == 1, var_value, np.nan)
                 ti.append_var(val=var_value_masked, varname=var_name)
             
             ti_list.append(ti)
-          
+
     # Building conditioning AUXILIARY data
     cd_list = []
 
     name = "CondData{}_{}".format(i,time())
     cd = gn.img.Img(nv=0, name=name)
     
-    for var_name, var_value in auxSG_var.items():
+    for aux_var_idx, var_name in enumerate(names_var[1]):
+        var_value = auxSG_var[var_name]
         if var_value.shape != (nr_simgrid,nc_simgrid) :    
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
 
@@ -138,7 +146,10 @@ def build_ti_cd(ti_frames_list,
             var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
             cd.set_grid(nx=nc_simgrid, ny=nr_simgrid, nz=1, sx=1, sy=1, sz=1, ox=0, oy=0, oz=0)
             cd.append_var(val=var_value_masked, varname=var_name)
-    
+        ################################
+        if not np.array_equal(np.unique(np.nan_to_num(ti_list[0].val[aux_var_idx, 0, :, :], nan=-999999.)), np.unique(np.nan_to_num(cd.val[-1, 0, :, :], nan=-999999.))):
+            expMax = calc_min_expMax(cd, ti_list, aux_var_idx)
+        #################################
     cd_list.append(cd)    
 
     # Building conditioning SIMULATED data 
@@ -146,7 +157,8 @@ def build_ti_cd(ti_frames_list,
         name = "CondData{}_{}".format(i,time())
         cd = gn.img.Img(nv=0, name=name)
         
-        for var_name, var_value in condIm_var.items():
+        for var_name in names_var[2]:
+            var_value = condIm_var[var_name]
             if var_value.shape != (nr_simgrid,nc_simgrid) :
                 var_value_masked = np.where(simgrid_mask == 1, var_value, np.nan)
 
@@ -167,7 +179,7 @@ def build_ti_cd(ti_frames_list,
         
         cd_list.append(cd)  
     
-    return ti_list, cd_list
+    return ti_list, cd_list, expMax
 
 
 def gen_n_random_ti_cd(n, nc, nr,
@@ -261,23 +273,23 @@ def gen_n_random_ti_cd(n, nc, nr,
             
             if method == "DependentCircles":
                 ti_frame, need_to_cut = gen_ti_frame_circles(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "DependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_squares(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "IndependentSquares":
                 ti_frame, need_to_cut = gen_ti_frame_separatedSquares(nr, nc, ti_pct_area, ti_nshapes, seed)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc, nr, auxTI_var, auxSG_var, names_var, simgrid_mask, condIm_var)
                 simgrid_mask_final = simgrid_mask
                 nc_sg, nr_sg = nc, nr
             if method == "ReducedTiSg":
                 ti_frame, need_to_cut, simgrid_mask2, nc_sg, nr_sg = gen_ti_frame_sg_mask(nr, nc, pct_ti_sg_overlap, pct_sg, pct_ti, cc_sg, rr_sg, cc_ti, rr_ti, seed)
                 merged_mask = merge_masks(simgrid_mask, simgrid_mask2)
-                ti_list, cd_list = build_ti_cd(ti_frame, need_to_cut, sim_var, nc_sg, nr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
+                ti_list, cd_list, expMax = build_ti_cd(ti_frame, need_to_cut, sim_var, nc_sg, nr_sg, auxTI_var, auxSG_var, names_var, merged_mask, condIm_var)
 
             for cd in cd_list:
                 for ti in ti_list:
