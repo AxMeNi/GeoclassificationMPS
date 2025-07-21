@@ -118,10 +118,8 @@ plot_realization(deesse_output=deesse_output)
 
 ## 🧠 Recommendations and Best Practices
 
-- **File Paths**: Paths are currently hard-coded for the main user; consider making them relative or parameterizable for better portability.
+- **File Paths**: Enter your own project path in the first cell.
 - **Documentation**: Follow the notebook’s in-line examples and formats for preparing your data files (.csv, .npy).
 - **Modularity**: Experiment with different TI generation methods to compare their impact on results.
-- **Visualization**: Use plotting to verify the coherence of masks and simulation outputs.
-- **Warnings**: Console warnings and errors are valuable for diagnosing data or configuration issues.
 
 ---
