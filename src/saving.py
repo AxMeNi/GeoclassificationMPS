@@ -94,7 +94,7 @@ def save_deesse_output(deesse_output, output_dir = 'output/', file_name='deesse_
         pickle.dump(deesse_output, file)
 
 
-def save_simulation(deesse_output, params, comments="", output_directory="output/"):
+def save_simulation(deesse_output, params, comments="", output_directory="output/", custom_name=""):
     """
     Save the Deesse output and log simulation parameters into an CSV file.
 
@@ -131,7 +131,7 @@ def save_simulation(deesse_output, params, comments="", output_directory="output
     - New columns are added to the CSV file as needed when new parameter keys are added to the `params` dictionary.
     """
     os.makedirs(output_directory, exist_ok=True)
-    output_file_name = f"deesse_output.pkl" #_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}.pkl"
+    output_file_name = f"deesse_output"+custom_name+".pkl" #_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}"
     save_deesse_output(deesse_output, output_directory, output_file_name)
 
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
