@@ -208,12 +208,14 @@ def save_indicators(indicators_dict={}, output_directory='output/', comments='',
         df_updated.to_csv(csv_file_path, index=False)
           
 
-def save_plot(fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
+def save_plot(fig = None, fname='', default_name='fig.png', output_directory='output/', comments='', params={}):
     """
     Save the current plot to a file and log the details in an Excel file.
 
     Parameters:
     -----------
+    fig : fig type of matplotlib (Optionnal, default = current figure)
+        Figure to save
     fname : str, optional (default: '')
         The name of the file to save the plot to. If not provided, `default_name` is used.
     default_name : str, optional (default: 'fig.png')
@@ -238,13 +240,15 @@ def save_plot(fname='', default_name='fig.png', output_directory='output/', comm
     """
     
     os.makedirs(output_directory, exist_ok=True)
+    if fig == None:
+        fig = plt.gcf()
     
     if fname == '':
         fname = default_name
     
     plot_path = os.path.join(output_directory, fname)
-    plt.subplots_adjust(hspace=0.2)
-    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    fig.subplots_adjust(hspace=0.2)
+    fig.savefig(plot_path, dpi=300, bbox_inches='tight')
 
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     data = {
