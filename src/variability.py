@@ -172,63 +172,7 @@ def custom_topo_dist(img1, img2, npctiles=0, verb=0, plot=0, leg=" "):
 #####################################
 ### COMPUTATION OF THE INDICATORS ###
 #####################################
-    
-def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
-    """
-    Computes entropy, Jensen-Shannon divergence, and topological adjacency indicators 
-    for the simulations in the Deesse output. These indicators are calculated for each 
-    possible pair of simulation realizations to assess similarities and adjacency relationships.
 
-    Parameters:
-    ----------
-    deesse_output : dict
-        The output dictionary from a Deesse simulation run containing the simulated variable(s). 
-    reference_var : numpy.ndarray, optional
-        If provided, this is the reference variable (2D array) for comparison with each simulation.
-        If None, the indicators are calculated only between simulation pairs. Default is None.
-
-    Returns:
-    -------
-    ent : float
-        The entropy value calculated across all simulations.
-    dist_hist : numpy.ndarray
-        A symmetric matrix (nsim x nsim or (nsim + 1) x (nsim + 1) if a reference is present) 
-        containing the Jensen-Shannon divergence for each pair of simulations.
-    dist_topo_hamming : numpy.ndarray
-        A symmetric matrix containing the Hamming distance of topological adjacency 
-        between each pair of simulations.
-    dist_topo_lapl_spec : numpy.ndarray
-        A symmetric matrix containing the Laplacian spectrum topological distance 
-        between each pair of simulations.
-
-    Raises:
-    ------
-    ValueError
-        If more than one simulated variable is found in the Deesse output.
-    
-    Notes:
-    -----
-    - Only single-variable simulations are supported. If `n_sim_variables` > 1, an error is raised.
-    - The `all_sim` array stores the combined simulations, reshaped to work with `loop-ui`.
-    - Jensen-Shannon divergence and topological adjacency measures are calculated for each 
-      pair of simulations, and additionally between simulations and the reference variable, 
-      if provided.
-    - The dimensions with size one are removed using `np.squeeze` to ensure compatibility 
-      with 2D-only functions.
-    """
-    if n_sim_variables > 1: 
-        raise ValueError (f"The simulation was computed for {n_sim_variables} variables, cannot compute indicators with more than 1 variable.")
-        return None
-    else: 
-        sim = deesse_output['sim']
-        all_sim_img = gn.img.gatherImages(sim) #Using the inplace functin of geone to gather images
-        all_sim = all_sim_img.val
-        all_sim = np.transpose(all_sim,(1,2,3,0)) #Transposing the dimensions of the array to make it work with loop-ui...
-        nsim = len(sim)
-        
-        #1 ENTROPY 
-        ent = entropy(all_sim)
-        
         # JENSEN SHANNON DIVERGENCE AND TOPOLOGICAL ADJACENCY ARE ONLY 
         # CALCULATED ON PAIRS OF REALIZATIONS. THUS, IT IS REQUIRED
         # TO ITERATE OVER ALL POSSIBLE PAIRS OF REALIZATIONS.
@@ -239,57 +183,110 @@ def calculate_indicators(deesse_output, n_sim_variables, reference_var=None):
         #  - BECAUSE LOOP UI IS MORE EFFICIENT ON 2D ARRAYS
         # IT HAS BEEN DECIDED TO REMOVE ALL DIMENSIONS EQUAL TO ONE 
         # USING NP.SQUEEZE
-        
-        #Case without reference
-        if reference_var is None :
-        
-            dist_hist = np.zeros((nsim, nsim)) # To store Jensen Shannon indicators
-            dist_topo_hamming = np.zeros((nsim, nsim)) # To store topological adjacency indicators
-            dist_topo_lapl_spec = np.zeros((nsim, nsim))
-            
-            for idx1_real in range(nsim):
-                for idx2_real in range(idx1_real):
-                    
-                    #2 JENSEN SHANNON DIVERGENCE
-                    dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
-                    dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
-                    
-                    #3 TOPOLOGICAL ADJACENCY
-                    dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
-                    dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx1_real, idx2_real]
-                    dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]   
-        
-        #Case for which a reference is provided 
-        else :
-            dist_hist = np.zeros((nsim + 1, nsim + 1)) # To store Jensen Shannon indicators
-            dist_topo_hamming = np.zeros((nsim + 1, nsim + 1)) # To store topological adjacency indicators
-            dist_topo_lapl_spec = np.zeros((nsim + 1, nsim + 1))
-            
-            for idx1_real in range(nsim):
-                
-                #Comparison of the simulations' indicators with the reference's indicators
-                #This comparison will be stored in the end of the result arrays (index -1)
-                #2 JENSEN SHANNON DIVERGENCE
-                dist_hist[idx1_real, -1] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,-1,base=np.e)
-                dist_hist[-1, idx1_real] = dist_hist[idx1_real, -1]
-                
-                #3 TOPOLOGICAL ADJACENCY
-                dist_topo_hamming[idx1_real, -1], dist_topo_lapl_spec[idx1_real, -1] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),reference_var,npctiles=-1,)
-                dist_topo_hamming[-1, idx1_real] = dist_topo_hamming[idx1_real, -1]
-                dist_topo_lapl_spec[-1, idx1_real] = dist_topo_lapl_spec[idx1_real, -1]   
-                
-                for idx2_real in range(idx1_real):
-                    
-                    #2 JENSEN SHANNON DIVERGENCE
-                    dist_hist[idx1_real, idx2_real] = custom_jsdist_hist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),-1,base=np.e)
-                    dist_hist[idx2_real, idx1_real] = dist_hist[idx1_real,idx2_real]
-                    
-                    #3 TOPOLOGICAL ADJACENCY
-                    dist_topo_hamming[idx1_real, idx2_real], dist_topo_lapl_spec[idx1_real, idx2_real] = custom_topo_dist(np.squeeze(all_sim[:,:,:,idx1_real]),np.squeeze(all_sim[:,:,:,idx2_real]),npctiles=-1,)
-                    dist_topo_hamming[idx2_real, idx1_real] = dist_topo_hamming[idx1_real, idx2_real]
-                    dist_topo_lapl_spec[idx2_real, idx1_real] = dist_topo_lapl_spec[idx1_real, idx2_real]      
-            
-        return ent, dist_hist, dist_topo_hamming
+
+def calculate_indicators(deesse_output, n_sim_variables, reference_var=None,
+                         referenceIsPresent=None, use_reference=True):
+    """
+    Computes entropy, Jensen-Shannon divergence, and topological adjacency indicators 
+    for the simulations in one or multiple Deesse outputs. 
+
+    Parameters
+    ----------
+    deesse_output : dict or list of dict
+        Deesse output(s) containing the simulated variable(s). 
+    n_sim_variables : int
+        Number of simulated variables in each Deesse output. Must be 1.
+    reference_var : numpy.ndarray, optional
+        Reference variable for comparison. Default is None.
+    referenceIsPresent : list of bool or bool, optional
+        Indicates if reference_var is present in each deesse_output. 
+        Default: [True] * len(deesse_output) if reference_var is provided.
+    use_reference : bool, default True
+        Whether to include reference_var in distance matrices.
+
+    Returns
+    -------
+    ent, dist_hist, dist_topo_hamming, dist_topo_lapl_spec
+    """
+
+    if n_sim_variables > 1: 
+        raise ValueError(f"The simulation was computed for {n_sim_variables} variables, "
+                         "cannot compute indicators with more than 1 variable.")
+    
+    # --- 1. Handle input type: single output or list of outputs ---
+    if isinstance(deesse_output, dict):  
+        outputs = [deesse_output]
+    elif isinstance(deesse_output, list):  
+        outputs = deesse_output
+    else:
+        raise TypeError("deesse_output must be either a dict or a list of dicts")
+    
+    n_outputs = len(outputs)
+
+    # --- 2. Handle referenceIsPresent ---
+    if reference_var is not None and referenceIsPresent is None:
+        referenceIsPresent = [True] * n_outputs
+    elif isinstance(referenceIsPresent, bool):
+        referenceIsPresent = [referenceIsPresent] * n_outputs
+    elif len(referenceIsPresent) != n_outputs:
+        raise ValueError("Length of referenceIsPresent must match number of outputs")
+
+    # --- 3. Extract all simulations and combine them ---
+    all_sims_list = []
+    for out in outputs:
+        sim = out['sim']
+        all_sim_img = gn.img.gatherImages(sim)
+        all_sim = all_sim_img.val
+        all_sim = np.transpose(all_sim, (1, 2, 3, 0))  # adjust dimensions
+        all_sims_list.append(all_sim)
+    
+    all_sims = np.concatenate(all_sims_list, axis=3)  # concatenate along simulation dimension
+    ntot = all_sims.shape[3]  # total number of realizations
+
+    # --- 4. Entropy ---
+    ent = entropy(all_sims)
+
+    # --- 5. Initialize distance matrices ---
+    if reference_var is None or not use_reference:
+        dist_hist = np.zeros((ntot, ntot))
+        dist_topo_hamming = np.zeros((ntot, ntot))
+        dist_topo_lapl_spec = np.zeros((ntot, ntot))
+        use_ref_in_calc = False
+    else:
+        dist_hist = np.zeros((ntot + 1, ntot + 1))
+        dist_topo_hamming = np.zeros((ntot + 1, ntot + 1))
+        dist_topo_lapl_spec = np.zeros((ntot + 1, ntot + 1))
+        use_ref_in_calc = True
+
+    # --- 6. Compute distances ---
+    for idx1 in range(ntot):
+        sim1 = np.squeeze(all_sims[:, :, :, idx1])
+
+        # Compare with reference if applicable
+        if use_ref_in_calc:
+            dist_hist[idx1, -1] = custom_jsdist_hist(sim1, reference_var, -1, base=np.e)
+            dist_hist[-1, idx1] = dist_hist[idx1, -1]
+
+            dist_topo_hamming[idx1, -1], dist_topo_lapl_spec[idx1, -1] = custom_topo_dist(sim1, reference_var, npctiles=-1)
+            dist_topo_hamming[-1, idx1] = dist_topo_hamming[idx1, -1]
+            dist_topo_lapl_spec[-1, idx1] = dist_topo_lapl_spec[idx1, -1]
+
+        # Compare with other realizations
+        for idx2 in range(idx1):
+            sim2 = np.squeeze(all_sims[:, :, :, idx2])
+
+            dist_hist[idx1, idx2] = custom_jsdist_hist(sim1, sim2, -1, base=np.e)
+            dist_hist[idx2, idx1] = dist_hist[idx1, idx2]
+
+            d_hamming, d_lapl = custom_topo_dist(sim1, sim2, npctiles=-1)
+            dist_topo_hamming[idx1, idx2] = d_hamming
+            dist_topo_hamming[idx2, idx1] = d_hamming
+            dist_topo_lapl_spec[idx1, idx2] = d_lapl
+            dist_topo_lapl_spec[idx2, idx1] = d_lapl
+
+    return ent, dist_hist, dist_topo_hamming, dist_topo_lapl_spec
+
+
 
     
 def calculate_std_deviation(indicator_map, min_realizations=1, max_realizations=1):
