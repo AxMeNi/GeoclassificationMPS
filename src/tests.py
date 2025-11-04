@@ -935,6 +935,10 @@ def test_load_pickle_file():
     return
 
 
+def test_calc_min_expmax():
+    return
+
+
 ##################################### TEST SAVING.PY
 
 def test_save_mask():
